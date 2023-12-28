@@ -1,5 +1,3 @@
-require("rileymathews.set")
-require("rileymathews.lazy")
 require("rileymathews.telescopesetup")
 require("rileymathews.treesittersetup")
 require("rileymathews.lspsetup")
