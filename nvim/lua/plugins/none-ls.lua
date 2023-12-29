@@ -8,6 +8,8 @@ return {
                 null_ls.builtins.diagnostics.ruff,
                 null_ls.builtins.formatting.ruff,
                 null_ls.builtins.formatting.ruff_format,
+                null_ls.builtins.diagnostics.djlint,
+                null_ls.builtins.formatting.djlint,
 			},
 		})
 
