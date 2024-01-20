@@ -1,3 +1,7 @@
+get_current_tmux_session() {
+    tmux display-message -p '#S'
+}
+
 get_current_tmux_window() {
     tmux display-message -p '#I'
 }
@@ -26,4 +30,20 @@ tdjango() {
     run_command_in_pane "psh";
 
     tmux select-pane -t $current_window.0;
+}
+
+fzt() {
+    directory=$(find ~/code -type d -maxdepth 1 | fzf);
+    basename=`basename $directory`;
+    tmux new-session -s $basename -c $directory -d;
+    # check if argument is passed
+    if [ -n "$1" ]
+    then
+        tmux send-keys -t $basename.0 "$1" C-m;
+    fi
+    tmux attach-session -t $basename;
+}
+
+fztdj() {
+    fzt "tdjango";
 }
