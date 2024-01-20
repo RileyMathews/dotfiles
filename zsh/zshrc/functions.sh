@@ -32,6 +32,19 @@ tdjango() {
     tmux select-pane -t $current_window.0;
 }
 
+trust() {
+    current_window=$(get_current_tmux_window);
+
+    run_command_in_pane "nvim .";
+    
+    tmux split-window -v -p 20;
+    run_command_in_pane "cargo watch -x run -w src";
+
+    tmux split-window -h -p 50;
+
+    tmux select-pane -t $current_window.0;
+}
+
 fzt() {
     directory=$(find ~/code -type d -maxdepth 1 | fzf);
     basename=`basename $directory`;
@@ -46,4 +59,8 @@ fzt() {
 
 fztdj() {
     fzt "tdjango";
+}
+
+fztrust() {
+    fzt "trust";
 }
