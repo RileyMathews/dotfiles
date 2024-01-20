@@ -7,14 +7,12 @@ get_current_tmux_pane() {
 }
 
 run_command_in_pane() {
-    echo "testing";
     current_window=$(get_current_tmux_window);
     current_pane=$(get_current_tmux_pane);
     tmux send-keys -t $current_window.$current_pane "$1" C-m;
 }
 
 tdjango() {
-    echo "testing";
     current_window=$(get_current_tmux_window);
 
     run_command_in_pane "psh";
