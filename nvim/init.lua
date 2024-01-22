@@ -76,3 +76,9 @@ vim.keymap.set('n', '<space>pe', vim.diagnostic.open_float, {desc="[P]eek [E]rro
 vim.keymap.set('n', '[d', vim.diagnostic.goto_prev)
 vim.keymap.set('n', ']d', vim.diagnostic.goto_next)
 vim.keymap.set('n', '<space>q', vim.diagnostic.setloclist)
+
+vim.filetype.add({
+    extension = {
+        tera = "htmldjango",
+    }
+})
