@@ -46,15 +46,7 @@ trust() {
 }
 
 fzt() {
-    directory=$(find ~/code -type d -maxdepth 1 | fzf);
-    basename=`basename $directory`;
-    tmux new-session -s $basename -c $directory -d;
-    # check if argument is passed
-    if [ -n "$1" ]
-    then
-        tmux send-keys -t $basename.0 "$1" C-m;
-    fi
-    tmux attach-session -t $basename;
+    fztinternal ~/code $2
 }
 
 fztdj() {
@@ -63,4 +55,16 @@ fztdj() {
 
 fztrust() {
     fzt "trust";
+}
+
+fztinternal() {
+    directory=$(find $1 -type d -maxdepth 1 | fzf);
+    basename=`basename $directory`;
+    tmux new-session -s $basename -c $directory -d;
+    # check if argument is passed
+    if [ -n "$2" ]
+    then
+        tmux send-keys -t $basename.0 "$2" C-m;
+    fi
+    tmux attach-session -t $basename;
 }
