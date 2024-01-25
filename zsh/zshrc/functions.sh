@@ -45,8 +45,18 @@ trust() {
     tmux select-pane -t $current_window.0;
 }
 
+tnvim() {
+    current_window=$(get_current_tmux_window);
+
+    run_command_in_pane "nvim .";
+    
+    tmux split-window -v -p 20;
+
+    tmux select-pane -t $current_window.0;
+}
+
 fzt() {
-    fztinternal ~/code $2
+    fztinternal ~/code $1
 }
 
 fztdj() {
@@ -65,6 +75,8 @@ fztinternal() {
     if [ -n "$2" ]
     then
         tmux send-keys -t $basename.0 "$2" C-m;
+    else
+        tmux send-keys -t $basename.0 "tnvim" C-m;
     fi
     tmux attach-session -t $basename;
 }
