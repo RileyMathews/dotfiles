@@ -1,2 +1,5 @@
 [font]
 normal = { family = "Hack Nerd Font", style = "Regular" }
+
+[colors.primary]
+background = "#000000"
