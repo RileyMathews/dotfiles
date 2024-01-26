@@ -206,5 +206,3 @@ bar {
 # Please remove the following exec line:
 #######################################################################
 exec i3-config-wizard
-
-bindsym Mod1+t exec ~/alacritty/bin/alacritty
