@@ -10,6 +10,7 @@ fi
 
 
 for file in ~/zshrc/*; do
+    echo $file
     if [ "$(basename $file)" != "init.sh" ]; then
         source $file
     fi
