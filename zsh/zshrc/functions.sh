@@ -22,11 +22,11 @@ tdjango() {
     run_command_in_pane "psh";
     run_command_in_pane "nvim .";
     
-    tmux split-window -v -p 20;
+    tmux split-window -v -l 20%;
     run_command_in_pane "psh";
     run_command_in_pane "./manage.py runserver";
 
-    tmux split-window -h -p 50;
+    tmux split-window -h -l 50%;
     run_command_in_pane "psh";
 
     tmux select-pane -t $current_window.0;
@@ -37,10 +37,10 @@ trust() {
 
     run_command_in_pane "nvim .";
     
-    tmux split-window -v -p 20;
+    tmux split-window -v -l 20%;
     run_command_in_pane "cargo watch -x run -w src";
 
-    tmux split-window -h -p 50;
+    tmux split-window -h -l 50%;
 
     tmux select-pane -t $current_window.0;
 }
@@ -50,7 +50,7 @@ tnvim() {
 
     run_command_in_pane "nvim .";
     
-    tmux split-window -v -p 20;
+    tmux split-window -v -l 20%;
 
     tmux select-pane -t $current_window.0;
 }
