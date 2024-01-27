@@ -12,7 +12,14 @@ return {
                 null_ls.builtins.formatting.djlint,
                 null_ls.builtins.formatting.prettier,
                 null_ls.builtins.formatting.erb_lint,
+                null_ls.builtins.formatting.rubocop,
+                null_ls.builtins.diagnostics.rubocop,
 			},
+
 		})
+
+        local function format()
+            vim.lsp.buf.format({ timeout_ms = 2000 })
+        end
 	end,
 }
