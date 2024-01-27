@@ -14,3 +14,5 @@ for file in ~/zshrc/*; do
         source $file
     fi
 done
+
+eval "$(starship init zsh)"

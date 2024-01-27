@@ -197,3 +197,9 @@ else
     echo "installing pyenv to $PYENV_INSTALL_PATH..."
     git clone https://github.com/pyenv/pyenv.git $PYENV_INSTALL_PATH
 fi
+
+if command_installed "starship"; then
+    echo "starship found"
+else
+    curl -sS https://starship.rs/install.sh | sh
+fi
