@@ -109,6 +109,7 @@ TMUX_INSTALL_PATH="$HOME/.local"
 TMUX_SOURCE_PATH="$HOME/tmux-src"
 ALACRITTY_SOURCE_PATH="$HOME/alacritty-src"
 ALACRITTY_INSTALL_PATH="$HOME/.local"
+NVM_SOURCE_PATH="$HOME/.nvm"
 
 if [[ "$*" == *"--reinstall"* ]]; then
     echo "Reinstalling..."
@@ -202,4 +203,10 @@ if command_installed "starship"; then
     echo "starship found"
 else
     curl -sS https://starship.rs/install.sh | sh
+fi
+
+if directory_present "$NVM_SOURCE_PATH"; then
+    echo "nvm found"
+else
+    git clone https://github.com/nvim-sh/nvm ~/.nvm
 fi
