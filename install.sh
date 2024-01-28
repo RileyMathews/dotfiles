@@ -131,6 +131,10 @@ if [[ "$*" == *"--reinstall"* ]]; then
     rm -rf $PYENV_INSTALL_PATH
     echo "removing tpm"
     rm -rf $TPM_INSTALL_PATH
+
+    echo "removing nvm"
+    rm -rf $NVM_SOURCE_PATH
+
 fi
 
 if command_installed "alacritty"; then
