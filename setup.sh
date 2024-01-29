@@ -8,6 +8,7 @@ rm -rf ~/zshrc
 rm -rf ~/.config/i3
 rm -rf ~/.config/alacritty
 rm -rf ~/.config/starship.toml
+rm -rf ~/.Xresources
 
 echo "adding symlinks"
 ln -s `pwd`/tmux/.tmux.conf ~/.tmux.conf
@@ -19,3 +20,4 @@ ln -s `pwd`/i3/config ~/.config/i3/config
 mkdir -p ~/.config/alacritty
 ln -s `pwd`/alacritty/alacritty.toml ~/.config/alacritty/alacritty.toml
 ln -s `pwd`/starship/starship.toml ~/.config/starship.toml
+ln -s `pwd`/x11/.Xresources ~/.Xresources
