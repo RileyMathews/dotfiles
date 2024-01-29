@@ -39,7 +39,7 @@ set $crust     #11111b
 
 # Font for window titles. Will also be used by the bar unless a different font
 # is used in the bar {} block below.
-font pango:monospace 8
+font pango:Hack Nerd Font 10 
 
 # This font is widely installed, provides lots of unicode glyphs, right-to-left
 # text rendering and scalability on retina/hidpi displays (thanks to pango).
@@ -82,7 +82,7 @@ floating_modifier Mod1
 tiling_drag modifier titlebar
 
 # start a terminal
-bindsym Mod1+Return exec i3-sensible-terminal
+bindsym Mod1+Return exec alacritty 
 
 # kill focused window
 bindsym Mod1+Shift+q kill
@@ -217,10 +217,32 @@ mode "resize" {
 
 bindsym Mod1+r mode "resize"
 
-# Start i3bar to display a workspace bar (plus the system information i3status
-# finds out, if available)
+# Catppuccin theme
+# target                 title     bg    text   indicator  border
+client.focused           $lavender $base $text  $rosewater $lavender
+client.focused_inactive  $overlay0 $base $text  $rosewater $overlay0
+client.unfocused         $overlay0 $base $text  $rosewater $overlay0
+client.urgent            $peach    $base $peach $overlay0  $peach
+client.placeholder       $overlay0 $base $text  $overlay0  $overlay0
+client.background        $base
+
+# bar
 bar {
-        status_command i3status
+    font pango:Hack Nerd Font
+    separator_symbol "|"
+    colors {
+        background         $base
+        statusline         $green
+        separator          $blue
+        focused_statusline $text
+        active_workspace   $base $text $blue
+        focused_separator  $blue
+        focused_workspace  $base $base $green
+        active_workspace   $base $base $blue
+        inactive_workspace $base $base $surface1
+        urgent_workspace   $base $base $surface1
+        binding_mode       $base $base $surface1
+    }
 }
 
 #######################################################################
