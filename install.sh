@@ -17,6 +17,17 @@ is_mac() {
     fi
 }
 
+is_desktop_environment() {
+    if is_mac; then
+        return 0
+    fi
+    if [[ -n "$DESKTOP_SESSION" ]]; then
+        return 0
+    else
+        return 1
+    fi
+}
+
 command_installed() {
     if command -v "$1" > /dev/null 2>&1; then
         return 0
@@ -88,15 +99,6 @@ else
     exit 1
 fi
 
-if command_installed "rustup"; then
-    echo "rustup found, skipping installation"
-else
-    echo "installing rustup"
-    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-    export PATH="$HOME/.cargo/bin:$PATH"
-    rustup override set stable
-    rustup update stable
-fi
 
 export PATH="$HOME/.local/bin:$PATH"
 
@@ -141,18 +143,34 @@ if [[ "$*" == *"--reinstall"* ]]; then
 
 fi
 
-if command_installed "alacritty"; then
-    echo "alacritty found, not installing"
-else
-    git clone https://github.com/alacritty/alacritty $ALACRITTY_SOURCE_PATH
-    cd $ALACRITTY_SOURCE_PATH
-    cargo build --release
-    cp ./target/release/alacritty $ALACRITTY_INSTALL_PATH/bin
-    if is_mac; then
-        make app
-        cp -r target/release/osx/Alacritty.app /Applications/
+if is_desktop_environment; then
+    echo "Desktop environment detected..."
+    if command_installed "rustup"; then
+        echo "rustup found, skipping installation"
+    else
+        echo "installing rustup"
+        curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+        export PATH="$HOME/.cargo/bin:$PATH"
+        rustup override set stable
+        rustup update stable
     fi
+
+    if command_installed "alacritty"; then
+        echo "alacritty found, not installing"
+    else
+        git clone https://github.com/alacritty/alacritty $ALACRITTY_SOURCE_PATH
+        cd $ALACRITTY_SOURCE_PATH
+        cargo build --release
+        cp ./target/release/alacritty $ALACRITTY_INSTALL_PATH/bin
+        if is_mac; then
+            make app
+            cp -r target/release/osx/Alacritty.app /Applications/
+        fi
+    fi
+else
+    echo "No desktop environment detected, skipping rustup and alacritty installation"
 fi
+
 
 if command_installed "tmux"; then
     echo "tmux found not installing"
