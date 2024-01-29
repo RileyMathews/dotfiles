@@ -52,8 +52,8 @@ vim.keymap.set('n', '<leader>4', function() ui.nav_file(4) end, { desc = "Harpoo
 vim.keymap.set("n", "<leader>gf", vim.lsp.buf.format, {})
 
 local telescope = require('telescope.builtin')
-vim.keymap.set('n', '<c-p>', telescope.git_files)
-vim.keymap.set('n', '<leader>ff', telescope.find_files, { desc = '[F]ind [F]iles' })
+vim.keymap.set('n', '<c-p>', telescope.find_files)
+vim.keymap.set('n', '<leader>ff', telescope.git_files, { desc = '[F]ind [F]iles' })
 vim.keymap.set('n', '<leader>fg', telescope.live_grep, { desc = '[F]ind with [G]rep' })
 
 -- tmux navigator
