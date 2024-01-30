@@ -1,5 +1,6 @@
 #! /usr/bin/env bash
 set -e
+SCRIPT_DIR=`pwd`
 
 is_linux() {
     if [[ "$(uname)" == "Linux" ]]; then
@@ -44,10 +45,6 @@ directory_present() {
     fi
 }
 
-linux_install() {
-    sudo apt install $1 -y
-}
-
 install_homebrew_if_missing() {
     if command_installed "brew"; then
         echo "brew found, skipping installation"
@@ -77,43 +74,19 @@ zsh_active() {
 
 if is_linux; then
     echo "Linux OS detected..."
-    linux_install "autotools-dev"
-    linux_install "automake"
-    linux_install "libevent-dev"
-    linux_install "ncurses-dev"
-    linux_install "build-essential"
-    linux_install "bison"
-    linux_install "byacc"
-    linux_install "pkg-config"
-    linux_install "libfreetype6-dev"
-    linux_install "libfontconfig1-dev"
-    linux_install "libxcb-xfixes0-dev"
-    linux_install "libxkbcommon-dev"
-    linux_install "python3"
-    linux_install "zsh"
-    linux_install "cmake"
-    linux_install "ninja-build"
-    linux_install "unzip"
-    linux_install "gettext"
-    linux_install "curl"
+    sudo apt install -y autotools-dev automake libevent-dev ncurses-dev build-essential \
+                        bison byacc pkg-config libfreetype6-dev libfontconfig1-dev \
+                        libxcb-xfixes0-dev libxkbcommon-dev python3 zsh cmake ninja-build \
+                        unzip gettext curl
 
     # dependencies for rofi, do not install
     # on servers
     if is_desktop_environment; then
-        linux_install "flex"
-        linux_install "libglib2.0-dev"
-        linux_install "libxcb-util-dev"
-        linux_install "libxcb-ewmh-dev"
-        linux_install "libxcb-icccm4-dev"
-        linux_install "libxcb-cursor-dev"
-        linux_install "libxcb-imdkit-dev"
-        linux_install "libxcb-xkb-dev"
-        linux_install "libxcb-randr0-dev"
-        linux_install "libxcb-xinerama0-dev"
-        linux_install "libxkbcommon-x11-dev"
-        linux_install "libpango1.0-dev"
-        linux_install "libstartup-notification0-dev"
-        linux_install "libgdk-pixbuf-2.0-dev"
+        sudo apt install -y flex libglib2.0-dev libxcb-util-dev libxcb-ewmh-dev \
+                            libxcb-icccm4-dev libxcb-cursor-dev libxcb-imdkit-dev \
+                            libxcb-xkb-dev libxcb-randr0-dev libxcb-ximerama0-dev \
+                            libxkbcommon-x11-dev libpango1.0-dev libstartup-notification0-dev \
+                            libgdk-pixbuf-2.0-dev
     fi
 elif is_mac; then
     echo "MacOS detected..."
@@ -278,7 +251,7 @@ fi
 if command_installed "starship"; then
     echo "starship found"
 else
-    curl -sS https://starship.rs/install.sh | sh -s -- --bin-dir $STARSHIP_INSTALL_PATH
+    curl -sS https://starship.rs/install.sh | sh -s -- -y --bin-dir $STARSHIP_INSTALL_PATH
 fi
 
 if directory_present "$NVM_SOURCE_PATH"; then
@@ -296,16 +269,47 @@ else
     git clone https://github.com/zsh-users/zsh-syntax-highlighting.git $ZSH_SYNTAX_HIGHLIGTING_DIRECTORY
 fi
 
-if zsh_active; then
-    echo "zsh already default shell"
-else
-    echo "setting zsh as default shell"
-    chsh -s $(which zsh)
-fi
-
 if directory_present "$HOME/.oh-my-zsh"; then
     echo "oh my zsh found"
 else
     echo "installing oh my zsh"
     sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
 fi
+
+cd $SCRIPT_DIR
+echo `pwd`
+
+echo "removing existing links"
+rm -rf ~/.tmux.conf
+rm -rf ~/.config/nvim
+rm -rf ~/.zshrc
+rm -rf ~/zshrc
+rm -rf ~/.config/i3
+rm -rf ~/.config/alacritty
+rm -rf ~/.config/starship.toml
+rm -rf ~/.Xresources
+rm -rf ~/.Xsessionrc
+rm -rf ~/.config/rofi
+
+if directory_present ~/.config; then
+    echo "config directory already present"
+else
+    echo "creating config directory"
+    mkdir ~/.config
+fi
+
+echo "adding symlinks"
+ln -s `pwd`/tmux/.tmux.conf ~/.tmux.conf
+ln -s `pwd`/nvim ~/.config/nvim
+ln -s `pwd`/zsh/.zshrc ~/.zshrc
+ln -s `pwd`/zsh/zshrc ~/zshrc
+mkdir -p ~/.config/i3
+ln -s `pwd`/i3/config ~/.config/i3/config
+mkdir -p ~/.config/alacritty
+ln -s `pwd`/alacritty/alacritty.toml ~/.config/alacritty/alacritty.toml
+ln -s `pwd`/starship/starship.toml ~/.config/starship.toml
+ln -s `pwd`/x11/.Xresources ~/.Xresources
+ln -s `pwd`/x11/.Xsessionrc ~/.Xsessionrc
+ln -s `pwd`/rofi ~/.config/rofi
+
+echo "All done. You might need to change your shell to zsh and restart to see all changes"

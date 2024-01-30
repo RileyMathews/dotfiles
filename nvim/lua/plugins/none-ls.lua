@@ -17,9 +17,5 @@ return {
 			},
 
 		})
-
-        local function format()
-            vim.lsp.buf.format({ timeout_ms = 2000 })
-        end
 	end,
 }
