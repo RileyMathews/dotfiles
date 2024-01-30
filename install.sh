@@ -83,6 +83,25 @@ if is_linux; then
     linux_install "libxcb-xfixes0-dev"
     linux_install "libxkbcommon-dev"
     linux_install "python3"
+
+    # dependencies for rofi, do not install
+    # on servers
+    if is_desktop_environment; then
+        linux_install "flex"
+        linux_install "libglib2.0-dev"
+        linux_install "libxcb-util-dev"
+        linux_install "libxcb-ewmh-dev"
+        linux_install "libxcb-icccm4-dev"
+        linux_install "libxcb-cursor-dev"
+        linux_install "libxcb-imdkit-dev"
+        linux_install "libxcb-xkb-dev"
+        linux_install "libxcb-randr0-dev"
+        linux_install "libxcb-xinerama0-dev"
+        linux_install "libxkbcommon-x11-dev"
+        linux_install "libpango1.0-dev"
+        linux_install "libstartup-notification0-dev"
+        linux_install "libgdk-pixbuf-2.0-dev"
+    fi
 elif is_mac; then
     echo "MacOS detected..."
     install_homebrew_if_missing
@@ -113,6 +132,7 @@ ALACRITTY_SOURCE_PATH="$HOME/alacritty-src"
 ALACRITTY_INSTALL_PATH="$HOME/.local"
 NVM_SOURCE_PATH="$HOME/.nvm"
 STARSHIP_INSTALL_PATH="$HOME/.local/bin"
+ROFI_INSTALL_PATH="$HOME/.local"
 
 if [[ "$*" == *"--reinstall"* ]]; then
     echo "Reinstalling..."
@@ -166,6 +186,22 @@ if is_desktop_environment; then
             make app
             cp -r target/release/osx/Alacritty.app /Applications/
         fi
+    fi
+
+    # install rofi
+    if command_installed "rofi"; then
+        echo "rofi already found"
+    else
+        echo "installing rofi"
+        cd ~
+        mkdir rofi-release && cd rofi-release
+        curl -LO https://github.com/davatorium/rofi/releases/download/1.7.5/rofi-1.7.5.tar.gz
+        tar -xzvf rofi-1.7.5.tar.gz
+        cd rofi-1.7.5
+        mkdir build && cd build
+        ../configure --prefix=$ROFI_INSTALL_PATH
+        make
+        make install
     fi
 else
     echo "No desktop environment detected, skipping rustup and alacritty installation"
