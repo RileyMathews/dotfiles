@@ -136,6 +136,13 @@ else
     chsh -s $(which zsh)
 fi
 
+if directory_present "$HOME/.oh-my-zsh"; then
+    echo "oh my zsh found"
+else
+    echo "installing oh my zsh"
+    sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+fi
+
 
 export PATH="$HOME/.local/bin:$PATH"
 
