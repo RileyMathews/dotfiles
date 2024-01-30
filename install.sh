@@ -158,6 +158,7 @@ ALACRITTY_INSTALL_PATH="$HOME/.local"
 NVM_SOURCE_PATH="$HOME/.nvm"
 STARSHIP_INSTALL_PATH="$HOME/.local/bin"
 ROFI_INSTALL_PATH="$HOME/.local"
+LOCAL_SHARE_DIR="$HOME/.local/share"
 
 if [[ "$*" == *"--reinstall"* ]]; then
     echo "Reinstalling..."
@@ -296,4 +297,12 @@ if directory_present "$NVM_SOURCE_PATH"; then
     echo "nvm found"
 else
     git clone https://github.com/nvim-sh/nvm ~/.nvm
+fi
+
+ZSH_SYNTAX_HIGHLIGTING_DIRECTORY=$LOCAL_SHARE_DIR/zsh-syntax-highlighting
+if directory_present $ZSH_SYNTAX_HIGHLIGTING_DIRECTORY; then
+    echo "zsh syntax highlighting found"
+else
+    echo "installing zsh syntax highligting plugin"
+    git clone https://github.com/zsh-users/zsh-syntax-highlighting.git $ZSH_SYNTAX_HIGHLIGTING_DIRECTORY
 fi
