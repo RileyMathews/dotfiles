@@ -71,6 +71,15 @@ macos_install() {
     fi
 }
 
+
+zsh_active() {
+    if echo $SHELL | grep -q 'zsh'; then
+        return 0
+    else
+        return 1
+    fi
+}
+
 if is_linux; then
     echo "Linux OS detected..."
     linux_install "libevent-dev"
@@ -83,6 +92,7 @@ if is_linux; then
     linux_install "libxcb-xfixes0-dev"
     linux_install "libxkbcommon-dev"
     linux_install "python3"
+    linux_install "zsh"
 
     # dependencies for rofi, do not install
     # on servers
@@ -113,9 +123,17 @@ elif is_mac; then
     macos_install "ncurses"
     macos_install "pkg-config"
     macos_install "automake"
+    macos_install "zsh"
 else
     echo "could not determine OS. Exiting."
     exit 1
+fi
+
+if zsh_active; then
+    echo "zsh already default shell"
+else
+    echo "setting zsh as default shell"
+    chsh -s $(which zsh)
 fi
 
 
