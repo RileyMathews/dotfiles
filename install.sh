@@ -82,6 +82,9 @@ zsh_active() {
 
 if is_linux; then
     echo "Linux OS detected..."
+    linux_install "autotools-dev"
+    linux_install "automake"
+    linux_install "libncurses-dev"
     linux_install "libevent-dev"
     linux_install "ncurses-dev"
     linux_install "build-essential"
