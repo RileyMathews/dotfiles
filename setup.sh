@@ -12,6 +12,8 @@ rm -rf ~/.Xresources
 rm -rf ~/.Xsessionrc
 rm -rf ~/.config/rofi
 
+mkdir ~/.config
+
 echo "adding symlinks"
 ln -s `pwd`/tmux/.tmux.conf ~/.tmux.conf
 ln -s `pwd`/nvim ~/.config/nvim

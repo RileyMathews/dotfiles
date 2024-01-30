@@ -45,12 +45,7 @@ directory_present() {
 }
 
 linux_install() {
-    if dpkg -l $1 > /dev/null 2>&1; then
-        echo "$1 already installed"
-    else
-        echo "installing $1"
-        sudo apt install $1 -y
-    fi
+    sudo apt install $1 -y
 }
 
 install_homebrew_if_missing() {
@@ -84,11 +79,11 @@ if is_linux; then
     echo "Linux OS detected..."
     linux_install "autotools-dev"
     linux_install "automake"
-    linux_install "libncurses-dev"
     linux_install "libevent-dev"
     linux_install "ncurses-dev"
     linux_install "build-essential"
     linux_install "bison"
+    linux_install "byacc"
     linux_install "pkg-config"
     linux_install "libfreetype6-dev"
     linux_install "libfontconfig1-dev"
@@ -96,6 +91,11 @@ if is_linux; then
     linux_install "libxkbcommon-dev"
     linux_install "python3"
     linux_install "zsh"
+    linux_install "cmake"
+    linux_install "ninja-build"
+    linux_install "unzip"
+    linux_install "gettext"
+    linux_install "curl"
 
     # dependencies for rofi, do not install
     # on servers
@@ -131,21 +131,6 @@ else
     echo "could not determine OS. Exiting."
     exit 1
 fi
-
-if zsh_active; then
-    echo "zsh already default shell"
-else
-    echo "setting zsh as default shell"
-    chsh -s $(which zsh)
-fi
-
-if directory_present "$HOME/.oh-my-zsh"; then
-    echo "oh my zsh found"
-else
-    echo "installing oh my zsh"
-    sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
-fi
-
 
 export PATH="$HOME/.local/bin:$PATH"
 
@@ -299,7 +284,8 @@ fi
 if directory_present "$NVM_SOURCE_PATH"; then
     echo "nvm found"
 else
-    git clone https://github.com/nvim-sh/nvm ~/.nvm
+    echo "install nvm"
+    git clone https://github.com/nvm-sh/nvm ~/.nvm
 fi
 
 ZSH_SYNTAX_HIGHLIGTING_DIRECTORY=$LOCAL_SHARE_DIR/zsh-syntax-highlighting
@@ -308,4 +294,18 @@ if directory_present $ZSH_SYNTAX_HIGHLIGTING_DIRECTORY; then
 else
     echo "installing zsh syntax highligting plugin"
     git clone https://github.com/zsh-users/zsh-syntax-highlighting.git $ZSH_SYNTAX_HIGHLIGTING_DIRECTORY
+fi
+
+if zsh_active; then
+    echo "zsh already default shell"
+else
+    echo "setting zsh as default shell"
+    chsh -s $(which zsh)
+fi
+
+if directory_present "$HOME/.oh-my-zsh"; then
+    echo "oh my zsh found"
+else
+    echo "installing oh my zsh"
+    sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
 fi
