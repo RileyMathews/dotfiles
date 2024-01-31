@@ -82,6 +82,7 @@ elif is_mac; then
     echo "MacOS detected..."
     install_homebrew_if_missing
     brew install ninja cmake gettext bison libevent ncurses pkg-config automake zsh
+    brew install --no-quarantine --cask nikitabobko/tap/aerospace
 else
     echo "could not determine OS. Exiting."
     exit 1
@@ -274,6 +275,7 @@ rm -rf ~/.config/starship.toml
 rm -rf ~/.Xresources
 rm -rf ~/.Xsessionrc
 rm -rf ~/.config/rofi
+rm -rf ~/.config/aerospace
 
 if directory_present ~/.config; then
     echo "config directory already present"
@@ -295,5 +297,6 @@ ln -s `pwd`/starship/starship.toml ~/.config/starship.toml
 ln -s `pwd`/x11/.Xresources ~/.Xresources
 ln -s `pwd`/x11/.Xsessionrc ~/.Xsessionrc
 ln -s `pwd`/rofi ~/.config/rofi
+ln -s `pwd`/aerospace ~/.config/aerospace
 
 echo "All done. You might need to change your shell to zsh and restart to see all changes"
