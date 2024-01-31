@@ -81,6 +81,7 @@ index = 17
 color = "#F5E0DC"
 
 [keyboard]
+# linux already uses this binding but defining it explicitly so it also works on macos.
 bindings = [
     { key = "c", mods = "Control | Shift", action="Copy" },
     { key = "v", mods = "Control | Shift", action="Paste" }
