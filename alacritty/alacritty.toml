@@ -80,3 +80,8 @@ color = "#FAB387"
 index = 17
 color = "#F5E0DC"
 
+[keyboard]
+bindings = [
+    { key = "c", mods = "Control | Shift", action="Copy" },
+    { key = "v", mods = "Control | Shift", action="Paste" }
+]
