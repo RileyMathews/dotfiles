@@ -54,6 +54,8 @@ cmd-shift-8 = 'move-node-to-workspace 8'
 cmd-shift-9 = 'move-node-to-workspace 9'
 cmd-shift-0 = 'move-node-to-workspace 10'
 
+cmd-shift-n = 'move-workspace-to-monitor --wrap-around next'
+
 alt-shift-c = 'reload-config'
 
 alt-r = 'mode resize'
