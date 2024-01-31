@@ -54,16 +54,6 @@ install_homebrew_if_missing() {
     fi
 }
 
-macos_install() {
-    if brew list $1 > /dev/null 2>&1; then
-        echo "$1 already installed"
-    else
-        echo "installing $1"
-        brew install $1
-    fi
-}
-
-
 zsh_active() {
     if echo $SHELL | grep -q 'zsh'; then
         return 0
@@ -91,15 +81,7 @@ if is_linux; then
 elif is_mac; then
     echo "MacOS detected..."
     install_homebrew_if_missing
-    macos_install "ninja"
-    macos_install "cmake"
-    macos_install "gettext"
-    macos_install "bison"
-    macos_install "libevent"
-    macos_install "ncurses"
-    macos_install "pkg-config"
-    macos_install "automake"
-    macos_install "zsh"
+    brew install ninja cmake gettext bison libevent ncurses pkg-config automake zsh
 else
     echo "could not determine OS. Exiting."
     exit 1
