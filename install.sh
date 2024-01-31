@@ -157,20 +157,22 @@ if is_desktop_environment; then
         fi
     fi
 
-    # install rofi
-    if command_installed "rofi"; then
-        echo "rofi already found"
-    else
-        echo "installing rofi"
-        cd ~
-        mkdir rofi-release && cd rofi-release
-        curl -LO https://github.com/davatorium/rofi/releases/download/1.7.5/rofi-1.7.5.tar.gz
-        tar -xzvf rofi-1.7.5.tar.gz
-        cd rofi-1.7.5
-        mkdir build && cd build
-        ../configure --prefix=$ROFI_INSTALL_PATH
-        make
-        make install
+    if is_linux; then
+        # install rofi
+        if command_installed "rofi"; then
+            echo "rofi already found"
+        else
+            echo "installing rofi"
+            cd ~
+            mkdir rofi-release && cd rofi-release
+            curl -LO https://github.com/davatorium/rofi/releases/download/1.7.5/rofi-1.7.5.tar.gz
+            tar -xzvf rofi-1.7.5.tar.gz
+            cd rofi-1.7.5
+            mkdir build && cd build
+            ../configure --prefix=$ROFI_INSTALL_PATH
+            make
+            make install
+        fi
     fi
 else
     echo "No desktop environment detected, skipping rustup and alacritty installation"
