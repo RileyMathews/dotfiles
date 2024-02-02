@@ -95,6 +95,9 @@ bindsym Mod1+space exec "rofi -show drun"
 # .desktop file. It is a wrapper around dmenu, so you need that installed.
 # bindsym Mod1+d exec --no-startup-id i3-dmenu-desktop
 
+# move displays
+bindsym Mod1+Shift+n move container to output right
+
 # change focus
 bindsym Mod1+$left focus left
 bindsym Mod1+$down focus down
