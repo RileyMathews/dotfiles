@@ -16,17 +16,13 @@ run_command_in_pane() {
     tmux send-keys -t $current_window.$current_pane "$1" C-m;
 }
 
-tdjango() {
+_tpoetry() {
     current_window=$(get_current_tmux_window);
 
     run_command_in_pane "psh";
     run_command_in_pane "nvim .";
     
     tmux split-window -v -l 20%;
-    run_command_in_pane "psh";
-    run_command_in_pane "./manage.py runserver";
-
-    tmux split-window -h -l 50%;
     run_command_in_pane "psh";
 
     tmux select-pane -t $current_window.0;
@@ -59,8 +55,8 @@ fzt() {
     fztinternal ~/code $1
 }
 
-fztdj() {
-    fzt "tdjango";
+fztp() {
+    fzt "_tpoetry";
 }
 
 fztrust() {
