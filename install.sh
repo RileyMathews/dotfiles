@@ -74,7 +74,7 @@ if is_linux; then
     if is_desktop_environment; then
         sudo apt install -y flex libglib2.0-dev libxcb-util-dev libxcb-ewmh-dev \
                             libxcb-icccm4-dev libxcb-cursor-dev libxcb-imdkit-dev \
-                            libxcb-xkb-dev libxcb-randr0-dev libxcb-ximerama0-dev \
+                            libxcb-xkb-dev libxcb-randr0-dev \
                             libxkbcommon-x11-dev libpango1.0-dev libstartup-notification0-dev \
                             libgdk-pixbuf-2.0-dev
     fi
