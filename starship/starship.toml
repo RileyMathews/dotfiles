@@ -1,5 +1,5 @@
 palette = "catppuccin_mocha"
-format = '''[](fg:lavender)$directory[](fg:lavender bg:mauve)$git_branch$git_status
+format = '''[](fg:lavender)$directory[](fg:lavender bg:mauve)$git_branch$git_status[](fg:mauve)
 $character'''
 
 [character]
@@ -21,7 +21,7 @@ format = '[ $symbol $branch ]($style)'
 
 [git_status]
 style = "bg:mauve fg:crust"
-format = '[$all_status$ahead_behind ]($style)[](fg:mauve)'
+format = '[$all_status$ahead_behind ]($style)'
 
 [docker_context]
 disabled = true
