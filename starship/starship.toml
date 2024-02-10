@@ -1,5 +1,38 @@
 palette = "catppuccin_mocha"
+format = '''[](fg:lavender)$directory[](fg:lavender bg:mauve)$git_branch$git_status
+$character'''
+
+[character]
+# Note the use of Catppuccin color 'maroon'
+success_symbol = "[❯](green)"
+error_symbol = "[❯](red)"
+vimcmd_symbol = "[❮](green)"
+
+[directory]
+format = "[ $path ](fg:crust bg:lavender)"
+
 [aws]
+disabled = true
+
+[git_branch]
+symbol = ""
+style = "bg:mauve fg:crust"
+format = '[ $symbol $branch ]($style)'
+
+[git_status]
+style = "bg:mauve fg:crust"
+format = '[$all_status$ahead_behind ]($style)[](fg:mauve)'
+
+[docker_context]
+disabled = true
+
+[nodejs]
+disabled = true
+
+[package]
+disabled = true
+
+[python]
 disabled = true
 
 [palettes.catppuccin_mocha]
