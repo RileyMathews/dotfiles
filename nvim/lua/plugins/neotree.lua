@@ -8,7 +8,16 @@ return {
       -- "3rd/image.nvim", -- Optional image support in preview window: See `# Preview Mode` for more information
     },
     config = function ()
+        local commands = require("neo-tree.command")
         require("neo-tree").setup({
+            event_handlers = {
+                {
+                    event = "file_opened",
+                    handler = function()
+                        commands.execute({ action = 'close' })
+                    end
+                }
+            },
             filesystem = {
                 filtered_items = {
                     visible = true
