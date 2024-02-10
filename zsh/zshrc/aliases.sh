@@ -13,3 +13,6 @@ alias dcb='docker compose build'
 alias dcud='docker compose up -d'
 alias dcd='docker compose down'
 alias dclf='docker compose logs -f'
+
+alias fd='cd $(find * -type d | fzf)'
+alias fh='cd ~ && cd $(find * -type d -maxdepth 2 | fzf)'
