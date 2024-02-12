@@ -37,10 +37,6 @@ vim.opt.rtp:prepend(lazypath)
 require("lazy").setup("plugins")
 require("rileymathews")
 
-vim.api.nvim_create_autocmd("Filetype", {
-    pattern = "typescript",
-    command = "setlocal shiftwidth=2 tabstop=2 softtabstop=2",
-})
 -- treesitter parser does not handle ruby very well
 -- this change is a bandaid that fixes an issue
 -- where treesitter will outdent your code 
