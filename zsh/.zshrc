@@ -17,3 +17,4 @@ done
 
 eval "$(starship init zsh)"
 source $HOME/.local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+

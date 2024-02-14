@@ -64,7 +64,7 @@ fztrust() {
 }
 
 fztinternal() {
-    directory=$(find $1 -type d -maxdepth 1 | fzf);
+    directory=$(find $1 -maxdepth 1 -type d | fzf);
     basename=`basename $directory`;
     tmux new-session -s $basename -c $directory -d;
     # check if argument is passed
