@@ -62,8 +62,8 @@ local custom = require("rileymathews.functions")
 vim.keymap.set("n", "<leader>gf", custom.format, {})
 
 local telescope = require("telescope.builtin")
-vim.keymap.set("n", "<c-p>", telescope.find_files)
-vim.keymap.set("n", "<leader>ff", telescope.git_files, { desc = "[F]ind [F]iles" })
+vim.keymap.set("n", "<c-p>", telescope.git_files)
+vim.keymap.set("n", "<leader>ff", telescope.find_files, { desc = "[F]ind [F]iles" })
 vim.keymap.set("n", "<leader>fg", telescope.live_grep, { desc = "[F]ind with [G]rep" })
 
 -- tmux navigator
