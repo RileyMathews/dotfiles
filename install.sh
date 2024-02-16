@@ -76,12 +76,12 @@ if is_linux; then
                             libxcb-icccm4-dev libxcb-cursor-dev libxcb-imdkit-dev \
                             libxcb-xkb-dev libxcb-randr0-dev \
                             libxkbcommon-x11-dev libpango1.0-dev libstartup-notification0-dev \
-                            libgdk-pixbuf-2.0-dev
+                            libgdk-pixbuf-2.0-dev zoxide
     fi
 elif is_mac; then
     echo "MacOS detected..."
     install_homebrew_if_missing
-    brew install ninja cmake gettext bison libevent ncurses pkg-config automake zsh
+    brew install ninja cmake gettext bison libevent ncurses pkg-config automake zsh zoxide
     brew install --no-quarantine --cask nikitabobko/tap/aerospace
 else
     echo "could not determine OS. Exiting."
