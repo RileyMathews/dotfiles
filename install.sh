@@ -69,6 +69,8 @@ if is_linux; then
                         libxcb-xfixes0-dev libxkbcommon-dev python3 zsh cmake ninja-build \
                         unzip gettext curl
 
+    curl -sS https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | bash
+
     # dependencies for rofi, do not install
     # on servers
     if is_desktop_environment; then
