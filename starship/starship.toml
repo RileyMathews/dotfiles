@@ -1,5 +1,5 @@
 palette = "catppuccin_mocha"
-format = '''[](fg:lavender)$directory[](fg:lavender bg:mauve)$git_branch$git_status[](fg:mauve)
+format = '''[](fg:lavender)$directory[](fg:lavender bg:mauve)$git_branch$git_status[](fg:mauve bg:green)$python[](fg:green)
 $character'''
 
 [character]
@@ -33,7 +33,9 @@ disabled = true
 disabled = true
 
 [python]
-disabled = true
+style = "bg:green fg:crust"
+format = "[ ${symbol} ${version} ${virtualenv} ]($style)"
+symbol = ""
 
 [palettes.catppuccin_mocha]
 rosewater = "#f5e0dc"
