@@ -62,8 +62,9 @@ local custom = require("rileymathews.functions")
 vim.keymap.set("n", "<leader>gf", custom.format, {})
 
 local telescope = require("telescope.builtin")
-vim.keymap.set("n", "<c-p>", telescope.git_files)
-vim.keymap.set("n", "<leader>ff", telescope.find_files, { desc = "[F]ind [F]iles" })
+vim.keymap.set("n", "<c-p>", function()
+    telescope.find_files { find_command = { "rg", "--files", "--iglob", "!.git", "--hidden" } }
+end)
 vim.keymap.set("n", "<leader>fg", telescope.live_grep, { desc = "[F]ind with [G]rep" })
 
 -- tmux navigator
@@ -88,7 +89,7 @@ P.on_attach = function(_, bufnr)
     nmap("gd", require("telescope.builtin").lsp_definitions, "[G]oto to [D]efinition")
     nmap("gr", require("telescope.builtin").lsp_references, "[G]oto to [R]eferences")
     nmap("gi", require("telescope.builtin").lsp_implementations, "[G]oto to [I]mplementation")
-    nmap("<leader>fs", require("telescope.builtin").lsp_dynamic_workspace_symbols, "[F]ind [S]ymbols")
+    nmap("<leader>fs", require("telescope.builtin").lsp_document_symbols, "[F]ind [S]ymbols")
 
     nmap("<leader>vd", vim.lsp.buf.hover, "[V]iew [D]ocumentation")
     nmap("<leader>vs", vim.lsp.buf.signature_help, "[V]iew [S]ignature")
