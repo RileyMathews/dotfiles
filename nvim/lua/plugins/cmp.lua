@@ -31,7 +31,7 @@ return {
 				["<C-d>"] = cmp.mapping.scroll_docs(-4),
 				["<C-f>"] = cmp.mapping.scroll_docs(4),
 				["<C-Space>"] = cmp.mapping.complete({}),
-				["<CR>"] = cmp.mapping.confirm({}),
+				["<c-y>"] = cmp.mapping.confirm({ select = true }),
 			}),
 			sources = {
 				{ name = "nvim_lsp" },
