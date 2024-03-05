@@ -3,4 +3,6 @@ vim.filetype.add({
 		tera = "htmldjango",
 	},
 })
+vim.cmd.colorscheme("catppuccin")
+vim.opt.showmode = false
 require("rileymathews.keybindings")
