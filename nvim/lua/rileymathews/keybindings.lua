@@ -33,7 +33,6 @@ vim.keymap.set("n", "Q", "<nop>")
 vim.keymap.set("n", "<leader>x", "<cmd>!chmod +x %<CR>", { desc = "Make file e[x]ecutable" })
 
 -- linter hotkeys
-vim.keymap.set("n", "<leader>ve", vim.diagnostic.open_float, { desc = "[V]iew [E]rror" })
 vim.keymap.set("n", "[d", vim.diagnostic.goto_prev)
 vim.keymap.set("n", "]d", vim.diagnostic.goto_next)
 
@@ -45,21 +44,17 @@ vim.keymap.set("n", "<leader>ha", mark.add_file, { desc = "[H]arpoon [A]dd file"
 vim.keymap.set("n", "<leader>ht", ui.toggle_quick_menu, { desc = "[H]arpoon [T]oggle" })
 
 vim.keymap.set("n", "<leader>1", function()
-    ui.nav_file(1)
+	ui.nav_file(1)
 end, { desc = "Harpoon file [1]" })
 vim.keymap.set("n", "<leader>2", function()
-    ui.nav_file(2)
+	ui.nav_file(2)
 end, { desc = "Harpoon file [2]" })
 vim.keymap.set("n", "<leader>3", function()
-    ui.nav_file(3)
+	ui.nav_file(3)
 end, { desc = "Harpoon file [3]" })
 vim.keymap.set("n", "<leader>4", function()
-    ui.nav_file(4)
+	ui.nav_file(4)
 end, { desc = "Harpoon file [4]" })
-
--- none ls
-local custom = require("rileymathews.functions")
-vim.keymap.set("n", "<leader>gf", custom.format, {})
 
 -- tmux
 vim.keymap.set("n", "<c-h>", "<cmd>TmuxNavigateLeft<cr>")
@@ -82,36 +77,35 @@ vim.keymap.set("n", "<leader><leader>", builtin.buffers, { desc = "[ ] Find exis
 
 -- Slightly advanced example of overriding default behavior and theme
 vim.keymap.set("n", "<leader>/", function()
-    -- You can pass additional configuration to telescope to change theme, layout, etc.
-    builtin.current_buffer_fuzzy_find(require("telescope.themes").get_dropdown({
-        winblend = 10,
-        previewer = false,
-    }))
+	-- You can pass additional configuration to telescope to change theme, layout, etc.
+	builtin.current_buffer_fuzzy_find(require("telescope.themes").get_dropdown({
+		winblend = 10,
+		previewer = false,
+	}))
 end, { desc = "[/] Fuzzily search in current buffer" })
 
 -- Also possible to pass additional configuration options.
 --  See `:help telescope.builtin.live_grep()` for information about particular keys
 vim.keymap.set("n", "<leader>s/", function()
-    builtin.live_grep({
-        grep_open_files = true,
-        prompt_title = "Live Grep in Open Files",
-    })
+	builtin.live_grep({
+		grep_open_files = true,
+		prompt_title = "Live Grep in Open Files",
+	})
 end, { desc = "[S]earch [/] in Open Files" })
 
 -- Shortcut for searching your neovim configuration files
 vim.keymap.set("n", "<leader>sn", function()
-    builtin.find_files({ cwd = vim.fn.stdpath("config") })
+	builtin.find_files({ cwd = vim.fn.stdpath("config") })
 end, { desc = "[S]earch [N]eovim files" })
 
 -- document existing key chains
 require("which-key").register({
-    ["<leader>c"] = { name = "[C]ode", _ = "which_key_ignore" },
-    ["<leader>r"] = { name = "[R]ename", _ = "which_key_ignore" },
-    ["<leader>f"] = { name = "[F]ind", _ = "which_key_ignore" },
-    ["<leader>v"] = { name = "[V]iew", _ = "which_key_ignore" },
-    ["<leader>h"] = { name = "[H]arpoon", _ = "which_key_ignore" },
-    ["<leader>g"] = { name = "[G]oto", _ = "which_key_ignore" },
-    ["<leader>s"] = { name = "[S]earch", _ = "which_key_ignore" },
+	["<leader>c"] = { name = "[C]ode", _ = "which_key_ignore" },
+	["<leader>r"] = { name = "[R]ename", _ = "which_key_ignore" },
+	["<leader>d"] = { name = "[D]ocument", _ = "which_key_ignore" },
+	["<leader>h"] = { name = "[H]arpoon", _ = "which_key_ignore" },
+	["<leader>s"] = { name = "[S]earch", _ = "which_key_ignore" },
+	["<leader>w"] = { name = "[W]orkspace", _ = "which_key_ignore" },
 })
 
 -- return the map with on attach function
