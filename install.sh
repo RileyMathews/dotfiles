@@ -297,7 +297,7 @@ mkdir -p ~/.config/alacritty
 ln -s `pwd`/alacritty/alacritty.toml ~/.config/alacritty/alacritty.toml
 ln -s `pwd`/starship/starship.toml ~/.config/starship.toml
 ln -s `pwd`/x11/.Xresources ~/.Xresources
-ln -s `pwd`/x11/.Xsessionrc ~/.Xsessionrc
+ln -s `pwd`/x11/.xsessionrc ~/.xsessionrc
 ln -s `pwd`/rofi ~/.config/rofi
 ln -s `pwd`/aerospace ~/.config/aerospace
 
