@@ -3,6 +3,18 @@ return {
 		"catppuccin/nvim",
 		name = "catppuccin",
 		priority = 1000,
+		opts = {
+			integrations = {
+				harpoon = true,
+				gitsigns = true,
+				mason = true,
+				cmp = true,
+				neotree = true,
+				telescope = {
+					enabled = true,
+				},
+			},
+		},
 	},
 	{
 		"nvim-lualine/lualine.nvim",
