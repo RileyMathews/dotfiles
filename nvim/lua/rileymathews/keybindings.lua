@@ -1,6 +1,5 @@
 -- misc rebinds
 -- open neotree
-vim.keymap.set("n", "<leader>e", "<cmd>Neotree<cr>", { desc = "[E]xplore files" })
 vim.keymap.set("n", "<c-b>", "<cmd>Neotree toggle<cr>")
 
 -- move lines up and down
