@@ -8,7 +8,6 @@ return {
 	config = function()
 		require("dapui").setup()
 		require("dap-go").setup()
-		require("dap-python").setup()
 
 		local dap, dapui = require("dap"), require("dapui")
 
@@ -29,5 +28,27 @@ return {
 		vim.keymap.set("n", "<Leader>dc", ":DapContinue<CR>")
 		vim.keymap.set("n", "<Leader>dx", ":DapTerminate<CR>")
 		vim.keymap.set("n", "<Leader>do", ":DapStepOver<CR>")
+
+		dap.adapters.python = {
+			type = "executable",
+			command = "python",
+			args = { "-m", "debugpy.adapter" },
+		}
+
+		dap.configurations.python = {
+			{
+				type = "python",
+				request = "launch",
+				name = "Launch file",
+				program = "${file}",
+			},
+			{
+				type = "python",
+				request = "launch",
+				name = "Django",
+				program = vim.fn.getcwd() .. "/manage.py",
+				args = { "runserver", "--noreload" },
+			},
+		}
 	end,
 }
