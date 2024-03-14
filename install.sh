@@ -93,6 +93,7 @@ fi
 export PATH="$HOME/.local/bin:$PATH"
 
 NEOVIM_INSTALL_PATH="$HOME/.local"
+NEOVIM_VERSION="v0.9.5"
 NEOVIM_SOURCE_PATH="$HOME/.neovim-src"
 RBENV_INSTALL_PATH="$HOME/.rbenv"
 PYENV_INSTALL_PATH="$HOME/.pyenv"
@@ -204,12 +205,13 @@ else
     echo "nvim not found, installing"
     git clone https://github.com/neovim/neovim.git $NEOVIM_SOURCE_PATH
     cd $NEOVIM_SOURCE_PATH
+    git checkout $NEOVIM_VERSION
     rm -rf ./build/
-    make CMAKE_EXTRA_FLAGS="-DCMAKE_INSTALL_PREFIX=$NEOVIM_INSTALL_PATH"
+    make CMAKE_EXTRA_FLAGS="-DCMAKE_INSTALL_PREFIX=$NEOVIM_INSTALL_PATH" CMAKE_BUILD_TYPE=Release
     make install
     export PATH="$NEOVIM_INSTALL_PATH/bin:$PATH"
-    rm -rf ~/neovim-src
     cd ~
+    rm -rf ~/neovim-src
 fi
 
 export PATH="$RBENV_INSTALL_PATH/bin:$PATH"
@@ -266,39 +268,4 @@ fi
 cd $SCRIPT_DIR
 echo `pwd`
 
-echo "removing existing links"
-rm -rf ~/.tmux.conf
-rm -rf ~/.config/nvim
-rm -rf ~/.zshrc
-rm -rf ~/zshrc
-rm -rf ~/.config/i3
-rm -rf ~/.config/alacritty
-rm -rf ~/.config/starship.toml
-rm -rf ~/.Xresources
-rm -rf ~/.Xsessionrc
-rm -rf ~/.config/rofi
-rm -rf ~/.config/aerospace
-
-if directory_present ~/.config; then
-    echo "config directory already present"
-else
-    echo "creating config directory"
-    mkdir ~/.config
-fi
-
-echo "adding symlinks"
-ln -s `pwd`/tmux/.tmux.conf ~/.tmux.conf
-ln -s `pwd`/nvim ~/.config/nvim
-ln -s `pwd`/zsh/.zshrc ~/.zshrc
-ln -s `pwd`/zsh/zshrc ~/zshrc
-mkdir -p ~/.config/i3
-ln -s `pwd`/i3/config ~/.config/i3/config
-mkdir -p ~/.config/alacritty
-ln -s `pwd`/alacritty/alacritty.toml ~/.config/alacritty/alacritty.toml
-ln -s `pwd`/starship/starship.toml ~/.config/starship.toml
-ln -s `pwd`/x11/.Xresources ~/.Xresources
-ln -s `pwd`/x11/.xsessionrc ~/.xsessionrc
-ln -s `pwd`/rofi ~/.config/rofi
-ln -s `pwd`/aerospace ~/.config/aerospace
-
-echo "All done. You might need to change your shell to zsh and restart to see all changes"
+bash ./create_sym_links.sh
