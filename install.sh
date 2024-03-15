@@ -243,6 +243,12 @@ else
     curl -sS https://starship.rs/install.sh | sh -s -- -y --bin-dir $STARSHIP_INSTALL_PATH
 fi
 
+if command_installed "asdf"; then
+    echo "asdf found"
+else
+    git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.14.0
+fi
+
 if directory_present "$NVM_SOURCE_PATH"; then
     echo "nvm found"
 else
