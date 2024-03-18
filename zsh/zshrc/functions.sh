@@ -51,6 +51,14 @@ tnvim() {
     tmux select-pane -t $current_window.0;
 }
 
+sp1() {
+    current_window=$(get_current_tmux_window);
+    
+    tmux split-window -v -l 20%;
+
+    tmux select-pane -t $current_window.0;
+}
+
 fzt() {
     fztinternal ~/code $1
 }
