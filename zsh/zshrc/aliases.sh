@@ -16,3 +16,9 @@ alias dclf='docker compose logs -f'
 
 alias fd='cd $(find * -type d | fzf)'
 alias fh='cd ~ && cd $(find * -type d -maxdepth 2 | fzf)'
+
+alias gst='git status'
+alias gaa='git add .'
+alias gcmsg='git commit -m'
+
+alias l='ls -la'

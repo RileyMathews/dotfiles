@@ -1,5 +1,3 @@
-source $HOME/zshrc/init.sh
-
 # keep things like secret values and computer
 # specific settings in a non version controlled file
 secret_file="~/.zshrc.secret"

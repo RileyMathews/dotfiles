@@ -264,13 +264,6 @@ else
     git clone https://github.com/zsh-users/zsh-syntax-highlighting.git $ZSH_SYNTAX_HIGHLIGTING_DIRECTORY
 fi
 
-if directory_present "$HOME/.oh-my-zsh"; then
-    echo "oh my zsh found"
-else
-    echo "installing oh my zsh"
-    sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
-fi
-
 cd $SCRIPT_DIR
 echo `pwd`
 
