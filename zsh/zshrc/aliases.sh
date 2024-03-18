@@ -20,5 +20,7 @@ alias fh='cd ~ && cd $(find * -type d -maxdepth 2 | fzf)'
 alias gst='git status'
 alias gaa='git add .'
 alias gcmsg='git commit -m'
+alias gp='git push'
+alias gpsup='git push --set-upstream origin $(git branch --show-current)'
 
 alias l='ls -la'
