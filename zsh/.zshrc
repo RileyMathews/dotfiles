@@ -14,5 +14,4 @@ for file in ~/zshrc/*; do
 done
 
 eval "$(starship init zsh)"
-source $HOME/.local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-
+source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
