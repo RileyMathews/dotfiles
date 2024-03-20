@@ -22,5 +22,8 @@ alias gaa='git add .'
 alias gcmsg='git commit -m'
 alias gp='git push'
 alias gpsup='git push --set-upstream origin $(git branch --show-current)'
+alias gl='git pull'
+alias gco='git checkout'
+alias gcb='git checkout -b'
 
 alias l='ls -la'
