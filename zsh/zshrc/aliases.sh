@@ -25,5 +25,6 @@ alias gpsup='git push --set-upstream origin $(git branch --show-current)'
 alias gl='git pull'
 alias gco='git checkout'
 alias gcb='git checkout -b'
+alias gcm='git checkout main'
 
 alias l='ls -la'
