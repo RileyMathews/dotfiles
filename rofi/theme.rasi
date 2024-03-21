@@ -8,7 +8,7 @@
     fg-col2: #a6e3a1;
     grey: #6c7086;
 
-    width: 600;
+    width: 1200;
     font: "Hack Nerd Font 14";
 }
 
@@ -18,7 +18,7 @@ element-text, element-icon , mode-switcher {
 }
 
 window {
-    height: 360px;
+    height: 1000;
     border: 1px;
     border-color: @border-col;
     background-color: @bg-col;
@@ -52,11 +52,7 @@ entry {
 }
 
 listview {
-    border: 0px 0px 0px;
-    padding: 0px 0px 0px;
-    margin: 0px 0px 0px 0px;
     columns: 1;
-    lines: 5;
     background-color: @bg-col;
 }
 
@@ -66,6 +62,10 @@ element {
     text-color: @fg-col  ;
 }
 
+element-text {
+    vertical-align: 0.5;
+}
+
 element-icon {
     size: 25px;
 }
@@ -73,36 +73,5 @@ element-icon {
 element selected {
     background-color:  @selected-col ;
     text-color: @fg-col2  ;
-}
-
-mode-switcher {
-    spacing: 0;
-  }
-
-button {
-    padding: 10px;
-    background-color: @bg-col-light;
-    text-color: @grey;
-    vertical-align: 0.5; 
-    horizontal-align: 0.5;
-}
-
-button selected {
-  background-color: @bg-col;
-  text-color: @blue;
-}
-
-message {
-    background-color: @bg-col-light;
-    margin: 2px;
-    padding: 2px;
-    border-radius: 5px;
-}
-
-textbox {
-    padding: 6px;
-    margin: 20px 0px 0px 20px;
-    text-color: @blue;
-    background-color: @bg-col-light;
 }
 
