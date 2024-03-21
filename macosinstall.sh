@@ -2,6 +2,8 @@
 set -e
 SCRIPT_DIR=`pwd`
 
+LOCAL_SHARE_DIR="$HOME/.local/share"
+
 directory_present() {
     if [ -d "$1" ]; then
         return 0
@@ -36,8 +38,7 @@ brew install \
      rbenv \
      nvm \
      starship \
-     tmux \
-     zsh-syntax-highlighting
+     tmux
 brew install --no-quarantine --cask nikitabobko/tap/aerospace
 brew install --cask alacritty
 
@@ -49,6 +50,14 @@ if directory_present $TPM_INSTALL_PATH; then
 else
     echo "installing tpm..."
     git clone https://github.com/tmux-plugins/tpm $TPM_INSTALL_PATH
+fi
+
+ZSH_SYNTAX_HIGHLIGTING_DIRECTORY=$LOCAL_SHARE_DIR/zsh-syntax-highlighting
+if directory_present $ZSH_SYNTAX_HIGHLIGTING_DIRECTORY; then
+    echo "zsh syntax highlighting found"
+else
+    echo "installing zsh syntax highligting plugin"
+    git clone https://github.com/zsh-users/zsh-syntax-highlighting.git $ZSH_SYNTAX_HIGHLIGTING_DIRECTORY
 fi
 
 cd $SCRIPT_DIR
