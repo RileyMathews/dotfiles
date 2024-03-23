@@ -1,3 +1,4 @@
 xset s off
 xset dpms 0 0 0
 export PATH="$PATH:$HOME/.local/bin"
+feh --bg-scale ~/background.jpeg
