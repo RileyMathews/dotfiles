@@ -6,6 +6,7 @@ return {
 		pickers = {
 			find_files = {
 				hidden = true,
+				file_ignore_patterns = { "%.git/", "%.hg/", "%.svn/", "%.idea/", "%.vscode/", "%.DS_Store" },
 			},
 		},
 	},
