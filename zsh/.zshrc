@@ -4,6 +4,7 @@ secret_file="~/.zshrc.secret"
 secret_file_expanded="$(eval echo $secret_file)"
 
 unset SHELL
+export EDITOR="nvim"
 
 if [[ -e "$secret_file_expanded" ]]; then
     source "$secret_file_expanded"
