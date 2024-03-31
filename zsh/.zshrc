@@ -17,5 +17,18 @@ for file in ~/zshrc/*; do
     fi
 done
 
+# Start tmux session named 'default' if not already running
+if ! tmux has-session -t 'default' 2> /dev/null; then
+    tmux new-session -s 'default' -d
+fi
+
+# Attach to the 'default' session
+
+if [[ -z "${TMUX}" ]]; then
+    tmux attach -t 'default'
+else
+    echo 'already in tmux'
+fi
+
 eval "$(starship init zsh)"
 source $HOME/.local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh

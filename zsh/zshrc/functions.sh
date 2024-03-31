@@ -84,3 +84,13 @@ fztinternal() {
     fi
     tmux attach-session -t $basename;
 }
+
+tst() {
+    if [ -n "$1" ]
+    then
+        tmuxifier s $1
+    else
+        SESSION=`tmuxifier ls | fzf`
+        tmuxifier s $SESSION
+    fi
+}
