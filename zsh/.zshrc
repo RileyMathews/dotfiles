@@ -26,8 +26,6 @@ fi
 
 if [[ -z "${TMUX}" ]]; then
     tmux attach -t 'default'
-else
-    echo 'already in tmux'
 fi
 
 eval "$(starship init zsh)"
