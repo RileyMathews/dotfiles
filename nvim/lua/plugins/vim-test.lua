@@ -5,5 +5,6 @@ return {
 		vim.keymap.set("n", "<leader>tf", ":TestFile<CR>")
 		vim.keymap.set("n", "<leader>ts", ":TestSuite<CR>")
 		vim.keymap.set("n", "<leader>tl", ":TestLast<CR>")
+		vim.cmd("let test#strategy= 'vimux' ")
 	end,
 }
