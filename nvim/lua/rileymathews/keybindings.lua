@@ -105,6 +105,7 @@ require("which-key").register({
 	["<leader>h"] = { name = "[H]arpoon", _ = "which_key_ignore" },
 	["<leader>s"] = { name = "[S]earch", _ = "which_key_ignore" },
 	["<leader>w"] = { name = "[W]orkspace", _ = "which_key_ignore" },
+	["<leader>t"] = { name = "[T]est", _ = "which_key_ignore" },
 })
 
 -- return the map with on attach function

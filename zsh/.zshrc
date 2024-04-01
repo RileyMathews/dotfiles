@@ -4,6 +4,7 @@ secret_file="~/.zshrc.secret"
 secret_file_expanded="$(eval echo $secret_file)"
 
 unset SHELL
+export EDITOR="nvim"
 
 if [[ -e "$secret_file_expanded" ]]; then
     source "$secret_file_expanded"
@@ -15,6 +16,19 @@ for file in ~/zshrc/*; do
         source $file
     fi
 done
+
+# Start tmux session named 'default' if not already running
+if ! tmux has-session -t 'default' 2> /dev/null; then
+    tmux new-session -s 'default' -d
+fi
+
+# Attach to the 'default' session
+
+if [[ -z "${TMUX}" ]]; then
+    tmux attach -t 'default'
+else
+    echo 'already in tmux'
+fi
 
 eval "$(starship init zsh)"
 source $HOME/.local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
