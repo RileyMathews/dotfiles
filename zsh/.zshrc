@@ -1,10 +1,9 @@
 # keep things like secret values and computer
 # specific settings in a non version controlled file
-if [[ -n $DISPLAY ]]; then
+if [[ -n $DISPLAY ]] || [ "$(uname)" = "Darwin" ]; then
     secret_file="~/.zshrc.secret"
     secret_file_expanded="$(eval echo $secret_file)"
 
-    unset SHELL
     export EDITOR="nvim"
 
     if [[ -e "$secret_file_expanded" ]]; then
