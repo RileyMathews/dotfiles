@@ -14,9 +14,6 @@ rm -rf ~/zshrc
 rm -rf ~/.config/i3
 rm -rf ~/.config/alacritty
 rm -rf ~/.config/starship.toml
-rm -rf ~/.Xresources
-rm -rf ~/.xsessionrc
-rm -rf ~/.config/rofi
 rm -rf ~/.config/aerospace
 rm -rf ~/.config/i3status/config
 
@@ -39,9 +36,6 @@ ln -s `pwd`/i3status/config ~/.config/i3status/config
 mkdir -p ~/.config/alacritty
 ln -s `pwd`/alacritty/alacritty.toml ~/.config/alacritty/alacritty.toml
 ln -s `pwd`/starship/starship.toml ~/.config/starship.toml
-ln -s `pwd`/x11/.Xresources ~/.Xresources
-ln -s `pwd`/x11/.xsessionrc ~/.xsessionrc
-ln -s `pwd`/rofi ~/.config/rofi
 ln -s `pwd`/aerospace ~/.config/aerospace
 
 echo "All done. You might need to change your shell to zsh and restart to see all changes"
