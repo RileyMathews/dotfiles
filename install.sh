@@ -1,4 +1,4 @@
-#! /usr/bin/env bash
+#! zsh
 set -e
 SCRIPT_DIR=`pwd`
 
