@@ -36,7 +36,8 @@ inputbar {
 }
 
 prompt {
-    enabled: false;
+    enabled: true;
+    background-color: #89b4fa;
 }
 
 textbox-prompt-colon {
