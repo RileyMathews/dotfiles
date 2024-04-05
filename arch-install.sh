@@ -10,6 +10,7 @@ sudo pacman -S --needed \
 	direnv \
 	zoxide \
 	fzf \
+	rofi \
 	ripgrep
 
 yay -S --needed \
