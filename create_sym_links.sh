@@ -17,6 +17,7 @@ rm -rf ~/.config/starship.toml
 rm -rf ~/.config/aerospace
 rm -rf ~/.config/rofi
 rm -rf ~/.config/i3status/config
+rm -rf ~/.config/qtile/config.py
 
 if directory_present ~/.config; then
     echo "config directory already present"
@@ -39,5 +40,7 @@ ln -s `pwd`/alacritty/alacritty.toml ~/.config/alacritty/alacritty.toml
 ln -s `pwd`/starship/starship.toml ~/.config/starship.toml
 ln -s `pwd`/rofi ~/.config/rofi
 ln -s `pwd`/aerospace ~/.config/aerospace
+mkdir -p ~/.config/qtile
+ln -s `pwd`/qtile/config.py ~/.config/qtile/config.py
 
 echo "All done. You might need to change your shell to zsh and restart to see all changes"
