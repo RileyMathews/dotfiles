@@ -18,6 +18,7 @@ rm -rf ~/.config/aerospace
 rm -rf ~/.config/rofi
 rm -rf ~/.config/i3status/config
 rm -rf ~/.config/qtile/config.py
+rm -rf ~/.config/polybar
 
 if directory_present ~/.config; then
     echo "config directory already present"
@@ -42,5 +43,6 @@ ln -s `pwd`/rofi ~/.config/rofi
 ln -s `pwd`/aerospace ~/.config/aerospace
 mkdir -p ~/.config/qtile
 ln -s `pwd`/qtile/config.py ~/.config/qtile/config.py
+ln -s `pwd`/polybar ~/.config/polybar
 
 echo "All done. You might need to change your shell to zsh and restart to see all changes"

@@ -41,6 +41,8 @@ set $crust     #11111b
 # is used in the bar {} block below.
 font Hack Nerd Font 10 
 
+exec_always --no-startup-id $HOME/.config/polybar/launch.sh
+
 # Use pactl to adjust volume in PulseAudio.
 set $refresh_i3status killall -SIGUSR1 i3status
 bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +10% && $refresh_i3status
@@ -180,20 +182,3 @@ client.urgent            $peach    $base $peach $overlay0  $peach
 client.placeholder       $overlay0 $base $text  $overlay0  $overlay0
 client.background        $base
 
-# bar
-bar {
-    font pango:Hack Nerd Font 14 
-    separator_symbol "|"
-    status_command i3status
-    # tray_output none
-    colors {
-        focused_workspace  $mantle $mantle $blue
-        active_workspace   $mantle $mantle $subtext0
-        inactive_workspace $mantle $crust $subtext0
-        urgent_workspace   $mantle $base $text
-        binding_mode       $base $base $text
-        separator          $text
-        statusline         $text
-        background         $mantle
-    }
-}
