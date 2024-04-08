@@ -108,3 +108,18 @@ gacp() {
         git push
     fi
 }
+
+tsg() {
+    directory=$(ls ~/code | fzf)
+    if [ -n "$TMUX" ]; then
+        command="switch"
+    else
+        command="attach"
+    fi
+    echo $directory
+    if tmux has-session -t $directory 2>/dev/null; then
+    else
+        tmux new-session -d -s $directory -c ~/code/$directory
+    fi
+    tmux $command -t $directory
+}
