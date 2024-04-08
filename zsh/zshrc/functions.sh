@@ -97,11 +97,11 @@ tst() {
 
 gacp() {
     git status
-    echo "continue? (y/n)"
+    echo -n "continue? (y/n): "
     read response
     if [ "$response" = "y" ]
     then
-        echo "Enter commit message: "
+        echo -n "Enter commit message: "
         read message
         git add .
         git commit -m "$message"
