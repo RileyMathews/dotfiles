@@ -104,7 +104,7 @@ gacp() {
         echo -n "Enter commit message: "
         read message
         git add .
-        git commit -m "$message"
+        git commit -m "$(git symbolic-ref --short HEAD) $message"
         git push
     fi
 }
