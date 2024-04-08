@@ -94,3 +94,17 @@ tst() {
         tmuxifier s $SESSION
     fi
 }
+
+gacp() {
+    git status
+    echo "continue? (y/n)"
+    read response
+    if [ "$response" = "y" ]
+    then
+        echo "Enter commit message: "
+        read message
+        git add .
+        git commit -m "$message"
+        git push
+    fi
+}
