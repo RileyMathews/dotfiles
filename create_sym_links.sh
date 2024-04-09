@@ -39,9 +39,9 @@ ln -s `pwd`/.config/alacritty/alacritty.toml ~/.config/alacritty/alacritty.toml
 ln -s `pwd`/.config/starship/starship.toml ~/.config/starship.toml
 ln -s `pwd`/.config/rofi ~/.config/rofi
 ln -s `pwd`/.config/aerospace ~/.config/aerospace
-
 mkdir -p ~/.config/qtile
-ln -s `pwd`/qtile/config.py ~/.config/qtile/config.py
+ln -s `pwd`/.config/qtile/config.py ~/.config/qtile/config.py
+
 ln -s `pwd`/polybar ~/.config/polybar
 
 echo "All done. You might need to change your shell to zsh and restart to see all changes"
