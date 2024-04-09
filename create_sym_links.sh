@@ -12,7 +12,6 @@ rm -rf ~/.config/nvim
 rm -rf ~/.zshrc
 rm -rf ~/zshrc
 rm -rf ~/.config/i3
-
 rm -rf ~/.config/alacritty
 rm -rf ~/.config/starship.toml
 rm -rf ~/.config/aerospace
@@ -35,9 +34,9 @@ ln -s `pwd`/.zshrc ~/.zshrc
 ln -s `pwd`/zshrc ~/zshrc
 mkdir ~/.config/i3
 ln -s `pwd`/.config/i3/config ~/.config/i3/config
-
 mkdir -p ~/.config/alacritty
-ln -s `pwd`/alacritty/alacritty.toml ~/.config/alacritty/alacritty.toml
+ln -s `pwd`/.config/alacritty/alacritty.toml ~/.config/alacritty/alacritty.toml
+
 ln -s `pwd`/starship/starship.toml ~/.config/starship.toml
 ln -s `pwd`/rofi ~/.config/rofi
 ln -s `pwd`/aerospace ~/.config/aerospace
