@@ -11,8 +11,8 @@ rm -rf ~/.tmux.conf
 rm -rf ~/.config/nvim
 rm -rf ~/.zshrc
 rm -rf ~/zshrc
-
 rm -rf ~/.config/i3
+
 rm -rf ~/.config/alacritty
 rm -rf ~/.config/starship.toml
 rm -rf ~/.config/aerospace
@@ -33,11 +33,9 @@ ln -s `pwd`/.tmux.conf ~/.tmux.conf
 ln -s `pwd`/.config/nvim ~/.config/nvim
 ln -s `pwd`/.zshrc ~/.zshrc
 ln -s `pwd`/zshrc ~/zshrc
+mkdir ~/.config/i3
+ln -s `pwd`/.config/i3/config ~/.config/i3/config
 
-mkdir -p ~/.config/i3
-ln -s `pwd`/i3/config ~/.config/i3/config
-mkdir -p ~/.config/i3status
-ln -s `pwd`/i3status/config ~/.config/i3status/config
 mkdir -p ~/.config/alacritty
 ln -s `pwd`/alacritty/alacritty.toml ~/.config/alacritty/alacritty.toml
 ln -s `pwd`/starship/starship.toml ~/.config/starship.toml
