@@ -36,9 +36,9 @@ mkdir ~/.config/i3
 ln -s `pwd`/.config/i3/config ~/.config/i3/config
 mkdir -p ~/.config/alacritty
 ln -s `pwd`/.config/alacritty/alacritty.toml ~/.config/alacritty/alacritty.toml
-
 ln -s `pwd`/.config/starship/starship.toml ~/.config/starship.toml
-ln -s `pwd`/rofi ~/.config/rofi
+
+ln -s `pwd`/.config/rofi ~/.config/rofi
 ln -s `pwd`/aerospace ~/.config/aerospace
 mkdir -p ~/.config/qtile
 ln -s `pwd`/qtile/config.py ~/.config/qtile/config.py
