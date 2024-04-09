@@ -96,6 +96,7 @@ tst() {
 }
 
 gacp() {
+    git add .
     git status
     echo -n "continue? (y/n): "
     read response
@@ -103,9 +104,10 @@ gacp() {
     then
         echo -n "Enter commit message: "
         read message
-        git add .
         git commit -m "$(git symbolic-ref --short HEAD) -- $message"
         git push
+    else
+        git restore --staged .
     fi
 }
 
