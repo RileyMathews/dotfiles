@@ -113,15 +113,25 @@ gacp() {
 
 tsg() {
     directory=$(ls ~/code | fzf)
+    _tmux_switch_or_activate "~/code/$directory" $directory
+}
+
+dote() {
+    _tmux_switch_or_activate "~/dotfiles" "dotfiles"
+}
+
+_tmux_switch_or_activate() {
+    directory=$1
+    session_name=$2
     if [ -n "$TMUX" ]; then
         command="switch"
     else
         command="attach"
     fi
     echo $directory
-    if tmux has-session -t $directory 2>/dev/null; then
+    if tmux has-session -t $session_name 2>/dev/null; then
     else
-        tmux new-session -d -s $directory -c ~/code/$directory
+        tmux new-session -d -s $session_name -c $directory
     fi
-    tmux $command -t $directory
+    tmux $command -t $session_name
 }
