@@ -49,6 +49,7 @@ client.background        $base
 font Hack Nerd Font 10 
 
 exec_always --no-startup-id $HOME/.config/polybar/launch.sh
+exec_always --no-startup-id $HOME/.config/dunst/launch.sh
 
 # use these keys for focus, movement, and resize directions when reaching for
 # the arrows is not convenient
@@ -150,5 +151,5 @@ mode "resize" {
         bindsym $mod+r mode "default"
 }
 
-default_border pixel 2
+default_border pixel 1
 
