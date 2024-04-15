@@ -48,7 +48,7 @@ client.background        $base
 # is used in the bar {} block below.
 font Hack Nerd Font 10 
 
-exec_always --no-startup-id $HOME/.config/polybar/launch.sh
+exec_always --no-startup-id $HOME/.local/bin/eww open bar
 exec_always --no-startup-id $HOME/.config/dunst/launch.sh
 
 # use these keys for focus, movement, and resize directions when reaching for
