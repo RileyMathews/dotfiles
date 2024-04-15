@@ -1,0 +1,28 @@
+(defwindow bar
+           :monitor "<primary>"
+           :geometry (geometry :x "0%"
+                               :y "20px"
+                               :width "90%"
+                               :height "30px"
+                               :anchor "top center")
+           :stacking "fg"
+           :reserve (struts :distance "40px" :side "top")
+           :windowtype "dock"
+           :wm-ignore false
+    (main_bar)
+)
+
+(defwidget main_bar []
+    (box :space-evenly false :class main_bar
+        (static_text :text "Hello")
+        (static_text :text "Hello")
+    )
+)
+
+(defwidget static_text [text]
+  (box :class "greeter" :orientation "horizontal"
+       :halign "center"
+       text
+  )
+)
+
