@@ -58,8 +58,9 @@ $cp-crust: #11111b;
   border-bottom: 2px solid $cp-muave;
 }
 
-.systray {
-  border-bottom: 2px solid $cp-blue;
+.updates {
+  color: $cp-red;
+  border-bottom: 2px solid $cp-red;
 }
 
 .workspace {

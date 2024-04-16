@@ -10,6 +10,7 @@
 )
 
 (defpoll time :interval "1s" :initial "" `date +%H:%M:%S`)
+(defpoll updates :interval "1h" :initial "checking" `$HOME/.config/eww/scripts/check-updates.sh`)
 
 (defwidget main_bar []
     (centerbox
@@ -38,6 +39,7 @@
         :space-evenly false
         :spacing 20 
         (systray :class "systray")
+        (updates)
         (disk)
         (cpu)
         (ram)
@@ -72,6 +74,14 @@
     )
 )
 
+(defwidget updates []
+    (box
+        :visible { updates != "" }
+        :class "updates"
+        updates
+    )
+)
+
 
 ;; set WM_MODE variable
 (defvar WM_MODE "default")
@@ -93,5 +103,4 @@
         (literal :content i3-workspace)
 	)
 )
-
 
