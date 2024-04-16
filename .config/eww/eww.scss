@@ -32,14 +32,48 @@ $cp-crust: #11111b;
 }
 
 //Global Styles
-.bar {
+.main_bar {
   background-color: $cp-base;
   color: $cp-text;
-  margin-bottom: 4px;
+  padding: 0 1rem 4px 1rem;
 }
 
 .greeter {
-  color: $cp-sapphire;
-  border-bottom: 2px solid $cp-sapphire;
+  color: $cp-yellow;
+  border-bottom: 2px solid $cp-yellow;
 }
 
+.disk {
+  color: $cp-peach;
+  border-bottom: 2px solid $cp-peach;
+}
+
+.cpu {
+  color: $cp-green;
+  border-bottom: 2px solid $cp-green;
+}
+
+.ram {
+  color: $cp-muave;
+  border-bottom: 2px solid $cp-muave;
+}
+
+.systray {
+  border-bottom: 2px solid $cp-blue;
+}
+
+.workspace {
+  padding-left: 1rem;
+
+  >.ws-btn {
+    padding: 0 .5rem;
+    &.focused {
+      border-bottom: 2px solid $cp-sapphire;
+    }
+
+    &.urgent {
+      background-color: $cp-red;
+      color: $cp-crust
+    }
+  }
+}

@@ -1,13 +1,10 @@
 (defwindow bar
-           :monitor "<primary>"
-           :geometry (geometry :x "0%"
-                               :y "20px"
-                               :width "90%"
-                               :height "30px"
-                               :anchor "top center")
+           :monitor 0
+           :geometry (geometry 
+                               :width "100%"
+                               :height "1%"
+                     )
            :stacking "fg"
-           :reserve (struts :distance "40px" :side "top")
-           :windowtype "dock"
            :wm-ignore false
     (main_bar)
 )
@@ -15,15 +12,86 @@
 (defpoll time :interval "1s" :initial "" `date +%H:%M:%S`)
 
 (defwidget main_bar []
-    (box :space-evenly false :class "main_bar"
+    (centerbox
+        :class "main_bar"
+        (left)
+        (center)
+        (right)
+    )
+)
+
+(defwidget left []
+    (box
+        :halign "start"
+    )
+)
+
+(defwidget center[]
+    (box
+        (workspaces)
+    )
+)
+
+(defwidget right[]
+    (box
+        :halign "end"
+        :space-evenly false
+        :spacing 20 
+        (systray :class "systray")
+        (disk)
+        (cpu)
+        (ram)
         (static_text :text time)
     )
 )
 
 (defwidget static_text [text]
-  (box :class "greeter" :orientation "horizontal"
-       :halign "center"
+  (box :class "greeter"
        text
   )
 )
+
+(defwidget ram []
+    (box
+        :class "ram"
+        " ${round(EWW_RAM.used_mem_perc, 0)}%"
+    )
+)
+
+(defwidget cpu []
+    (box
+        :class "cpu"
+        " ${round(EWW_CPU.avg, 0)}%"
+    )
+)
+
+(defwidget disk []
+    (box
+        :class "disk"
+        " ${round(EWW_DISK["/"].used_perc, 0)}%"
+    )
+)
+
+
+;; set WM_MODE variable
+(defvar WM_MODE "default")
+
+;;	set up listener for i3-sec
+(deflisten i3-workspace "~/.local/bin/i3-sec")
+
+;;	basic widget
+(defwidget workspaces []
+	(box
+		:space-evenly false
+		;;	basic revealer for mode
+		(revealer
+			:reveal { WM_MODE != "default" }
+			:transition "slideleft"
+			(label :text WM_MODE)
+		)
+		;;	workspace content block
+        (literal :content i3-workspace)
+	)
+)
+
 
