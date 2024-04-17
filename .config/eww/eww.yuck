@@ -10,7 +10,7 @@
 )
 
 (defpoll time :interval "1s" :initial "" `date +%H:%M:%S`)
-(defpoll updates :interval "1h" :initial "checking" `$HOME/.config/eww/scripts/check-updates.sh`)
+(defpoll updates :interval "1h" :initial "checking for updates" `$HOME/.config/eww/scripts/check-updates.sh`)
 
 (defwidget main_bar []
     (centerbox
