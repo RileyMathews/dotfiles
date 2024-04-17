@@ -50,8 +50,8 @@ $cp-crust: #11111b;
 }
 
 .greeter {
-  color: $cp-yellow;
-  border-bottom: 2px solid $cp-yellow;
+  color: $cp-blue;
+  border-bottom: 2px solid $cp-blue;
 }
 
 .disk {
@@ -81,7 +81,7 @@ $cp-crust: #11111b;
     border-radius: 1rem;
     margin: 0 .25rem;
     &.focused {
-      border: 2px solid $cp-lavender;
+      border: 2px solid $cp-sapphire;
     }
 
     &.urgent {

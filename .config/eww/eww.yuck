@@ -49,7 +49,7 @@
         (disk)
         (cpu)
         (ram)
-        (static_text :text time)
+        (static_text :text " ${time}")
     )
 )
 
