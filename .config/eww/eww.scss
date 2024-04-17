@@ -35,7 +35,18 @@ $cp-crust: #11111b;
 .main_bar {
   background-color: $cp-base;
   color: $cp-text;
-  padding: 0 1rem 4px 1rem;
+  padding: .125rem 1rem;
+}
+
+.right_bar {
+  background-color: $cp-crust;
+  padding: .125rem 1rem;
+  border-radius: 1rem;
+}
+.left_bar {
+  background-color: $cp-crust;
+  padding: .125rem 1rem;
+  border-radius: 1rem;
 }
 
 .greeter {
@@ -64,17 +75,17 @@ $cp-crust: #11111b;
 }
 
 .workspace {
-  padding-left: 1rem;
-
   >.ws-btn {
     padding: 0 .5rem;
+    border: 2px solid $cp-overlay0;
+    border-radius: 1rem;
+    margin: 0 .25rem;
     &.focused {
-      border-bottom: 2px solid $cp-sapphire;
+      border: 2px solid $cp-lavender;
     }
 
     &.urgent {
-      background-color: $cp-red;
-      color: $cp-crust
+      border: 2px solid $cp-yellow;
     }
   }
 }

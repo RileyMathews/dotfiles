@@ -23,23 +23,25 @@
 
 (defwidget left []
     (box
+        :class "left_bar"
         :halign "start"
+        (workspaces)
     )
 )
 
 (defwidget center[]
     (box
-        (workspaces)
+        (updates)
+        (systray :class "systray")
     )
 )
 
 (defwidget right[]
     (box
+        :class "right_bar"
         :halign "end"
         :space-evenly false
         :spacing 20 
-        (systray :class "systray")
-        (updates)
         (disk)
         (cpu)
         (ram)
