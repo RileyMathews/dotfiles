@@ -11,6 +11,7 @@
 
 (defpoll time :interval "1s" :initial "" `date +%H:%M:%S`)
 (defpoll updates :interval "1h" :initial "checking for updates" `$HOME/.config/eww/scripts/check-updates.sh`)
+(defvar FOCUSED_WINDOW "")
 
 (defwidget main_bar []
     (centerbox
@@ -24,8 +25,11 @@
 (defwidget left []
     (box
         :class "left_bar"
+        :space-evenly false
+        :spacing 20
         :halign "start"
         (workspaces)
+        (focused_window)
     )
 )
 
@@ -53,6 +57,13 @@
   (box :class "greeter"
        text
   )
+)
+
+(defwidget focused_window []
+    (box
+        :class "focused_window"
+        FOCUSED_WINDOW
+    )
 )
 
 (defwidget ram []
