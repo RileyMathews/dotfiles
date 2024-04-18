@@ -3,6 +3,9 @@
 enable-normalization-flatten-containers = false
 enable-normalization-opposite-orientation-for-nested-containers = false
 
+[exec.env-vars]
+SHELL = "/bin/zsh"
+
 [mode.main.binding]
 alt-enter = 'exec-and-forget open -n /System/Volumes/Data/Applications/Alacritty.app'
 
@@ -16,9 +19,16 @@ alt-shift-j = 'move down'
 alt-shift-k = 'move up'
 alt-shift-l = 'move right'
 
+# alt-h = 'split horizontal'
+alt-v = 'split vertical'
+
 alt-f = 'fullscreen'
 
-alt-w = 'close --quit-if-last-window'
+alt-s = 'layout v_accordion' # 'layout stacking' in i3
+alt-w = 'layout h_accordion' # 'layout tabbed' in i3
+alt-e = 'layout tiles horizontal vertical' # 'layout toggle split' in i3
+
+alt-shift-w = 'close --quit-if-last-window'
 
 alt-1 = 'workspace 1'
 alt-2 = 'workspace 2'
