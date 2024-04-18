@@ -11,7 +11,9 @@ return {
 		local neotest = require("neotest")
 		neotest.setup({
 			adapters = {
-				require("neotest-jest"),
+				require("neotest-jest")({
+					jest_test_discovery = false,
+				}),
 			},
 		})
 	end,
