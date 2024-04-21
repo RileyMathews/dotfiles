@@ -100,7 +100,7 @@
 (defvar WM_MODE "default")
 
 ;;	set up listener for i3-sec
-(deflisten i3-workspace "~/.local/bin/i3-sec")
+(deflisten i3-workspace "~/.local/bin/i3-eww")
 
 ;;	basic widget
 (defwidget workspaces []
