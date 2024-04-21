@@ -11,7 +11,6 @@
 
 (defpoll time :interval "1s" :initial "" `date +%H:%M:%S`)
 (defpoll updates :interval "1h" :initial "checking for updates" `$HOME/.config/eww/scripts/check-updates.sh`)
-(defvar FOCUSED_WINDOW "")
 
 (defwidget main_bar []
     (centerbox
@@ -29,7 +28,6 @@
         :spacing 20
         :halign "start"
         (workspaces)
-        (focused_window)
     )
 )
 
@@ -59,12 +57,6 @@
   )
 )
 
-(defwidget focused_window []
-    (box
-        :class "focused_window"
-        FOCUSED_WINDOW
-    )
-)
 
 (defwidget ram []
     (box
@@ -95,9 +87,6 @@
     )
 )
 
-
-;; set WM_MODE variable
-(defvar WM_MODE "default")
 
 ;;	set up listener for i3-sec
 (deflisten i3-workspace "~/.local/bin/i3-eww")
