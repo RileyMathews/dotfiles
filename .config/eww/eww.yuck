@@ -21,6 +21,14 @@
     )
 )
 
+(deflisten window "~/.local/bin/window-follower")
+(defwidget focused_window []
+    (box
+        :class "focused_window"
+        window
+    )
+)
+
 (defwidget left []
     (box
         :class "left_bar"
@@ -28,6 +36,7 @@
         :spacing 20
         :halign "start"
         (workspaces)
+        (focused_window)
     )
 )
 
