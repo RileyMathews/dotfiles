@@ -1,0 +1,1 @@
+export KEYTIMEOUT=1
