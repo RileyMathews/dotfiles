@@ -37,3 +37,7 @@ rm -rf ~/.zshrc
 rm -rf ~/.config/zsh
 ln -s `pwd`/zsh ~/.config/zsh
 ln -s `pwd`/.zshrc ~/.zshrc
+
+echo "setting up sxhkd"
+rm -rf ~/.config/sxhkd
+ln -s `pwd`/sxhkd ~/.config/sxhkd

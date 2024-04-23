@@ -1,0 +1,9 @@
+alt + b
+    firefox
+
+alt + Return
+    alacritty
+
+alt + space
+    rofi -show drun -display-drun ' > '
+

@@ -60,13 +60,8 @@ set $right l
 
 set $mod Mod1
 
-bindsym $mod+Return exec alacritty 
-bindsym $mod+b exec firefox
-
 # kill focused window
-bindsym $mod+w kill
-
-bindsym $mod+space exec "rofi -show drun -display-drun ' > '"
+# bindsym $mod+w kill
 
 bindsym $mod+Shift+n move workspace to output right
 
