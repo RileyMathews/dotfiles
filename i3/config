@@ -61,7 +61,7 @@ set $right l
 set $mod Mod1
 
 # kill focused window
-# bindsym $mod+w kill
+bindsym $mod+w kill
 
 bindsym $mod+Shift+n move workspace to output right
 
