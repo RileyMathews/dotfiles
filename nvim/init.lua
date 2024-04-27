@@ -8,7 +8,8 @@ vim.opt.expandtab = true
 
 vim.opt.wrap = false
 
-vim.opt.hlsearch = false
+vim.opt.hlsearch = true
+vim.keymap.set("n", "<Esc>", "<cmd>nohlsearch<CR>")
 vim.opt.incsearch = true
 
 vim.opt.termguicolors = true
