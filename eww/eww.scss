@@ -77,15 +77,26 @@ $cp-crust: #11111b;
 .workspace {
   >.ws-btn {
     padding: 0 .5rem;
-    border: 2px solid $cp-overlay0;
+    border: 2px solid $cp-overlay2;
     border-radius: 1rem;
     margin: 0 .25rem;
     &.focused {
       border: 2px solid $cp-sapphire;
     }
+    &.unfocused_display {
+      background-color: $cp-crust;
+      border: 2px solid $cp-surface0;
+      color: $cp-subtext0;
+
+      &.focused {
+        border: 2px solid $cp-overlay0;
+        color: $cp-sapphire;
+      }
+    }
 
     &.urgent {
       border: 2px solid $cp-yellow;
     }
+
   }
 }

@@ -1,55 +1,39 @@
+(deflisten i3-workspace0 "~/.local/bin/i3-eww DP-0")
+(deflisten i3-workspace2 "~/.local/bin/i3-eww DP-2")
 (defwindow bar
-           :monitor 'DP-0'
-           :geometry (geometry 
-                               :width "100%"
-                               :height "1%"
-                     )
-           :stacking "fg"
-           :wm-ignore false
-    (main_bar)
-)
-
-(defwindow bar2
-           :monitor 'DP-2'
-           :geometry (geometry 
-                               :width "100%"
-                               :height "1%"
-                     )
-           :stacking "fg"
-           :wm-ignore false
-    (main_bar)
-)
-
-(defpoll time :interval "1s" :initial "" `date +%H:%M:%S`)
-(defpoll updates :interval "1h" :initial "checking for updates" `$HOME/.config/eww/scripts/check-updates.sh`)
-
-(defwidget main_bar []
+   :monitor 'DP-0'
+   :geometry (geometry 
+                       :width "100%"
+                       :height "1%"
+             )
+   :stacking "fg"
+   :wm-ignore false
     (centerbox
         :class "main_bar"
-        (left)
+        (box (literal :content i3-workspace0))
         (center)
         (right)
     )
 )
 
-(deflisten window "~/.local/bin/window-follower")
-(defwidget focused_window []
-    (box
-        :class "focused_window"
-        window
+(defwindow bar2
+   :monitor 'DP-2'
+   :geometry (geometry 
+                       :width "100%"
+                       :height "1%"
+             )
+   :stacking "fg"
+   :wm-ignore false
+    (centerbox
+        :class "main_bar"
+        (box (literal :content i3-workspace2))
+        (center)
+        (right)
     )
 )
 
-(defwidget left []
-    (box
-        :class "left_bar"
-        :space-evenly false
-        :spacing 20
-        :halign "start"
-        (workspaces)
-        (focused_window)
-    )
-)
+(defpoll time :interval "1s" :initial "" `date +%H:%M:%S`)
+(defpoll updates :interval "1h" :initial "checking for updates" `$HOME/.config/eww/scripts/check-updates.sh`)
 
 (defwidget center[]
     (box
@@ -64,9 +48,6 @@
         :halign "end"
         :space-evenly false
         :spacing 20 
-        (disk)
-        (cpu)
-        (ram)
         (static_text :text " ${time}")
     )
 )
@@ -78,26 +59,26 @@
 )
 
 
-(defwidget ram []
-    (box
-        :class "ram"
-        " ${round(EWW_RAM.used_mem_perc, 0)}%"
-    )
-)
-
-(defwidget cpu []
-    (box
-        :class "cpu"
-        " ${round(EWW_CPU.avg, 0)}%"
-    )
-)
-
-(defwidget disk []
-    (box
-        :class "disk"
-        " ${round(EWW_DISK["/"].used_perc, 0)}%"
-    )
-)
+;; (defwidget ram []
+;;     (box
+;;         :class "ram"
+;;         " ${round(EWW_RAM.used_mem_perc, 0)}%"
+;;     )
+;; )
+;;
+;; (defwidget cpu []
+;;     (box
+;;         :class "cpu"
+;;         " ${round(EWW_CPU.avg, 0)}%"
+;;     )
+;; )
+;;
+;; (defwidget disk []
+;;     (box
+;;         :class "disk"
+;;         " ${round(EWW_DISK["/"].used_perc, 0)}%"
+;;     )
+;; )
 
 (defwidget updates []
     (box
@@ -105,18 +86,5 @@
         :class "updates"
         updates
     )
-)
-
-(deflisten i3-workspace "~/.local/bin/i3-eww")
-(defwidget workspaces []
-	(box
-		:space-evenly false
-		;;	basic revealer for mode
-		(revealer
-			:transition "slideleft"
-		)
-		;;	workspace content block
-        (literal :content i3-workspace)
-	)
 )
 
