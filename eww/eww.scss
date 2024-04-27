@@ -38,40 +38,27 @@ $cp-crust: #11111b;
   padding: .125rem 1rem;
 }
 
-.right_bar {
-  background-color: $cp-crust;
-  padding: .125rem 1rem;
-  border-radius: 1rem;
-}
-.left_bar {
-  background-color: $cp-crust;
-  padding: .125rem 1rem;
-  border-radius: 1rem;
-}
-
 .greeter {
-  color: $cp-blue;
-  border-bottom: 2px solid $cp-blue;
+  color: $cp-sapphire;
 }
 
-.disk {
-  color: $cp-peach;
-  border-bottom: 2px solid $cp-peach;
-}
-
-.cpu {
-  color: $cp-green;
-  border-bottom: 2px solid $cp-green;
-}
-
-.ram {
-  color: $cp-muave;
-  border-bottom: 2px solid $cp-muave;
-}
+// .disk {
+//   color: $cp-peach;
+//   border-bottom: 2px solid $cp-peach;
+// }
+//
+// .cpu {
+//   color: $cp-green;
+//   border-bottom: 2px solid $cp-green;
+// }
+//
+// .ram {
+//   color: $cp-muave;
+//   border-bottom: 2px solid $cp-muave;
+// }
 
 .updates {
   color: $cp-red;
-  border-bottom: 2px solid $cp-red;
 }
 
 .workspace {
