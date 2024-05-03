@@ -41,3 +41,7 @@ ln -s `pwd`/.zshrc ~/.zshrc
 echo "setting up sxhkd"
 rm -rf ~/.config/sxhkd
 ln -s `pwd`/sxhkd ~/.config/sxhkd
+
+echo "setting up picom"
+rm -rf ~/.config/picom
+ln -s `pwd`/picom ~/.config/picom
