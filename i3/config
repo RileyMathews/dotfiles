@@ -147,4 +147,6 @@ mode "resize" {
 }
 
 default_border pixel 1
+gaps inner 2px
+gaps outer 1px
 
