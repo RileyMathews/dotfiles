@@ -49,18 +49,16 @@ $cp-crust: #11111b;
 
 .workspace {
   >.ws-btn {
-    color: $cp-subtext0;
+    color: $cp-text;
     padding: 0 .5rem;
     margin: 0 .25rem;
     &.focused {
       color: $cp-sapphire;
     }
     &.unfocused_display {
-      background-color: $cp-crust;
-      color: $cp-mantle;
-
+      color: $cp-crust;
       &.focused {
-        color: $cp-text;
+        color: $cp-mantle;
       }
     }
 
