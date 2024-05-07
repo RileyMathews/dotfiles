@@ -53,32 +53,8 @@
 )
 
 (defwidget static_text [text]
-  (box :class "greeter"
-       text
-  )
+  (box text)
 )
-
-
-;; (defwidget ram []
-;;     (box
-;;         :class "ram"
-;;         " ${round(EWW_RAM.used_mem_perc, 0)}%"
-;;     )
-;; )
-;;
-;; (defwidget cpu []
-;;     (box
-;;         :class "cpu"
-;;         " ${round(EWW_CPU.avg, 0)}%"
-;;     )
-;; )
-;;
-;; (defwidget disk []
-;;     (box
-;;         :class "disk"
-;;         " ${round(EWW_DISK["/"].used_perc, 0)}%"
-;;     )
-;; )
 
 (defwidget updates []
     (box
