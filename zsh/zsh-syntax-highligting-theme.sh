@@ -55,8 +55,8 @@ ZSH_HIGHLIGHT_STYLES[double-hyphen-option]="fg=$MAROON"
 ZSH_HIGHLIGHT_STYLES[back-quoted-argument]="fg=$MAROON"
 ## Keywords
 ## Built ins
-ZSH_HIGHLIGHT_STYLES[builtin]="fg=$RED"
-ZSH_HIGHLIGHT_STYLES[reserved-word]="fg=$MAUVE"
+ZSH_HIGHLIGHT_STYLES[builtin]="fg=$MAUVE"
+ZSH_HIGHLIGHT_STYLES[reserved-word]="fg=$SAPPHIRE"
 ZSH_HIGHLIGHT_STYLES[hashed-command]="fg=$BLUE"
 ## Punctuation
 ZSH_HIGHLIGHT_STYLES[commandseparator]="fg=$OVERLAY2"
