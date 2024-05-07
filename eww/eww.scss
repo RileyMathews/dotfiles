@@ -55,12 +55,6 @@ $cp-crust: #11111b;
     &.focused {
       color: $cp-sapphire;
     }
-    &.unfocused_display {
-      color: $cp-overlay0;
-      &.focused {
-        color: $cp-overlay2;
-      }
-    }
 
     &.urgent {
       color: $cp-yellow;
