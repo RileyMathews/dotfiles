@@ -36,26 +36,12 @@ $cp-crust: #11111b;
   background-color: $cp-base;
   color: $cp-text;
   padding: .125rem 1rem;
+  margin: 8px 8px 0 8px;
 }
 
 .greeter {
   color: $cp-sapphire;
 }
-
-// .disk {
-//   color: $cp-peach;
-//   border-bottom: 2px solid $cp-peach;
-// }
-//
-// .cpu {
-//   color: $cp-green;
-//   border-bottom: 2px solid $cp-green;
-// }
-//
-// .ram {
-//   color: $cp-muave;
-//   border-bottom: 2px solid $cp-muave;
-// }
 
 .updates {
   color: $cp-red;
@@ -63,26 +49,23 @@ $cp-crust: #11111b;
 
 .workspace {
   >.ws-btn {
+    color: $cp-subtext0;
     padding: 0 .5rem;
-    border: 2px solid $cp-overlay2;
-    border-radius: 1rem;
     margin: 0 .25rem;
     &.focused {
-      border: 2px solid $cp-sapphire;
+      color: $cp-sapphire;
     }
     &.unfocused_display {
       background-color: $cp-crust;
-      border: 2px solid $cp-surface0;
-      color: $cp-subtext0;
+      color: $cp-mantle;
 
       &.focused {
-        border: 2px solid $cp-overlay0;
-        color: $cp-sapphire;
+        color: $cp-text;
       }
     }
 
     &.urgent {
-      border: 2px solid $cp-yellow;
+      color: $cp-yellow;
     }
 
   }
