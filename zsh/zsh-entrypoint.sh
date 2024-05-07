@@ -136,5 +136,5 @@ for file in ~/.config/zsh/*; do
     fi
 done
 
-eval "$(starship init zsh)"
+source ~/powerlevel10k/powerlevel9k.zsh-theme
 source $HOME/.local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
