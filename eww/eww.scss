@@ -56,9 +56,9 @@ $cp-crust: #11111b;
       color: $cp-sapphire;
     }
     &.unfocused_display {
-      color: $cp-crust;
+      color: $cp-overlay0;
       &.focused {
-        color: $cp-mantle;
+        color: $cp-overlay2;
       }
     }
 
