@@ -150,13 +150,12 @@ gaps inner 8px
 
 bar {
         # status_command i3status
-        font pango:Hack Nerd Font 12
+        font pango:Hack Nerd Font 10
         colors {
-                background #1e1e2e
-                statusline #cdd6f4
-                focused_workspace #181825 #74c7ec #11111b
-                inactive_workspace #181825 #1e1e2e #cdd6f4
-                urgent_workspace #181825 #f9e2af #11111b
+                background $base
+                focused_workspace $mantle $crust $sapphire
+                inactive_workspace $mantle $base $text
+                urgent_workspace $mantle $base $yellow
         }
 }
 
