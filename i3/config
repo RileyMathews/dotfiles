@@ -49,6 +49,7 @@ client.background        $base
 font Hack Nerd Font 10 
 
 exec_always --no-startup-id $HOME/.config/dunst/launch.sh
+exec_always --no-startup-id $HOME/.local/bin/eww open bar
 
 # use these keys for focus, movement, and resize directions when reaching for
 # the arrows is not convenient
@@ -148,14 +149,14 @@ mode "resize" {
 default_border pixel 1
 gaps inner 8px
 
-bar {
-        # status_command i3status
-        font pango:Hack Nerd Font 10
-        colors {
-                background $base
-                focused_workspace $mantle $crust $sapphire
-                inactive_workspace $mantle $base $text
-                urgent_workspace $mantle $base $yellow
-        }
-}
-
+# bar {
+#         status_command i3status
+#         font pango:Hack Nerd Font 10
+#         colors {
+#                 background $base
+#                 focused_workspace $mantle $crust $sapphire
+#                 inactive_workspace $mantle $base $text
+#                 urgent_workspace $mantle $base $yellow
+#         }
+# }
+#

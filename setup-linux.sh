@@ -45,3 +45,7 @@ ln -s `pwd`/sxhkd ~/.config/sxhkd
 echo "setting up picom"
 rm -rf ~/.config/picom
 ln -s `pwd`/picom ~/.config/picom
+
+echo "setting up i3status"
+rm -rf ~/.config/i3status
+ln -s `pwd`/i3status ~/.config/i3status
