@@ -2,7 +2,7 @@ export EDITOR="nvim"
 export PATH="$HOME/.local/bin:$PATH"
 export KEYTIMEOUT=1
 
-[ -f "$HOME/.config/.zshrc.secret" ] && source "$HOME/.config/.zshrc.secret"
+[ -f "$HOME/.config/zsh/.zshrc.secret" ] && source "$HOME/.config/zsh/.zshrc.secret"
 
 #####################################
 # Aliases                           #
