@@ -10,9 +10,9 @@
    :wm-ignore false
     (centerbox
         :class "main_bar"
+        (updates)
         (box (literal :content i3-workspace0))
-        (center)
-        (right)
+        (systray)
     )
 )
 
@@ -26,28 +26,13 @@
    :wm-ignore false
     (centerbox
         :class "main_bar"
+        (updates)
         (box (literal :content i3-workspace2))
-        (center)
-        (right)
+        (systray)
     )
 )
 
 (defpoll updates :interval "1h" :initial "checking for updates" `$HOME/.config/eww/scripts/check-updates.sh`)
-
-(defwidget center[]
-    (box
-        (updates)
-    )
-)
-
-(defwidget right[]
-    (systray :class "systray")
-)
-
-(defwidget static_text [text]
-  (box text)
-)
-
 (defwidget updates []
     (box
         :visible { updates != "" }
