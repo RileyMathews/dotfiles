@@ -32,24 +32,16 @@
     )
 )
 
-(defpoll time :interval "1s" :initial "" `date +%H:%M:%S`)
 (defpoll updates :interval "1h" :initial "checking for updates" `$HOME/.config/eww/scripts/check-updates.sh`)
 
 (defwidget center[]
     (box
         (updates)
-        (systray :class "systray")
     )
 )
 
 (defwidget right[]
-    (box
-        :class "right_bar"
-        :halign "end"
-        :space-evenly false
-        :spacing 20 
-        (static_text :text " ${time}")
-    )
+    (systray :class "systray")
 )
 
 (defwidget static_text [text]
