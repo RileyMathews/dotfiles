@@ -49,3 +49,7 @@ ln -s `pwd`/picom ~/.config/picom
 echo "setting up i3status"
 rm -rf ~/.config/i3status
 ln -s `pwd`/i3status ~/.config/i3status
+
+echo "setting up bin scripts"
+rm -rf ~/.local/bin/update-checker
+ln -s `pwd`/localbin/update-checker ~/.local/bin/update-checker

@@ -1,0 +1,14 @@
+#! /bin/bash
+while true
+do
+    if ! updates=$(checkupdates 2> /dev/null | wc -l ); then
+        updates=0
+    fi
+
+    if [ "$updates" -gt 0 ]; then
+        notify-send "Update" "$updates packages out of date" -u CRITICAL
+    fi
+
+    sleep 3600
+done
+
