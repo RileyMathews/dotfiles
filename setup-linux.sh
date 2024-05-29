@@ -50,9 +50,16 @@ echo "setting up i3status"
 rm -rf ~/.config/i3status
 ln -s `pwd`/i3status ~/.config/i3status
 
+echo "setting up sx"
+ln -sf `pwd`/sx/sxrc ~/.config/sx/sxrc
+
+echo "setting up X11"
+mkdir -p ~/.config/X11
+ln -sf `pwd`/X11/.Xresources ~/.config/X11
+
 echo "setting up bin scripts"
-rm -rf ~/.local/bin/update-checker
-ln -s `pwd`/localbin/update-checker ~/.local/bin/update-checker
+ln -sf `pwd`/localbin/update-checker ~/.local/bin/update-checker
+ln -sf `pwd`/localbin/sx ~/.local/bin/sx
 
 echo "setting up user systemd services"
 mkdir -p ~/.config/systemd/user
