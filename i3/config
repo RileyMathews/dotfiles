@@ -147,7 +147,7 @@ mode "resize" {
 }
 
 default_border pixel 1
-gaps inner 8px
+# gaps inner 8px
 
 bar {
         status_command i3status
@@ -157,6 +157,7 @@ bar {
                 focused_workspace $mantle $crust $sapphire
                 inactive_workspace $mantle $base $text
                 urgent_workspace $mantle $base $yellow
+                statusline $text $sapphire
         }
 }
 
