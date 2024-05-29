@@ -49,7 +49,7 @@ client.background        $base
 font Hack Nerd Font 10 
 
 exec_always --no-startup-id $HOME/.config/dunst/launch.sh
-exec_always --no-startup-id $HOME/.local/bin/update-checker
+exec --no-startup-id $HOME/.local/bin/update-checker
 
 # use these keys for focus, movement, and resize directions when reaching for
 # the arrows is not convenient
