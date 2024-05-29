@@ -53,3 +53,9 @@ ln -s `pwd`/i3status ~/.config/i3status
 echo "setting up bin scripts"
 rm -rf ~/.local/bin/update-checker
 ln -s `pwd`/localbin/update-checker ~/.local/bin/update-checker
+
+echo "setting up user systemd services"
+mkdir -p ~/.config/systemd/user
+ln -sf `pwd`/systemd/user/autostart.target ~/.config/systemd/user/autostart.target
+ln -sf `pwd`/systemd/user/update-checker.service ~/.config/systemd/user/update-checker.service
+ln -sf `pwd`/systemd/user/update-checker.timer ~/.config/systemd/user/update-checker.timer
