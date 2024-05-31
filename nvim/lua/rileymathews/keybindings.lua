@@ -103,5 +103,26 @@ require("which-key").register({
 	["<leader>t"] = { name = "[T]est", _ = "which_key_ignore" },
 })
 
+vim.api.nvim_create_user_command("FormatDisable", function(args)
+	if args.bang then
+		-- FormatDisable! will disable formatting just for this buffer
+		vim.b.disable_autoformat = true
+		print("disabled autoformat for this buffer")
+	else
+		print("disabled autoformat for all buffers")
+		vim.g.disable_autoformat = true
+	end
+end, {
+	desc = "Disable autoformat-on-save",
+	bang = true,
+})
+vim.api.nvim_create_user_command("FormatEnable", function()
+	print("enabled autoformat for all buffers")
+	vim.b.disable_autoformat = false
+	vim.g.disable_autoformat = false
+end, {
+	desc = "Re-enable autoformat-on-save",
+})
+
 -- return the map with on attach function
 return P
