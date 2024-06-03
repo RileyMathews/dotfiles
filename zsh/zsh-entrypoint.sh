@@ -3,6 +3,7 @@ export PATH="$HOME/.local/bin:$PATH"
 export KEYTIMEOUT=1
 
 [ -f "$HOME/.config/zsh/.zshrc.secret" ] && source "$HOME/.config/zsh/.zshrc.secret"
+[ -f "$HOME/.config/zsh/minimal.zsh" ] && source "$HOME/.config/zsh/minimal.zsh"
 
 #####################################
 # Aliases                           #
@@ -136,5 +137,4 @@ for file in ~/.config/zsh/*; do
     fi
 done
 
-source ~/powerlevel10k/powerlevel9k.zsh-theme
 source $HOME/.local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
