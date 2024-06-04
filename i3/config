@@ -59,6 +59,7 @@ set $left h
 set $right l
 
 set $mod Mod1
+bindsym $mod+d exec "rofi -show drun -display-drun ' > '"
 
 # kill focused window
 bindsym $mod+q kill
@@ -157,7 +158,7 @@ bar {
                 focused_workspace $mantle $crust $sapphire
                 inactive_workspace $mantle $base $text
                 urgent_workspace $mantle $base $yellow
-                statusline $text $sapphire
+                statusline $text
         }
 }
 
