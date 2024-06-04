@@ -61,6 +61,7 @@ echo "setting up bin scripts"
 ln -sf `pwd`/localbin/update-checker ~/.local/bin/update-checker
 ln -sf `pwd`/localbin/sx ~/.local/bin/sx
 ln -sf `pwd`/localbin/volume ~/.local/bin/volume
+ln -sf `pwd`/localbin/backlight ~/.local/bin/backlight
 
 echo "setting up user systemd services"
 mkdir -p ~/.config/systemd/user

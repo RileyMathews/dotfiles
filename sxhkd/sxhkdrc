@@ -15,3 +15,9 @@ XF86AudioRaiseVolume
 
 XF86AudioMute
     volume mute
+
+XF86MonBrightnessUp
+    backlight up
+
+XF86MonBrightnessDown
+    backlight down
