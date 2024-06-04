@@ -7,3 +7,11 @@ alt + Return
 alt + space
     rofi -show drun -display-drun ' > '
 
+XF86AudioLowerVolume
+    volume down 
+
+XF86AudioRaiseVolume
+    volume up
+
+XF86AudioMute
+    volume mute
