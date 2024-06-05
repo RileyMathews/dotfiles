@@ -48,9 +48,6 @@ client.background        $base
 # is used in the bar {} block below.
 font Hack Nerd Font 10 
 
-exec_always --no-startup-id $HOME/.config/dunst/launch.sh
-# exec --no-startup-id $HOME/.local/bin/update-checker
-
 # use these keys for focus, movement, and resize directions when reaching for
 # the arrows is not convenient
 set $up k

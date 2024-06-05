@@ -24,77 +24,15 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from libqtile import bar, layout, qtile, extension
+from libqtile import bar, layout, qtile, widget
 from libqtile.config import Click, Drag, Group, Key, Match, Screen
-from libqtile.log_utils import logger
-from qtile_extras import widget
-from qtile_extras.widget.decorations import BorderDecoration
 from libqtile.lazy import lazy
-from libqtile.utils import guess_terminal, send_notification
-
-COLOR_BASE = "#1e1e2e"
-COLOR_OVERLAY = "#9399b2"
-COLOR_CRUST = "#11111b"
-COLOR_TEXT = "#cdd6f4"
-COLOR_SUBTEXT = "#a6adc8"
-COLOR_PINK = "#f5c2e7"
-COLOR_MAUVE = "#cba6f7"
-COLOR_RED = "#f38ba8"
-COLOR_PEACH = "#fab387"
-COLOR_YELLOW = "#f9e2af"
-COLOR_GREEN = "#a6e3a1"
-COLOR_SAPPHIRE = "#74c7ec"
-COLOR_BLUE = "#89b4fa"
-COLOR_LAVENDER = "#b4befe"
-
-BORDER = [0, 0, 2, 0]
-
-
-groups = [Group(i) for i in "123456789"]
-groups_to_screen = {}
-for group in groups:
-    groups_to_screen[group.name] = 0
-
-def go_to_group(group_name):
-    def inner(qtile):
-        screen = groups_to_screen[group_name]
-        qtile.focus_screen(screen)
-        qtile.groups_map[group_name].toscreen()
-
-    return inner
-
-def move_group_to_next_screen():
-    def inner(qtile):
-        active_group = qtile.current_group
-        active_screen = qtile.current_screen
-        if active_screen == qtile.screens[-1]:
-            next_screen = qtile.screens[0]
-        else:
-            next_screen = qtile.screens[active_screen.index + 1]
-
-        logger.warn(f"moving group {active_group.name} to screen {next_screen.index}")
-        groups_to_screen[active_group.name] = next_screen.index
-        go_to_group(active_group.name)(qtile)
-
-    return inner
+from libqtile.utils import guess_terminal
 
 mod = "mod4"
 terminal = guess_terminal()
 
-def debug_qtile():
-    def inner(qtile):
-        send_notification("qtile", "debugging!")
-        logger.warning("\n")
-        logger.warning(qtile)
-        logger.warning(qtile.current_screen)
-        logger.warning(qtile.current_group)
-        logger.warning(len(qtile.screens))
-        logger.warning("\n")
-
-    return inner
-
 keys = [
-    Key([mod], "d", lazy.function(debug_qtile())),
     # A list of available commands that can be bound to keys can be found
     # at https://docs.qtile.org/en/latest/manual/config/lazy.html
     # Switch between windows
@@ -102,7 +40,7 @@ keys = [
     Key([mod], "l", lazy.layout.right(), desc="Move focus to right"),
     Key([mod], "j", lazy.layout.down(), desc="Move focus down"),
     Key([mod], "k", lazy.layout.up(), desc="Move focus up"),
-    # Key([mod], "space", lazy.layout.next(), desc="Move window focus to other window"),
+    Key([mod], "space", lazy.layout.next(), desc="Move window focus to other window"),
     # Move windows between left/right columns or move up/down in current stack.
     # Moving out of range in Columns layout will create new column.
     Key([mod, "shift"], "h", lazy.layout.shuffle_left(), desc="Move window to the left"),
@@ -116,7 +54,6 @@ keys = [
     Key([mod, "control"], "j", lazy.layout.grow_down(), desc="Grow window down"),
     Key([mod, "control"], "k", lazy.layout.grow_up(), desc="Grow window up"),
     Key([mod], "n", lazy.layout.normalize(), desc="Reset all window sizes"),
-    Key([mod, "shift"], "n", lazy.function(move_group_to_next_screen())),
     # Toggle between split and unsplit sides of stack.
     # Split = all windows displayed
     # Unsplit = 1 window displayed, like Max layout, but still with
@@ -128,14 +65,6 @@ keys = [
         desc="Toggle between split and unsplit sides of stack",
     ),
     Key([mod], "Return", lazy.spawn(terminal), desc="Launch terminal"),
-    # Key([mod], "d", lazy.run_extension(extension.DmenuRun(
-    #     dmenu_prompt=">",
-    #     background="#15181a",
-    #     foreground="#00ff00",
-    #     selected_background="#079822",
-    #     selected_foreground="#fff",
-    # ))),
-    Key([mod], "space", lazy.spawn("rofi -show drun -display-drun ' > '")),
     # Toggle between different layouts as defined below
     Key([mod], "Tab", lazy.next_layout(), desc="Toggle between layouts"),
     Key([mod], "w", lazy.window.kill(), desc="Kill focused window"),
@@ -165,34 +94,35 @@ for vt in range(1, 8):
     )
 
 
+groups = [Group(i) for i in "123456789"]
 
 for i in groups:
     keys.extend(
         [
-            # mod1 + group number = switch to group
+            # mod + group number = switch to group
             Key(
                 [mod],
                 i.name,
-                lazy.function(go_to_group(i.name)),
+                lazy.group[i.name].toscreen(),
                 desc="Switch to group {}".format(i.name),
             ),
-            # mod1 + shift + group number = switch to & move focused window to group
+            # mod + shift + group number = switch to & move focused window to group
             Key(
                 [mod, "shift"],
                 i.name,
-                lazy.window.togroup(i.name, switch_group=False),
+                lazy.window.togroup(i.name, switch_group=True),
                 desc="Switch to & move focused window to group {}".format(i.name),
             ),
             # Or, use below if you prefer not to switch to that group.
-            # # mod1 + shift + group number = move focused window to group
+            # # mod + shift + group number = move focused window to group
             # Key([mod, "shift"], i.name, lazy.window.togroup(i.name),
             #     desc="move focused window to group {}".format(i.name)),
         ]
     )
 
 layouts = [
-    layout.Columns(border_width=2, border_focus=COLOR_OVERLAY, border_normal=COLOR_CRUST, border_on_single=True),
-    # layout.Max(),
+    layout.Columns(border_focus_stack=["#d75f5f", "#8f3d3d"], border_width=4),
+    layout.Max(),
     # Try more layouts by unleashing below layouts.
     # layout.Stack(num_stacks=2),
     # layout.Bsp(),
@@ -207,60 +137,43 @@ layouts = [
 ]
 
 widget_defaults = dict(
-    font="Hack Nerd Font",
-    fontsize=16,
-    padding=2,
+    font="sans",
+    fontsize=12,
+    padding=3,
 )
 extension_defaults = widget_defaults.copy()
 
-def create_screen_bar():
-    return bar.Bar(
+screens = [
+    Screen(
+        bottom=bar.Bar(
             [
-                # widget.CurrentLayout(),
-                widget.GroupBox(
-                    highlight_method='line',
-                    active=COLOR_BLUE,
-                    inactive=COLOR_SUBTEXT,
-                    this_current_screen_border=COLOR_OVERLAY,
-                    highlight_color=[COLOR_BASE]
-                ),
+                widget.CurrentLayout(),
+                widget.GroupBox(),
                 widget.Prompt(),
-                widget.WindowName(max_chars=24),
+                widget.WindowName(),
                 widget.Chord(
                     chords_colors={
                         "launch": ("#ff0000", "#ffffff"),
                     },
                     name_transform=lambda name: name.upper(),
                 ),
-                # widget.TextBox("default config", name="default"),
-                # widget.TextBox("Press &lt;M-r&gt; to spawn", foreground="#d75f5f"),
+                widget.TextBox("default config", name="default"),
+                widget.TextBox("Press &lt;M-r&gt; to spawn", foreground="#d75f5f"),
                 # NB Systray is incompatible with Wayland, consider using StatusNotifier instead
                 # widget.StatusNotifier(),
-                # widget.Systray(),
-                widget.Clock(
-                    format="󰃰 %a %Y-%m-%d %I:%M %p",
-                    foreground=COLOR_BLUE,
-                    decorations=[
-                        BorderDecoration(
-                            border_width = BORDER,
-                            colour = COLOR_BLUE
-                        )
-                    ]
-                ),
-                # widget.QuickExit(),
+                widget.Systray(),
+                widget.Clock(format="%Y-%m-%d %a %I:%M %p"),
+                widget.QuickExit(),
             ],
-            28,
-            background=COLOR_CRUST,
+            24,
             # border_width=[2, 0, 2, 0],  # Draw top and bottom borders
             # border_color=["ff00ff", "000000", "ff00ff", "000000"]  # Borders are magenta
-    )
-
-
-screens = [
-    Screen(
-        bottom=create_screen_bar()
+        ),
+        # You can uncomment this variable if you see that on X11 floating resize/moving is laggy
+        # By default we handle these events delayed to already improve performance, however your system might still be struggling
+        # This variable is set to None (no cap) by default, but you can set it to 60 to indicate that you limit it to 60 events per second
+        # x11_drag_polling_rate = 60,
     ),
-    Screen(bottom=create_screen_bar()),
 ]
 
 # Drag floating layouts.
@@ -299,6 +212,10 @@ auto_minimize = True
 # When using the Wayland backend, this can be used to configure input devices.
 wl_input_rules = None
 
+# xcursor theme (string or None) and size (integer) for Wayland backend
+wl_xcursor_theme = None
+wl_xcursor_size = 24
+
 # XXX: Gasp! We're lying here. In fact, nobody really uses or cares about this
 # string besides java UI toolkits; you can see several discussions on the
 # mailing lists, GitHub issues, and other WM documentation that suggest setting
@@ -308,4 +225,3 @@ wl_input_rules = None
 # We choose LG3D to maximize irony: it is a 3D non-reparenting WM written in
 # java that happens to be on java's whitelist.
 wmname = "LG3D"
-
