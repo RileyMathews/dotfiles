@@ -3,4 +3,5 @@
 xrdb -merge "$HOME/.config/X11/.Xresources"
 exec sxhkd &
 exec picom -b &
+exec xiccd &
 exec i3
