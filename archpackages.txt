@@ -1,0 +1,14 @@
+neovim
+rofi
+i3
+starship
+polybar
+zsh
+fzf
+zoxide
+tmux
+sxhkd
+pyenv
+ripgrep
+dunst
+alacritty
