@@ -1,0 +1,6 @@
+#! /bin/sh
+
+# swhks &
+# pkexec swhkd
+exec xiccd &
+sway

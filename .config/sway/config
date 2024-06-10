@@ -57,6 +57,15 @@ set $right l
 
 set $mod Mod4
 bindsym $mod+d exec "rofi -show drun -display-drun ' > '"
+bindsym $mod+space exec "rofi -show drun -display-drun ' > '"
+bindsym $mod+b exec "librewolf"
+bindsym $mod+Return exec "alacritty"
+bindsym $mod+Shift+x exec "powermenu"
+bindsym XF86AudioLowerVolume exec "volume down"
+bindsym XF86AudioRaiseVolume exec "volume up"
+bindsym XF86AudioMute exec "volume mute"
+bindsym XF86MonBrightnessUp exec "backlight up"
+bindsym XF86MonBrightnessDown exec "backlight down"
 
 # kill focused window
 bindsym $mod+q kill
@@ -149,7 +158,7 @@ default_border pixel 1
 
 bar {
         status_command i3status
-        font pango:Hack Nerd Font 10
+        font pango:Hack Nerd Font 12 
         colors {
                 background $base
                 focused_workspace $mantle $crust $sapphire
