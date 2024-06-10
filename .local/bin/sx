@@ -38,7 +38,7 @@ done
 # to accept connections if it inherited a USR1 signal with a SIG_IGN
 # disposition.  Consequently a client may be started directly from a USR1
 # signal handler and obviate the need to poll for server readiness.
-trap 'DISPLAY=:$tty "${@:-$cfgdir/sxrc}" & wait "$!"' USR1
+trap 'DISPLAY=:$tty "$cfgdir/sxrc" "$@" & wait "$!"' USR1
 
 xauth add :"$tty" MIT-MAGIC-COOKIE-1 "$(od -An -N16 -tx /dev/urandom | tr -d ' ')"
 (trap '' USR1 && exec Xorg :"$tty" vt"$tty" -keeptty -noreset -auth "$XAUTHORITY") &

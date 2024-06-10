@@ -5,4 +5,9 @@ exec sxhkd &
 exec picom -b &
 exec $HOME/.config/dunst/launch.sh &
 exec xiccd &
-exec i3 
+
+if [ "$#" -eq 0 ]; then
+    exec i3
+else
+    exec "$@"
+fi
