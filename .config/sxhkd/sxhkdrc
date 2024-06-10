@@ -4,6 +4,9 @@ alt + b
 alt + Return
     alacritty
 
+alt + shift + x
+    powermenu
+
 alt + space
     rofi -show drun -display-drun ' > '
 
