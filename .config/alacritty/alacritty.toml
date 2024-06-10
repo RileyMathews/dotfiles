@@ -1,0 +1,118 @@
+[font]
+normal = { family = "Hack Nerd Font", style = "Regular" }
+
+[env]
+TERM = "xterm-256color"
+
+[window]
+padding = { y = 4, x = 1 }
+
+[colors.primary]
+background = "#1E1E2E"
+foreground = "#CDD6F4"
+dim_foreground = "#CDD6F4"
+bright_foreground = "#CDD6F4"
+
+[colors.cursor]
+text = "#1E1E2E"
+cursor = "#F5E0DC"
+
+[colors.vi_mode_cursor]
+text = "#1E1E2E"
+cursor = "#B4BEFE"
+
+[colors.search.matches]
+foreground = "#1E1E2E"
+background = "#A6ADC8"
+
+[colors.search.focused_match]
+foreground = "#1E1E2E"
+background = "#A6E3A1"
+
+[colors.footer_bar]
+foreground = "#1E1E2E"
+background = "#A6ADC8"
+
+[colors.hints.start]
+foreground = "#1E1E2E"
+background = "#F9E2AF"
+
+[colors.hints.end]
+foreground = "#1E1E2E"
+background = "#A6ADC8"
+
+[colors.selection]
+text = "#1E1E2E"
+background = "#F5E0DC"
+
+[colors.normal]
+black = "#45475A"
+red = "#F38BA8"
+green = "#A6E3A1"
+yellow = "#F9E2AF"
+blue = "#89B4FA"
+magenta = "#F5C2E7"
+cyan = "#94E2D5"
+white = "#BAC2DE"
+
+[colors.bright]
+black = "#585B70"
+red = "#F38BA8"
+green = "#A6E3A1"
+yellow = "#F9E2AF"
+blue = "#89B4FA"
+magenta = "#F5C2E7"
+cyan = "#94E2D5"
+white = "#A6ADC8"
+
+[colors.dim]
+black = "#45475A"
+red = "#F38BA8"
+green = "#A6E3A1"
+yellow = "#F9E2AF"
+blue = "#89B4FA"
+magenta = "#F5C2E7"
+cyan = "#94E2D5"
+white = "#BAC2DE"
+
+[[colors.indexed_colors]]
+index = 16
+color = "#FAB387"
+
+[[colors.indexed_colors]]
+index = 17
+color = "#F5E0DC"
+
+[keyboard]
+# linux already uses this binding but defining it explicitly so it also works on macos.
+bindings = [
+  { key = "Space",     mods = "Command",       chars = "\u0000"                       },
+  { key = "A",         mods = "Command",       chars = "\u0001"                       },
+  { key = "B",         mods = "Command",       chars = "\u0002"                       },
+  { key = "C",         mods = "Command",       chars = "\u0003"                       },
+  { key = "D",         mods = "Command",       chars = "\u0004"                       },
+  { key = "E",         mods = "Command",       chars = "\u0005"                       },
+  { key = "F",         mods = "Command",       chars = "\u0006"                       },
+  { key = "G",         mods = "Command",       chars = "\u0007"                       },
+  { key = "H",         mods = "Command",       chars = "\u0008"                       },
+  { key = "I",         mods = "Command",       chars = "\u0009"                       },
+  { key = "J",         mods = "Command",       chars = "\u000A"                       },
+  { key = "K",         mods = "Command",       chars = "\u000B"                       },
+  { key = "L",         mods = "Command",       chars = "\u000C"                       },
+  { key = "M",         mods = "Command",       chars = "\u000D"                       },
+  { key = "N",         mods = "Command",       chars = "\u000E"                       },
+  { key = "O",         mods = "Command",       chars = "\u000F"                       },
+  { key = "P",         mods = "Command",       chars = "\u0010"                       },
+  { key = "Q",         mods = "Command",       chars = "\u0011"                       },
+  { key = "R",         mods = "Command",       chars = "\u0012"                       },
+  { key = "S",         mods = "Command",       chars = "\u0013"                       },
+  { key = "T",         mods = "Command",       chars = "\u0014"                       },
+  { key = "U",         mods = "Command",       chars = "\u0015"                       },
+  { key = "V",         mods = "Command",       chars = "\u0016"                       },
+  { key = "W",         mods = "Command",       chars = "\u0017"                       },
+  { key = "X",         mods = "Command",       chars = "\u0018"                       },
+  { key = "Y",         mods = "Command",       chars = "\u0019"                       },
+  { key = "Z",         mods = "Command",       chars = "\u001A"                       },
+  { key = "C",          mods = "Command|Shift",  action = "Copy" },
+  { key = "V",          mods = "Command|Shift",  action = "Paste" },
+]
