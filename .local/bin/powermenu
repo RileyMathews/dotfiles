@@ -3,7 +3,7 @@
 chosen=$(printf "Power Off\nCancel" | rofi -dmenu -i -them-str '@import "power.rasi"')
 
 case "$chosen" in
-    "Power Off") dunstify "power off" ;;
-    "Cancel") dunstify "Canceling" ;;
+    "Power Off") poweroff ;;
+    "Cancel") exit 0 ;;
     *) exit 1 ;;
 esac
