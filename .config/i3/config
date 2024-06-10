@@ -147,15 +147,17 @@ mode "resize" {
 default_border pixel 1
 # gaps inner 8px
 
-bar {
-        status_command i3status
-        font pango:Hack Nerd Font 12 
-        colors {
-                background $base
-                focused_workspace $mantle $crust $sapphire
-                inactive_workspace $mantle $base $text
-                urgent_workspace $mantle $base $yellow
-                statusline $text
-        }
-}
+# bar {
+#         status_command i3status
+#         font pango:Hack Nerd Font 12 
+#         colors {
+#                 background $base
+#                 focused_workspace $mantle $crust $sapphire
+#                 inactive_workspace $mantle $base $text
+#                 urgent_workspace $mantle $base $yellow
+#                 statusline $text
+#         }
+# }
 
+exec_always killall polybar
+exec_always --no-startup-id ~/.config/polybar/launch_polybar.sh
