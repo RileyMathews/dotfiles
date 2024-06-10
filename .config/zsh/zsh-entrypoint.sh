@@ -3,7 +3,6 @@ export PATH="$HOME/.local/bin:$PATH"
 export KEYTIMEOUT=1
 
 [ -f "$HOME/.config/zsh/.zshrc.secret" ] && source "$HOME/.config/zsh/.zshrc.secret"
-[ -f "$HOME/.config/zsh/minimal.zsh" ] && source "$HOME/.config/zsh/minimal.zsh"
 
 #####################################
 # Aliases                           #
@@ -130,11 +129,6 @@ _tmux_switch_or_activate() {
     tmux $command -t $session_name
 }
 
-
-for file in ~/.config/zsh/*; do
-    if [ "$(basename $file)" != "zsh-entrypoint.sh" ]; then
-        source $file
-    fi
-done
-
+eval "$(starship init zsh)"
+source $HOME/.config/zsh/zsh-syntax-highligting-theme.sh
 source $HOME/.local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
