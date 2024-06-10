@@ -8,4 +8,4 @@ then
 fi
 
 # Start a new instance of dunst
-dunst &
+dunst -config <(envsubst < ~/.config/dunst/dunstrc) &

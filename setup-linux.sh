@@ -62,8 +62,16 @@ ln -sf `pwd`/localbin/update-checker ~/.local/bin/update-checker
 ln -sf `pwd`/localbin/sx ~/.local/bin/sx
 ln -sf `pwd`/localbin/volume ~/.local/bin/volume
 ln -sf `pwd`/localbin/backlight ~/.local/bin/backlight
+ln -sf `pwd`/localbin/battery-alert ~/.local/bin/battery-alert
+
+rm -rf ~/.local/share/icons
+mkdir -p ~/.local/share/icons
+ln -sf `pwd`/local/share/icons/dunst ~/.local/share/icons/dunst
 
 echo "setting up user systemd services"
 mkdir -p ~/.config/systemd/user
 ln -sf `pwd`/systemd/user/update-checker.service ~/.config/systemd/user/update-checker.service
 ln -sf `pwd`/systemd/user/update-checker.timer ~/.config/systemd/user/update-checker.timer
+ln -sf `pwd`/systemd/user/battery-alert.service ~/.config/systemd/user/battery-alert.service
+ln -sf `pwd`/systemd/user/battery-alert.timer ~/.config/systemd/user/battery-alert.timer
+
