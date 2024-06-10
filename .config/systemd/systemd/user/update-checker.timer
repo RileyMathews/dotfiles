@@ -1,0 +1,9 @@
+[Unit]
+Description=Timer for update checker service
+
+[Timer]
+OnCalendar=hourly
+Persistent=True
+
+[Install]
+WantedBy=timers.target

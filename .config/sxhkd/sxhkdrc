@@ -1,0 +1,23 @@
+alt + b
+    librewolf
+
+alt + Return
+    alacritty
+
+alt + space
+    rofi -show drun -display-drun ' > '
+
+XF86AudioLowerVolume
+    volume down 
+
+XF86AudioRaiseVolume
+    volume up
+
+XF86AudioMute
+    volume mute
+
+XF86MonBrightnessUp
+    backlight up
+
+XF86MonBrightnessDown
+    backlight down

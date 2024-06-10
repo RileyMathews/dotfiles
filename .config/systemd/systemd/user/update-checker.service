@@ -1,0 +1,9 @@
+[Unit]
+Description=Checks for updates and notifies via notify-send
+After=autostart.target
+
+[Service]
+ExecStart=/home/rileymathews/.local/bin/update-checker
+
+[Install]
+WantedBy=autostart.target
