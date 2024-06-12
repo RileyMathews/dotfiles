@@ -12,3 +12,14 @@ pyenv
 ripgrep
 dunst
 alacritty
+git
+firefox
+fastfetch
+btop
+direnv
+alsa-utils
+acpi
+fwupd
+iwd
+stow
+ttf-hack-nerd
