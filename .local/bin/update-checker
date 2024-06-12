@@ -6,6 +6,7 @@ fi
 
 if [ "$updates" -gt 0 ]; then
     notify-send "Update" "$updates packages out of date" -u CRITICAL
+    curl -d "System $(cat /etc/hostname) has $updates updates available" https://ntfy.rileymathews.com/home-server-alerts
 else
     echo "no updates"
 fi
