@@ -1,2 +1,4 @@
 archpackages.txt
 archinstall.sh
+.git
+.gitignore
