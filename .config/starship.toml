@@ -69,6 +69,7 @@ crust = "#11111b"
 
 [hostname]
 ssh_only = false
+ssh_symbol = '󰣀'
 style = "bg:surface0 fg:text"
 format = '[$ssh_symbol$hostname ]($style)'
 
