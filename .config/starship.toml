@@ -71,7 +71,7 @@ crust = "#11111b"
 ssh_only = false
 ssh_symbol = '󰑔'
 style = "bg:surface0 fg:text"
-format = '[$hostname ]($style)'
+format = '[$ssh_symbol$hostname ]($style)'
 
 [os]
 disabled = false
