@@ -1,5 +1,5 @@
 export EDITOR="nvim"
-export PATH="$HOME/.local/bin:$PATH"
+export PATH="$HOME/.local/bin:$HOME/.screenlayout:$PATH"
 export KEYTIMEOUT=1
 
 [ -f "$HOME/.config/zsh/.zshrc.secret" ] && source "$HOME/.config/zsh/.zshrc.secret"
