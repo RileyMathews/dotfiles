@@ -72,7 +72,7 @@ fi
 
 [ -f "$HOME/.rbenv/bin/rbenv" ] && eval "$(~/.rbenv/bin/rbenv init - zsh)"
 
-
+[ -f "/home/rileymathews/.ghcup/env" ] && . "/home/rileymathews/.ghcup/env" # ghcup-env
 ######################################
 # Shell utilities                    #
 ######################################
