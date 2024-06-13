@@ -134,16 +134,16 @@ layouts = [
     layout.Columns(border_focus_stack=["#d75f5f", "#8f3d3d"], border_focus="#74c7ec",border_normal="#181825", border_width=2),
     layout.Max(),
     # Try more layouts by unleashing below layouts.
-    # layout.Stack(num_stacks=2),
-    # layout.Bsp(),
-    # layout.Matrix(),
-    # layout.MonadTall(),
-    # layout.MonadWide(),
-    # layout.RatioTile(),
-    # layout.Tile(),
-    # layout.TreeTab(),
-    # layout.VerticalTile(),
-    # layout.Zoomy(),
+    layout.Stack(num_stacks=2),
+    layout.Bsp(),
+    layout.Matrix(),
+    layout.MonadTall(),
+    layout.MonadWide(),
+    layout.RatioTile(),
+    layout.Tile(),
+    layout.TreeTab(),
+    layout.VerticalTile(),
+    layout.Zoomy(),
 ]
 
 widget_defaults = dict(
@@ -154,7 +154,36 @@ widget_defaults = dict(
 extension_defaults = widget_defaults.copy()
 
 screens = [
-    Screen(),
+    Screen(
+        bottom=bar.Bar(
+            [
+                widget.CurrentLayout(),
+                widget.GroupBox(),
+                widget.Prompt(),
+                widget.WindowName(),
+                widget.Chord(
+                    chords_colors={
+                        "launch": ("#ff0000", "#ffffff"),
+                    },
+                    name_transform=lambda name: name.upper(),
+                ),
+                widget.TextBox("default config", name="default"),
+                widget.TextBox("Press &lt;M-r&gt; to spawn", foreground="#d75f5f"),
+                # NB Systray is incompatible with Wayland, consider using StatusNotifier instead
+                # widget.StatusNotifier(),
+                widget.Systray(),
+                widget.Clock(format="%Y-%m-%d %a %I:%M %p"),
+                widget.QuickExit(),
+            ],
+            24,
+            # border_width=[2, 0, 2, 0],  # Draw top and bottom borders
+            # border_color=["ff00ff", "000000", "ff00ff", "000000"]  # Borders are magenta
+        ),
+        # You can uncomment this variable if you see that on X11 floating resize/moving is laggy
+        # By default we handle these events delayed to already improve performance, however your system might still be struggling
+        # This variable is set to None (no cap) by default, but you can set it to 60 to indicate that you limit it to 60 events per second
+        # x11_drag_polling_rate = 60,
+    ),
 ]
 
 # Drag floating layouts.
