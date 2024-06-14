@@ -52,6 +52,7 @@ Windows = "󰍲"
 Linux = "󰌽"
 Arch = "󰣇"
 Debian = "󰣚"
+NixOS = ""
 
 [username]
 show_always = true
