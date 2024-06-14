@@ -120,8 +120,7 @@ bindsym $mod+Shift+0 move container to workspace number $ws10
 bindsym $mod+Shift+r restart
 bindsym $mod+Shift+q exec "i3-msg exit"
 
-bindsym $mod+Shift+s split h
-bindsym $mod+Shift+v split v
+bindsym $mod+v split toggle
 
 # resize window (you can also use the mouse for that)
 bindsym $mod+r mode "resize"
