@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # Check if dunst is already running
 if pgrep -x "dunst" > /dev/null

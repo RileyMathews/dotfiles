@@ -1,11 +1,5 @@
 #!/bin/sh
 
-xrdb -merge "$HOME/.config/X11/.Xresources"
-exec sxhkd &
-exec picom -b &
-exec $HOME/.config/dunst/launch.sh &
-exec xiccd &
-
 if [ "$#" -eq 0 ]; then
     exec i3
 else
