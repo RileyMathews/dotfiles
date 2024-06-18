@@ -9,8 +9,6 @@
 # layout, use the i3-config-wizard
 #
 
-exec --no-startup-id ~/.local/bin/xwm-autostart-programs
-
 # Catppuccin colors
 set $rosewater #f5e0dc
 set $flamingo  #f2cdcd
