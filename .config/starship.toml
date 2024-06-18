@@ -62,12 +62,12 @@ format = ' $user '
 format = " $path "
 
 [directory.substitutions]
-"Documents" = "󰈙 "
-"Downloads" = " "
+"Documents" = "󰈙"
+"Downloads" = ""
 "Music" = "󰝚 "
-"Pictures" = " "
-"code" = "󰲋 "
-"dotfiles" = " "
+"Pictures" = ""
+"code" = "󰲋"
+"dotfiles" = ""
 
 [git_branch]
 symbol = ""
