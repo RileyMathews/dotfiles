@@ -4,7 +4,7 @@ xrdb -merge "$HOME/.config/X11/.Xresources"
 exec sxhkd &
 exec picom -b &
 exec $HOME/.config/dunst/launch.sh &
-# exec xiccd &
+ exec xiccd &
 xsetroot -solid "#000000"
 
 if [ "$#" -eq 0 ]; then
