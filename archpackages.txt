@@ -28,3 +28,5 @@ xorg
 libnotify
 brightnessctl
 openssh
+lxappearance
+gnome-themes-extra
