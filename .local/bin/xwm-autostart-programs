@@ -5,4 +5,4 @@ exec sxhkd &
 # exec picom -b &
 exec $HOME/.config/dunst/launch.sh &
 # exec xiccd &
-xsetroot -solid "#ffffff"
+xsetroot -solid "#000000"
