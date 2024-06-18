@@ -79,7 +79,8 @@ alias gco='git checkout'
 alias gcb='git checkout -b'
 alias gcm='git checkout main'
 
-alias l='ls -la'
+alias l='ls -la --color'
+alias ls='ls --color'
 
 ######################################
 # Language Managers                  #
