@@ -31,6 +31,3 @@ openssh
 lxappearance
 gnome-themes-extra
 picom
-easyeffects
-calf
-lsp-plugins
