@@ -24,3 +24,7 @@ iwd
 stow
 ttf-hack-nerd
 arandr
+xorg
+libnotify
+brightnessctl
+openssh
