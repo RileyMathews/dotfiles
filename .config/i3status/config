@@ -36,9 +36,9 @@ battery all {
         format = "󰁹 %status %percentage %remaining"
 }
 
-# disk "/" {
-#         format = "󱛟 %avail"
-# }
+disk "/" {
+        format = "󱛟 %avail"
+}
 
 load {
         format = " %1min"

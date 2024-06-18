@@ -30,3 +30,4 @@ brightnessctl
 openssh
 lxappearance
 gnome-themes-extra
+picom
