@@ -31,3 +31,4 @@ openssh
 lxappearance
 gnome-themes-extra
 picom
+pacman-contrib
