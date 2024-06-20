@@ -53,7 +53,7 @@ Linux = "󰌽"
 Arch = "󰣇"
 Debian = "󰣚"
 NixOS = ""
-MacOS = ""
+Macos = ""
 
 [username]
 show_always = true
