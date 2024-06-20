@@ -1,9 +1,10 @@
 #! /bin/sh
 
-chosen=$(printf "Power Off\nCancel" | rofi -dmenu -i -them-str '@import "power.rasi"')
+chosen=$(printf "Power Off\nRestart\nCancel" | rofi -dmenu -i -them-str '@import "power.rasi"')
 
 case "$chosen" in
-    "Power Off") poweroff ;;
+    "Power Off") systemctl poweroff ;;
+    "Restart") systemctl reboot ;;
     "Cancel") exit 0 ;;
     *) exit 1 ;;
 esac
