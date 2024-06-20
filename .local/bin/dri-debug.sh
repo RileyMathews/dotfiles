@@ -12,7 +12,7 @@ do
         # If DRI_PRIME is set, display the process information
         if [ ! -z "$gpu_usage" ]; then
             # Display process name, PID, and GPU usage info
-            echo "Process '${proc_name}' (ID ${proc_pid}) is using GPU: ${gpu_usage}"
+            echo "${proc_name} ${proc_pid} ${gpu_usage}"
         fi
     fi
 done
