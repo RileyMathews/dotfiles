@@ -53,6 +53,7 @@ Linux = "󰌽"
 Arch = "󰣇"
 Debian = "󰣚"
 NixOS = ""
+Macos = ""
 
 [username]
 show_always = true
@@ -67,7 +68,7 @@ format = " $path "
 "Music" = "󰝚 "
 "Pictures" = ""
 "code" = "󰲋"
-"dotfiles" = ""
+"dotfiles" = " "
 
 [git_branch]
 symbol = ""

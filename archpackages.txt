@@ -31,3 +31,8 @@ openssh
 lxappearance
 gnome-themes-extra
 picom
+pacman-contrib
+bluez-utils
+pipewire
+pavucontrol
+cpupower
