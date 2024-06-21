@@ -35,4 +35,4 @@ pacman-contrib
 bluez-utils
 pipewire
 pavucontrol
-
+cpupower
