@@ -1,13 +1,13 @@
-alt + b
+super + b
     librewolf
 
-alt + Return
+super + Return
     alacritty
 
-alt + shift + x
+super + shift + x
     powermenu
 
-alt + space
+super + space
     rofi -show drun -display-drun ' > '
 
 XF86AudioLowerVolume
