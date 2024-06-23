@@ -42,7 +42,8 @@ setopt hist_ignore_dups
 setopt hist_find_no_dups
 
 export EDITOR="nvim"
-export PATH="$HOME/.local/bin:$HOME/.screenlayout:$PATH"
+# .local/secret-bin is for binaries that I do not want to share via dotfiles repo
+export PATH="$HOME/.local/bin:$HOME/.local/secret-bin:$HOME/.screenlayout:$PATH"
 export KEYTIMEOUT=1
 
 [ -f "$HOME/.config/zsh/.zshrc.secret" ] && source "$HOME/.config/zsh/.zshrc.secret"
