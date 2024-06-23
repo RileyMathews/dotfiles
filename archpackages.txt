@@ -36,3 +36,4 @@ bluez-utils
 pipewire
 pavucontrol
 cpupower
+unzip
