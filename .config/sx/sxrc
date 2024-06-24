@@ -1,14 +1,11 @@
 #!/bin/sh
 
-setxkbmap -option shift:both_capslock
-setxkbmap -option caps:escape
-xrdb -merge "$HOME/.config/X11/.Xresources"
+exec xconfigure &
 exec sxhkd &
 exec picom -b &
 exec $HOME/.config/dunst/launch.sh &
 exec xiccd &
 exec playerctld daemon &
-xsetroot -solid "#000000"
 
 if [ "$#" -eq 0 ]; then
     exec i3

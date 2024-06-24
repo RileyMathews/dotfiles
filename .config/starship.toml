@@ -2,7 +2,7 @@
 
 format = """
 [$hostname$os$username](bg:blue fg:mantle)\
-[$directory](bg:yellow fg:mantle)\
+[$directory](bg:blue fg:mantle)\
 [$git_branch$git_status](bg:peach fg:mantle)\
 [$python](bg:green fg:mantle)\
 $line_break$character"""
@@ -57,7 +57,7 @@ Macos = ""
 
 [username]
 show_always = true
-format = ' $user '
+format = ' $user'
 
 [directory]
 format = " $path "
@@ -72,14 +72,14 @@ format = " $path "
 
 [git_branch]
 symbol = ""
-format = ' $symbol $branch '
+format = ' $symbol $branch'
 
 [git_status]
 format = '$all_status$ahead_behind '
 
 [python]
 symbol = ""
-format = ' $symbol $version $virtualenv '
+format = ' $symbol $version $virtualenv'
 
 [line_break]
 disabled = false
