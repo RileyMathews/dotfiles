@@ -1,4 +1,4 @@
-super + b
+super + l
     librewolf
 
 super + Return
@@ -24,3 +24,12 @@ XF86MonBrightnessUp
 
 XF86MonBrightnessDown
     backlight down
+
+XF86AudioNext
+    playerctl next
+
+XF86AudioPrev
+    playerctl previous
+
+XF86AudioPlay
+    playerctl play-pause
