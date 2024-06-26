@@ -8,10 +8,6 @@ if [ -z "$OUTPUT" ]; then
 	exit 0
 else
 	NUMBER="$(echo "$OUTPUT" | wc -l)"
-	TEXT="󰏔"
-
-	TOOLTIP="$NUMBER updates found"
-
-	echo "{\"text\":\"""$TEXT""\", \"tooltip\":\"""$TOOLTIP""\"}"
+	echo "󰏔 $NUMBER updates"
 	exit 0
 fi
