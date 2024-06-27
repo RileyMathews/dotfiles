@@ -56,7 +56,7 @@ set $left h
 set $right l
 
 set $mod Mod4
-bindsym $mod+d exec "rofi -show drun -display-drun ' > '"
+bindsym $mod+d exec "rofi -show drun"
 
 # kill focused window
 bindsym $mod+q kill
