@@ -56,6 +56,8 @@ set $left h
 set $right l
 
 set $mod Mod4
+# set an i3 specific config for showing rofi. This is in case anything goes wrong with sxhkd
+# I still have an escape hatch for launching applications
 bindsym $mod+d exec "rofi -show drun"
 
 # kill focused window
