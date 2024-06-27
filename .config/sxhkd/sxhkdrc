@@ -8,7 +8,7 @@ super + shift + x
     powermenu
 
 super + space
-    rofi -show drun -display-drun ' > '
+    rofi -show drun
 
 XF86AudioLowerVolume
     volume down 
