@@ -33,3 +33,9 @@ XF86AudioPrev
 
 XF86AudioPlay
     playerctl play-pause
+
+Print
+    flameshot gui
+
+shift + Print
+    flameshot full
