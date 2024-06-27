@@ -176,7 +176,7 @@ _tmux_switch_or_activate() {
 
 eval "$(starship init zsh)"
 
-if [ -z "$TMUX" ]; then
+if [ -n "$DISPLAY" ] && [ -z "$TMUX" ]; then
     # Attach to the last active session, or create a new one if none exists
     tmux attach-session || tmux new-session
 fi
