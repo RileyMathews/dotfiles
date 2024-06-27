@@ -1,6 +1,6 @@
 #! /bin/sh
 
-chosen=$(printf "Power Off\nRestart\nCancel" | rofi -dmenu -i -theme power.rasi)
+chosen=$(printf "Power Off\nRestart\nCancel" | rofi -dmenu -i)
 
 case "$chosen" in
     "Power Off") systemctl poweroff ;;
