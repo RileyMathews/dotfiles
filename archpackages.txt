@@ -37,3 +37,4 @@ pipewire
 pavucontrol
 cpupower
 unzip
+flameshot
