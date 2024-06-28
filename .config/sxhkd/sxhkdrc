@@ -4,8 +4,11 @@ super + b
 super + Return
     alacritty
 
-super + shift + x
+super + shift + p
     powermenu
+
+super + x
+    betterlockscreen -l
 
 super + space
     rofi -show drun
