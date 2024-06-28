@@ -1,6 +1,12 @@
 #! /bin/sh
 
+xset -dpms
+xset s off
 setxkbmap -option shift:both_capslock
 setxkbmap -option caps:super
 xrdb -merge "$HOME/.config/X11/.Xresources"
 xsetroot -solid "#000000"
+xidlehook \
+    --timer 300 \
+    'betterlockscreen -l' \
+    '' &

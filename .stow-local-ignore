@@ -1,4 +1,6 @@
 archpackages.txt
+aurpackages.txt
+aurinstall.sh
 archinstall.sh
 .git
 .gitignore

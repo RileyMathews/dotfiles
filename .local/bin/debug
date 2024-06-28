@@ -1,0 +1,3 @@
+betterlockscreen --lock > /home/riley/.local/share/ls.log &
+sleep 2
+systemctl suspend
