@@ -92,9 +92,14 @@ export PATH="$PATH:$HOME/.cargo/bin"
 
 export PATH=$PATH:/usr/local/go/bin:$HOME/go/bin
 
-export NVM_DIR="$HOME/.nvm"
-[ -f "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -f "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+# export NVM_DIR="$HOME/.nvm"
+# [ -f "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+# [ -f "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+# Activate `fnm`: https://github.com/Schniz/fnm
+if command -v fnm >/dev/null; then
+    eval "$(fnm env --use-on-cd)"
+fi
 
 # Try to find pyenv, if it's not on the path
 export PYENV_ROOT="${PYENV_ROOT:=${HOME}/.pyenv}"
