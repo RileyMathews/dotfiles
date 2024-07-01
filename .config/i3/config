@@ -149,7 +149,7 @@ mode "resize" {
 }
 
 default_border pixel 1
-# gaps inner 8px
+gaps inner 8px
 
 exec_always --no-startup-id ~/.config/polybar/launch_polybar.sh
 
