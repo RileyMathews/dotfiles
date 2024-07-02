@@ -1,6 +1,13 @@
 #!/bin/sh
 
 # Script for use in waybar to display # of pacman updates
+LOCKFILE=/tmp/pacman-updates.lock
+if [ -e $LOCKFILE ]; then
+	exit 0
+fi
+
+touch $LOCKFILE
+trap "rm -f $LOCKFILE" EXIT
 
 OUTPUT="$(checkupdates)"
 
