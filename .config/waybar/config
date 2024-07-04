@@ -1,76 +1,87 @@
 {
-    "layer": "top",
-    "height": 30,
-    "spacing": 5,
-    // Choose the order of the modules
-    "modules-left": [
-        "hyprland/workspaces"
+  "layer": "top",
+  "height": 30,
+  "spacing": 5,
+  "modules-left": [
+    "sway/workspaces"
+  ],
+  "modules-center": [
+    "hyprland/window"
+  ],
+  "modules-right": [
+    "tray",
+    "custom/pacman",
+    "pulseaudio",
+    "network",
+    "battery",
+    "clock",
+    "custom/power"
+  ],
+  "hyprland/window": {
+    "separate-outputs": true
+  },
+  "hyprland/workspaces": {
+    "disable-scroll": true,
+    "all-outputs": true,
+    "on-click": "activate"
+  },
+  "tray": {
+    "spacing": 10
+  },
+  "custom/pacman": {
+    "interval": 3600,
+    "return-type": "json",
+    "exec": "pacman-updates",
+    "exec-if": "exit 0",
+    "on-click": "$TERMINAL -e paru; pkill -SIGRTMIN+8 waybar",
+    "signal": 8
+  },
+  "clock": {
+    "tooltip-format": "{:%A, %B %d, %Y}",
+    "format": "{:%H:%M}"
+  },
+  "battery": {
+    "states": {
+      "warning": 20
+    },
+    "format": "{icon}",
+    "format-icons": [
+      "󰂎",
+      "󰁺",
+      "󰁻",
+      "󰁼",
+      "󰁽",
+      "󰁾",
+      "󰁿",
+      "󰂀",
+      "󰂁",
+      "󰂂",
+      "󰁹"
     ],
-    "modules-center": [
-        "hyprland/window"
-    ],
-    "modules-right": [
-				"tray",
-        "custom/pacman",
-        "pulseaudio",
-        "network",
-        "battery",
-				"clock",
-        "custom/power"
-		],
-		"hyprland/window": {
-			"separate-outputs": true
-		},
-    "hyprland/workspaces": {
-        "disable-scroll": true,
-        "all-outputs": true,
-        "on-click": "activate"
+    "format-charging": "󰂄",
+    "format-warning": "󰂃",
+    "tooltip-format": "{capacity}% capacity"
+  },
+  "network": {
+    "format-wifi": "󰤨",
+    "format-disconnected": "󰤭",
+    "tooltip-format": "Connected to {essid}",
+    "on-click": "hyprctl dispatch exec '[float]' '$TERMINAL -e nmtui'"
+  },
+  "pulseaudio": {
+    "format": "{icon}",
+    "format-muted": "󰖁",
+    "format-icons": {
+      "default": [
+        "",
+        "",
+        "󰕾"
+      ]
     },
-    "tray": {
-        // "icon-size": 21,
-        "spacing": 10
-    },
-		"custom/pacman": {
-			"interval": 3600,
-			"return-type": "json",
-			"exec": "pacman-updates",
-			"exec-if": "exit 0",
-			"on-click": "$TERMINAL -e paru; pkill -SIGRTMIN+8 waybar",
-			"signal": 8
-		},
-    "clock": {
-        "tooltip-format": "{:%A, %B %d, %Y}",
-        "format": "{:%H:%M}"
-    },
-    "battery": {
-        "states": {
-            "warning": 20
-        },
-        "format": "{icon}",
-        "format-icons": [ "󰂎", "󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹" ],
-        "format-charging": "󰂄",
-        "format-warning": "󰂃",
-				"tooltip-format": "{capacity}% capacity"
-    },
-    "network": {
-        "format-wifi": "󰤨",
-        "format-disconnected": "󰤭",
-				"tooltip-format": "Connected to {essid}",
-				"on-click": "hyprctl dispatch exec '[float]' '$TERMINAL -e nmtui'"
-    },
-    "pulseaudio": {
-        // "scroll-step": 1, // %, can be a float
-        "format": "{icon}",
-        "format-muted": "󰖁",
-				"format-icons": {
-					"default": ["", "", "󰕾"]
-				},
-				"tooltip-format": "{volume}% volume"
-		},
-    "custom/power": {
-        "format": "󰐥",
-        "on-click": "sleep 0.15 && powermenu"
-    }
+    "tooltip-format": "{volume}% volume"
+  },
+  "custom/power": {
+    "format": "󰐥",
+    "on-click": "sleep 0.15 && powermenu"
+  }
 }
-
-// vim: ft=jsonc

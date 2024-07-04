@@ -84,16 +84,15 @@ button {
 
 #workspaces button {
     padding: 0 5px;
-    color: @surface2;
+    color: @text;
     margin: 4px 0 4px 6px;
-    transition: color 200ms ease-in-out;
 }
 
-#workspaces button.selected {
+#workspaces button.visible {
     color: @blue;
 }
 
-#workspaces button.active {
+#workspaces button.focused {
     color: @mauve;
 }
 

@@ -55,9 +55,9 @@ set $down j
 set $left h
 set $right l
 
-set $mod Mod1
-bindsym $mod+d exec "rofi -show drun -display-drun ' > '"
-bindsym $mod+space exec "rofi -show drun -display-drun ' > '"
+set $mod Mod4
+bindsym $mod+d exec "wofi --show drun"
+bindsym $mod+space exec "wofi --show drun"
 bindsym $mod+b exec "librewolf"
 bindsym $mod+Return exec "alacritty"
 bindsym $mod+Shift+x exec "powermenu"
@@ -156,17 +156,19 @@ mode "resize" {
 }
 
 default_border pixel 1
-# gaps inner 8px
+gaps inner 8px
 
-bar {
-        status_command i3status
-        font pango:Hack Nerd Font 12 
-        colors {
-                background $base
-                focused_workspace $mantle $crust $sapphire
-                inactive_workspace $mantle $base $text
-                urgent_workspace $mantle $base $yellow
-                statusline $text
-        }
-}
+exec_always --no-startup-id waybar
+
+# bar {
+#         status_command i3status
+#         font pango:Hack Nerd Font 12 
+#         colors {
+#                 background $base
+#                 focused_workspace $mantle $crust $sapphire
+#                 inactive_workspace $mantle $base $text
+#                 urgent_workspace $mantle $base $yellow
+#                 statusline $text
+#         }
+# }
 
