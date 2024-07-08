@@ -170,6 +170,23 @@ return {
 					},
 				},
 			},
+			hls = {
+				settings = {
+					languageServerHaskell = {
+						formattingProvider = "fourmolu",
+						formatOnImportOn = true,
+						completionSnippetOn = true,
+						hlintOn = true,
+						plugin = {
+							tactics = {
+								config = {
+									features = "QrfgehpgNyy/HfrQngnPba/ErsvarUbyr/XabjaZbabvq",
+								},
+							},
+						},
+					},
+				},
+			},
 		}
 
 		-- Ensure the servers and tools above are installed
