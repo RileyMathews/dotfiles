@@ -67,7 +67,7 @@ format = " $path "
 "Downloads" = ""
 "Music" = "󰝚 "
 "Pictures" = ""
-"code" = "󰲋"
+"code" = "󰲋 "
 "dotfiles" = " "
 
 [git_branch]
