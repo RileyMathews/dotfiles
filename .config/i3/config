@@ -166,9 +166,5 @@ exec_always --no-startup-id ~/.config/polybar/launch_polybar.sh
 # }
 
 # Zoom
-# for_window [instance="^zoom(\.|$)" title="^Zoom($|\s)"] floating enable, border pixel 2
-# for_window [instance="^zoom(\.|$)" title="^zoom"] floating enable, border none no_focus [instance="^zoom(\.|$)" title="^zoom"]
-# for_window [instance="^join\?action=join" title="^Zoom($|\s)"] floating disable, border pixel 2
-# for_window [instance="^join\?action=join" title="^join\?action=join"] floating enable, border none no_focus [instance="^join\?action=join" title="^join\?action=join"]
-# for_window [instance="^start\?action=start" title="^Zoom($|\s)"] floating disable, border pixel 2
-# for_window [instance="^start\?action=start" title="^start\?action=start"] floating enable, border none no_focus [instance="^start\?action=start" title="^start\?action=start"]
+for_window [title="^zoom$"] floating enable
+for_window [title="^Zoom Workplace$"] floating enable 
