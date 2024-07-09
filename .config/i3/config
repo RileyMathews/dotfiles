@@ -56,6 +56,8 @@ set $left h
 set $right l
 
 set $mod Mod4
+floating_modifier $mod
+tiling_drag modifier titlebar
 # set an i3 specific config for showing rofi. This is in case anything goes wrong with sxhkd
 # I still have an escape hatch for launching applications
 bindsym $mod+d exec "rofi -show drun"
@@ -168,3 +170,4 @@ exec_always --no-startup-id ~/.config/polybar/launch_polybar.sh
 # Zoom
 for_window [title="^zoom$"] floating enable
 for_window [title="^Zoom Workplace$"] floating enable 
+bindcode $mod+Shift+65 floating toggle
