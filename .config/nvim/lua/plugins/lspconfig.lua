@@ -170,6 +170,42 @@ return {
 					},
 				},
 			},
+		}
+
+		-- Ensure the servers and tools above are installed
+		--  To check the current status of installed tools and/or manually install
+		--  other tools, you can run
+		--    :Mason
+		--
+		--  You can press `g?` for help in this menu
+		require("mason").setup()
+
+		-- You can add other tools here that you want Mason to install
+		-- for you, so that they are available from within Neovim.
+		local ensure_installed = vim.tbl_keys(servers or {})
+		vim.list_extend(ensure_installed, {
+			"stylua", -- Used to format lua code
+		})
+		require("mason-tool-installer").setup({ ensure_installed = ensure_installed })
+
+		local lspconfig = require("lspconfig")
+
+		-- wire up servers that mason is managing for us
+		require("mason-lspconfig").setup({
+			handlers = {
+				function(server_name)
+					local server = servers[server_name] or {}
+					-- This handles overriding only values explicitly passed
+					-- by the server configuration above. Useful when disabling
+					-- certain features of an LSP (for example, turning off formatting for tsserver)
+					server.capabilities = vim.tbl_deep_extend("force", {}, capabilities, server.capabilities or {})
+					lspconfig[server_name].setup(server)
+				end,
+			},
+		})
+
+		-- setup servers that we manage ourselves
+		local manual_servers = {
 			hls = {
 				settings = {
 					languageServerHaskell = {
@@ -189,33 +225,10 @@ return {
 			},
 		}
 
-		-- Ensure the servers and tools above are installed
-		--  To check the current status of installed tools and/or manually install
-		--  other tools, you can run
-		--    :Mason
-		--
-		--  You can press `g?` for help in this menu
-		require("mason").setup()
-
-		-- You can add other tools here that you want Mason to install
-		-- for you, so that they are available from within Neovim.
-		local ensure_installed = vim.tbl_keys(servers or {})
-		vim.list_extend(ensure_installed, {
-			"stylua", -- Used to format lua code
-		})
-		require("mason-tool-installer").setup({ ensure_installed = ensure_installed })
-
-		require("mason-lspconfig").setup({
-			handlers = {
-				function(server_name)
-					local server = servers[server_name] or {}
-					-- This handles overriding only values explicitly passed
-					-- by the server configuration above. Useful when disabling
-					-- certain features of an LSP (for example, turning off formatting for tsserver)
-					server.capabilities = vim.tbl_deep_extend("force", {}, capabilities, server.capabilities or {})
-					require("lspconfig")[server_name].setup(server)
-				end,
-			},
-		})
+		for server_name, server_settings in pairs(manual_servers) do
+			server_settings.capabilities =
+				vim.tbl_deep_extend("force", {}, capabilities, server_settings.capabilities or {})
+			lspconfig[server_name].setup(server_settings)
+		end
 	end,
 }
