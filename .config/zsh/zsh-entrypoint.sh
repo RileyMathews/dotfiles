@@ -155,7 +155,7 @@ gacp() {
 }
 
 tsg() {
-    directory=$(ls ~/code | fzf)
+    directory=$(command ls ~/code | fzf)
     _tmux_switch_or_activate ~/code/$directory $directory
 }
 
