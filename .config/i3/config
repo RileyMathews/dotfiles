@@ -170,4 +170,5 @@ exec_always --no-startup-id ~/.config/polybar/launch_polybar.sh
 # Zoom
 for_window [title="^zoom$"] floating enable
 for_window [title="^Zoom Workplace$"] floating enable 
+for_window [title="^Meeting$"] floating disable
 bindcode $mod+Shift+65 floating toggle
