@@ -42,3 +42,6 @@ Print
 
 shift + Print
     flameshot full
+
+super + s
+    screenlayout
