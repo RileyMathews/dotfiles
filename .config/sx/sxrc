@@ -6,6 +6,7 @@ exec picom -b &
 exec $HOME/.config/dunst/launch.sh &
 exec xiccd &
 exec playerctld daemon &
+# exec uwdocked.sh
 
 if [ "$#" -eq 0 ]; then
     exec i3

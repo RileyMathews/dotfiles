@@ -89,11 +89,11 @@ button {
 }
 
 #workspaces button.visible {
-    color: @blue;
+    color: @mauve;
 }
 
 #workspaces button.focused {
-    color: @mauve;
+    color: @blue;
 }
 
 #workspaces button.urgent {
