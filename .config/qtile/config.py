@@ -25,6 +25,7 @@
 # SOFTWARE.
 
 from libqtile import bar, layout, qtile, widget, hook
+from libqtile.bar import Gap
 from libqtile.config import Click, Drag, Group, Key, Match, Screen
 from libqtile.lazy import lazy
 from libqtile.utils import guess_terminal
@@ -152,9 +153,14 @@ widget_defaults = dict(
 )
 extension_defaults = widget_defaults.copy()
 
+screen_config = {
+    "left": Gap(8),
+    "right": Gap(8)
+}
+
 screens = [
-    Screen(),
-    Screen(),
+    Screen(**screen_config),
+    Screen(**screen_config),
 ]
 
 # Drag floating layouts.
