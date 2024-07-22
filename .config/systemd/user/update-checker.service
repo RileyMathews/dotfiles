@@ -3,7 +3,7 @@ Description=Checks for updates and notifies via notify-send
 After=autostart.target
 
 [Service]
-ExecStart=%h/.local/bin/update-checker
+ExecStart=%h/.local/scripts/update-checker
 
 [Install]
 WantedBy=autostart.target
