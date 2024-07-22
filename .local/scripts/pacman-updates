@@ -18,3 +18,4 @@ else
 	echo "󰏔 $NUMBER updates"
 	exit 0
 fi
+rm -rf $LOCKFILE
