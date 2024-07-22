@@ -3,5 +3,3 @@
 chosen=$(command ls ~/.screenlayout | rofi -dmenu -i)
 
 ~/.screenlayout/$chosen
-sleep 2
-~/.config/polybar/launch_polybar.sh
