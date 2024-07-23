@@ -30,8 +30,34 @@ from libqtile.config import Click, Drag, Group, Key, Match, Screen
 from libqtile.lazy import lazy
 from libqtile.utils import guess_terminal
 from libqtile.log_utils import logger
+from Xlib import display as xdisplay
 import os
 import subprocess
+
+
+def get_num_monitors():
+    num_monitors = 0
+    try:
+        display = xdisplay.Display()
+        screen = display.screen()
+        resources = screen.root.xrandr_get_screen_resources()
+
+        for output in resources.outputs:
+            monitor = display.xrandr_get_output_info(output, resources.config_timestamp)
+            preferred = False
+            if hasattr(monitor, "preferred"):
+                preferred = monitor.preferred
+            elif hasattr(monitor, "num_preferred"):
+                preferred = monitor.num_preferred
+            if preferred:
+                num_monitors += 1
+    except Exception as e:
+        # always setup at least one monitor
+        return 1
+    else:
+        return num_monitors
+
+num_monitors = get_num_monitors()
 
 @hook.subscribe.startup
 def launch_polybar():
@@ -153,15 +179,67 @@ widget_defaults = dict(
 )
 extension_defaults = widget_defaults.copy()
 
+
 screen_config = {
     "left": Gap(8),
     "right": Gap(8)
 }
 
 screens = [
-    Screen(**screen_config),
-    Screen(**screen_config),
+    Screen(
+        bottom=bar.Bar(
+            [
+                widget.CurrentLayout(),
+                widget.GroupBox(),
+                widget.Prompt(),
+                widget.WindowName(),
+                widget.Chord(
+                    chords_colors={
+                        "launch": ("#ff0000", "#ffffff"),
+                    },
+                    name_transform=lambda name: name.upper(),
+                ),
+                widget.TextBox("default config", name="default"),
+                widget.TextBox("Press &lt;M-r&gt; to spawn", foreground="#d75f5f"),
+                # NB Systray is incompatible with Wayland, consider using StatusNotifier instead
+                # widget.StatusNotifier(),
+                widget.Systray(),
+                widget.Clock(format="%Y-%m-%d %a %I:%M %p"),
+                widget.QuickExit(),
+            ],  # main screen widgets
+            24, # Bar Size 
+        ),
+        **screen_config
+    )
 ]
+
+if num_monitors > 1:
+    for m in range(num_monitors - 1):
+        screens.append(
+            Screen(
+                top=bar.Bar(
+                    [
+                        widget.CurrentLayout(),
+                        widget.GroupBox(),
+                        widget.WindowName(),
+                        widget.Chord(
+                            chords_colors={
+                                "launch": ("#ff0000", "#ffffff"),
+                            },
+                            name_transform=lambda name: name.upper(),
+                        ),
+                        widget.TextBox("default config", name="default"),
+                        widget.TextBox("Press &lt;M-r&gt; to spawn", foreground="#d75f5f"),
+                        # NB Systray is incompatible with Wayland, consider using StatusNotifier instead
+                        # widget.StatusNotifier(),
+                        # widget.Systray(),
+                        widget.Clock(format="%Y-%m-%d %a %I:%M %p"),
+                        widget.QuickExit(),
+                    ],  # other screens widgets
+                    24,
+                ),
+            )
+        )
 
 # Drag floating layouts.
 mouse = [

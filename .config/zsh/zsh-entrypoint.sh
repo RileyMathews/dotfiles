@@ -78,7 +78,7 @@ alias gpsup='git push --set-upstream origin $(git branch --show-current)'
 alias gl='git pull'
 alias gco='git checkout'
 alias gcb='git checkout -b'
-alias gcm='git checkout main'
+alias gcm='git checkout $(git_main_branch)'
 
 alias l='ls -la --color'
 alias ls='ls --color'
@@ -138,6 +138,14 @@ eval "$(zoxide init --cmd cd zsh)"
 ######################################
 # Functions                          #
 ######################################
+git_main_branch() {
+    if git branch --list | grep -q "main"; then
+        echo "main"
+    else
+        echo "master"
+    fi
+}
+
 gacp() {
     git add .
     git status
