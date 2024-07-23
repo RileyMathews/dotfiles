@@ -59,11 +59,11 @@ def get_num_monitors():
 
 num_monitors = get_num_monitors()
 
-@hook.subscribe.startup
-def launch_polybar():
-    logger.warning("In startup func")
-    polybar_script = os.path.expanduser('~/.config/polybar/launch_polybar.sh')
-    subprocess.Popen([polybar_script])
+# @hook.subscribe.startup
+# def launch_polybar():
+#     logger.warning("In startup func")
+#     polybar_script = os.path.expanduser('~/.config/polybar/launch_polybar.sh')
+#     subprocess.Popen([polybar_script])
 
 
 mod = "mod4"
