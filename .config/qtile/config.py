@@ -209,7 +209,8 @@ screens = [
             ],  # main screen widgets
             24, # Bar Size 
         ),
-        **screen_config
+        left=Gap(8),
+        right=Gap(8),
     )
 ]
 
@@ -237,6 +238,8 @@ if num_monitors > 1:
                         widget.QuickExit(),
                     ],  # other screens widgets
                     24,
+                    left=Gap(8),
+                    right=Gap(8),
                 ),
             )
         )
