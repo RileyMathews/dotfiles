@@ -157,7 +157,7 @@ for i in groups:
     )
 
 layouts = [
-    layout.Columns(border_focus_stack=["#d75f5f", "#8f3d3d"], border_focus="#74c7ec",border_normal="#181825", border_width=2),
+    layout.Columns(border_focus_stack=["#d75f5f", "#8f3d3d"], border_focus="#74c7ec",border_normal="#181825", border_width=1),
     layout.Max(),
     # Try more layouts by unleashing below layouts.
     layout.Stack(num_stacks=2),
@@ -185,28 +185,28 @@ screen_config = {
     "right": Gap(8)
 }
 
+def create_widgets(main=False):
+    return [
+        widget.CurrentLayout(padding=8),
+        widget.GroupBox(highlight_method="line"),
+        widget.WindowName(),
+        # widget.Chord(
+        #     chords_colors={
+        #         "launch": ("#ff0000", "#ffffff"),
+        #     },
+        #     name_transform=lambda name: name.upper(),
+        # ),
+        # widget.TextBox("default config", name="default"),
+        # NB Systray is incompatible with Wayland, consider using StatusNotifier instead
+        # widget.StatusNotifier(),
+        widget.Systray(),
+        widget.Clock(format="%Y-%m-%d %a %I:%M %p  ", padding=8),
+    ]
+
 screens = [
     Screen(
         bottom=bar.Bar(
-            [
-                widget.CurrentLayout(),
-                widget.GroupBox(),
-                widget.Prompt(),
-                widget.WindowName(),
-                widget.Chord(
-                    chords_colors={
-                        "launch": ("#ff0000", "#ffffff"),
-                    },
-                    name_transform=lambda name: name.upper(),
-                ),
-                widget.TextBox("default config", name="default"),
-                widget.TextBox("Press &lt;M-r&gt; to spawn", foreground="#d75f5f"),
-                # NB Systray is incompatible with Wayland, consider using StatusNotifier instead
-                # widget.StatusNotifier(),
-                widget.Systray(),
-                widget.Clock(format="%Y-%m-%d %a %I:%M %p"),
-                widget.QuickExit(),
-            ],  # main screen widgets
+            create_widgets(main=True),  # main screen widgets
             24, # Bar Size 
         ),
         left=Gap(8),
@@ -218,29 +218,12 @@ if num_monitors > 1:
     for m in range(num_monitors - 1):
         screens.append(
             Screen(
-                top=bar.Bar(
-                    [
-                        widget.CurrentLayout(),
-                        widget.GroupBox(),
-                        widget.WindowName(),
-                        widget.Chord(
-                            chords_colors={
-                                "launch": ("#ff0000", "#ffffff"),
-                            },
-                            name_transform=lambda name: name.upper(),
-                        ),
-                        widget.TextBox("default config", name="default"),
-                        widget.TextBox("Press &lt;M-r&gt; to spawn", foreground="#d75f5f"),
-                        # NB Systray is incompatible with Wayland, consider using StatusNotifier instead
-                        # widget.StatusNotifier(),
-                        # widget.Systray(),
-                        widget.Clock(format="%Y-%m-%d %a %I:%M %p"),
-                        widget.QuickExit(),
-                    ],  # other screens widgets
+                bottom=bar.Bar(
+                    create_widgets(main=True),  # other screens widgets
                     24,
-                    left=Gap(8),
-                    right=Gap(8),
                 ),
+                left=Gap(8),
+                right=Gap(8),
             )
         )
 
