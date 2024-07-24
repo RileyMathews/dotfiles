@@ -1,11 +1,8 @@
 super + b
     librewolf
 
-super + Return
-    alacritty
-
 super + t
-    kitty
+    alacritty
 
 super + shift + p
     powermenu
