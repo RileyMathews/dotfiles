@@ -4,6 +4,9 @@ super + b
 super + Return
     alacritty
 
+super + t
+    kitty
+
 super + shift + p
     powermenu
 
