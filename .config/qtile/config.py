@@ -34,6 +34,24 @@ from Xlib import display as xdisplay
 import os
 import subprocess
 
+COLOR_MAUVE = "#f38ba8"
+COLOR_RED = "#f38ba8"
+COLOR_PEACH = "#fab387"
+COLOR_YELLOW = "#f9e2af"
+COLOR_GREEN = "#a6e3a1"
+COLOR_SAPPHIRE = "#74c7ec"
+COLOR_LAVENDER = "#89b4fa"
+COLOR_TEXT = "#cdd6f4"
+COLOR_BASE = "#1e1e2e"
+COLOR_MANTLE = "#181825"
+COLOR_CRUST = "#11111b"
+COLOR_SURFACE0 = "#313244"
+COLOR_SURFACE1 = "#45475a"
+COLOR_SURFACE2 = "#585b70"
+COLOR_OVERLAY0 = "#6c7086"
+COLOR_OVERLAY1 = "#7f849c"
+COLOR_OVERLAY2 = "#585b70"
+
 
 def get_num_monitors():
     num_monitors = 0
@@ -188,7 +206,15 @@ screen_config = {
 def create_widgets(main=False):
     return [
         widget.CurrentLayout(padding=8),
-        widget.GroupBox(highlight_method="line"),
+        widget.GroupBox(
+            highlight_method="line", 
+            active=COLOR_TEXT, # The color when a group has an active window
+            inactive=COLOR_SURFACE2, # The color when a group does not have an active window
+            # block_highlight_text_color=COLOR_RED, # The text color when a group is currently selected
+            highlight_color=COLOR_OVERLAY2, # the background color when a group is selected, can be a gradient
+            this_current_screen_border=COLOR_SAPPHIRE, # border or line color for when group is shown on active screen
+            this_screen_border=COLOR_SAPPHIRE, # border or line color for when group is shown on non active screen
+        ),
         widget.WindowName(),
         # widget.Chord(
         #     chords_colors={
@@ -208,6 +234,7 @@ screens = [
         bottom=bar.Bar(
             create_widgets(main=True),  # main screen widgets
             24, # Bar Size 
+            background=COLOR_BASE,
         ),
         left=Gap(8),
         right=Gap(8),
@@ -221,6 +248,7 @@ if num_monitors > 1:
                 bottom=bar.Bar(
                     create_widgets(main=True),  # other screens widgets
                     24,
+                    background=COLOR_BASE,
                 ),
                 left=Gap(8),
                 right=Gap(8),
