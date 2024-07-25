@@ -225,6 +225,17 @@ def create_widgets(main=False):
         # widget.TextBox("default config", name="default"),
         # NB Systray is incompatible with Wayland, consider using StatusNotifier instead
         # widget.StatusNotifier(),
+        widget.WidgetBox(
+            widgets=[
+                widget.TextBox("Mem", name="memory_text"),
+                widget.MemoryGraph(),
+                widget.TextBox("Swap", name="swap_text"),
+                widget.SwapGraph(),
+                widget.TextBox("CPU", name="cpu_text"),
+                widget.CPUGraph(),
+            ],
+             close_button_location='right',
+        ),
         widget.Systray(),
         widget.Clock(format="%Y-%m-%d %a %I:%M %p  ", padding=8),
     ]
