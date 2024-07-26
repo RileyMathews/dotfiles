@@ -207,21 +207,7 @@ return {
 		-- setup servers that we manage ourselves
 		local manual_servers = {
 			hls = {
-				settings = {
-					languageServerHaskell = {
-						formattingProvider = "fourmolu",
-						formatOnImportOn = true,
-						completionSnippetOn = true,
-						hlintOn = true,
-						plugin = {
-							tactics = {
-								config = {
-									features = "QrfgehpgNyy/HfrQngnPba/ErsvarUbyr/XabjaZbabvq",
-								},
-							},
-						},
-					},
-				},
+				cmd = { "static-ls", "--lsp" },
 			},
 		}
 
