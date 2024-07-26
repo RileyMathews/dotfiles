@@ -52,6 +52,14 @@ COLOR_OVERLAY0 = "#6c7086"
 COLOR_OVERLAY1 = "#7f849c"
 COLOR_OVERLAY2 = "#585b70"
 
+@hook.subscribe.focus_change
+def _():
+    for screen in qtile.screens:
+        if screen is qtile.current_screen:
+            screen.bottom.background = COLOR_BASE
+        else:
+            screen.bottom.background = COLOR_CRUST
+        screen.bottom.draw()
 
 def get_num_monitors():
     num_monitors = 0
