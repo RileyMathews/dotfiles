@@ -79,7 +79,7 @@ format = '$all_status$ahead_behind '
 
 [python]
 symbol = ""
-format = ' $symbol $version $virtualenv'
+format = ' $symbol $version $virtualenv '
 
 [line_break]
 disabled = false
