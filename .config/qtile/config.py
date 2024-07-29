@@ -212,7 +212,7 @@ screen_config = {
 }
 
 def create_widgets(main=False):
-    return [
+    widgets = [
         widget.CurrentLayout(padding=8),
         widget.GroupBox(
             highlight_method="line", 
@@ -244,9 +244,16 @@ def create_widgets(main=False):
             ],
              close_button_location='right',
         ),
-        widget.Systray(),
+    ]
+
+    if main:
+        widgets += [widget.Systray()]
+
+    widgets += [
         widget.Clock(format="%Y-%m-%d %a %I:%M %p  ", padding=8),
     ]
+
+    return widgets
 
 screens = [
     Screen(
@@ -265,7 +272,7 @@ if num_monitors > 1:
         screens.append(
             Screen(
                 bottom=bar.Bar(
-                    create_widgets(main=True),  # other screens widgets
+                    create_widgets(main=False),  # other screens widgets
                     24,
                     background=COLOR_BASE,
                 ),
