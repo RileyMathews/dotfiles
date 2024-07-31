@@ -38,6 +38,9 @@ vim.keymap.set("n", "<leader>x", "<cmd>!chmod +x %<CR>", { desc = "Make file e[x
 vim.keymap.set("n", "[d", vim.diagnostic.goto_prev)
 vim.keymap.set("n", "]d", vim.diagnostic.goto_next)
 
+-- url-open
+vim.keymap.set("n", "<leader>uo", "<esc>:URLOpenUnderCursor<cr>", { desc = "[U]rl [O]pen" })
+
 -- harpoon
 local mark = require("harpoon.mark")
 local ui = require("harpoon.ui")
@@ -101,6 +104,7 @@ require("which-key").register({
 	["<leader>s"] = { name = "[S]earch", _ = "which_key_ignore" },
 	["<leader>w"] = { name = "[W]orkspace", _ = "which_key_ignore" },
 	["<leader>t"] = { name = "[T]est", _ = "which_key_ignore" },
+	["<leader>u"] = { name = "[U]rl", _ = "which_key_ignore" },
 })
 
 vim.api.nvim_create_user_command("FormatDisable", function(args)
