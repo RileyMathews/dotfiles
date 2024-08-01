@@ -203,12 +203,21 @@ return {
 				end,
 			},
 		})
+		local hls_server
+
+		if vim.fn.getenv("ENABLE_STATIC_LS") == "true" then
+			hls_server = {
+				cmd = { "static-ls", "--lsp" },
+			}
+		else
+			hls_server = {
+				cmd = { "haskell-language-server-wrapper", "--lsp" },
+			}
+		end
 
 		-- setup servers that we manage ourselves
 		local manual_servers = {
-			hls = {
-				cmd = { "static-ls", "--lsp" },
-			},
+			hls = hls_server,
 		}
 
 		for server_name, server_settings in pairs(manual_servers) do
