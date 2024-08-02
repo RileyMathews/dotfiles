@@ -158,6 +158,8 @@ return {
 							library = {
 								"${3rd}/luv/library",
 								unpack(vim.api.nvim_get_runtime_file("", true)),
+								"/usr/share/awesome/lib",
+								"/usr/share/lua",
 							},
 							-- If lua_ls is really slow on your computer, you can try this instead:
 							-- library = { vim.env.VIMRUNTIME },
@@ -166,7 +168,15 @@ return {
 							callSnippet = "Replace",
 						},
 						-- You can toggle below to ignore Lua_LS's noisy `missing-fields` warnings
-						-- diagnostics = { disable = { 'missing-fields' } },
+						diagnostics = {
+							-- globals = {
+							-- 	"awesome",
+							-- 	"awful",
+							-- 	"client",
+							-- 	"screen",
+							-- 	"tag"
+							-- }
+						},
 					},
 				},
 			},
