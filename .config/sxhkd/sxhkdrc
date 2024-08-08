@@ -45,3 +45,12 @@ shift + Print
 
 super + s
     screenlayout
+
+super + shift + s
+    laptop-only.sh
+
+super + shift + x
+    auto.sh
+
+super + shift + d
+    xrandr > ~/.xrandr.txt
