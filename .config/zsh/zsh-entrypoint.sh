@@ -1,10 +1,15 @@
 ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
+TPM_PATH="${HOME}/.tmux/plugins/tpm"
 
 if [ ! -d "$ZINIT_HOME" ]; then
     mkdir -p "$(dirname $ZINIT_HOME)"
     git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
 fi
 source "${ZINIT_HOME}/zinit.zsh"
+
+if [ ! -d "$TPM_PATH" ]; then
+    git clone https://github.com/tmux-plugins/tpm "$TPM_PATH"
+fi
 
 # docs claim this needs to be loaded before the actual plugin
 source $HOME/.config/zsh/zsh-syntax-highligting-theme.sh
