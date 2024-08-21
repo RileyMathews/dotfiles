@@ -30,7 +30,6 @@ from libqtile.config import Click, Drag, Group, Key, Match, Screen
 from libqtile.lazy import lazy
 from libqtile.utils import guess_terminal
 from libqtile.log_utils import logger
-from Xlib import display as xdisplay
 import os
 import subprocess
 
@@ -61,29 +60,6 @@ def _():
             screen.bottom.background = COLOR_CRUST
         screen.bottom.draw()
 
-def get_num_monitors():
-    num_monitors = 0
-    try:
-        display = xdisplay.Display()
-        screen = display.screen()
-        resources = screen.root.xrandr_get_screen_resources()
-
-        for output in resources.outputs:
-            monitor = display.xrandr_get_output_info(output, resources.config_timestamp)
-            preferred = False
-            if hasattr(monitor, "preferred"):
-                preferred = monitor.preferred
-            elif hasattr(monitor, "num_preferred"):
-                preferred = monitor.num_preferred
-            if preferred:
-                num_monitors += 1
-    except Exception as e:
-        # always setup at least one monitor
-        return 1
-    else:
-        return num_monitors
-
-num_monitors = get_num_monitors()
 
 # @hook.subscribe.startup
 # def launch_polybar():
@@ -266,20 +242,6 @@ screens = [
         right=Gap(8),
     )
 ]
-
-if num_monitors > 1:
-    for m in range(num_monitors - 1):
-        screens.append(
-            Screen(
-                bottom=bar.Bar(
-                    create_widgets(main=False),  # other screens widgets
-                    24,
-                    background=COLOR_BASE,
-                ),
-                left=Gap(8),
-                right=Gap(8),
-            )
-        )
 
 # Drag floating layouts.
 mouse = [
