@@ -95,17 +95,25 @@ vim.api.nvim_create_user_command("Neotest", function()
 	vim.keymap.set("n", "<leader>tb", neotest.summary.toggle, { desc = "[T]est [B]reakdown" })
 end, {})
 
--- document existing key chains
-require("which-key").register({
-	["<leader>c"] = { name = "[C]ode", _ = "which_key_ignore" },
-	["<leader>r"] = { name = "[R]ename", _ = "which_key_ignore" },
-	["<leader>d"] = { name = "[D]ocument", _ = "which_key_ignore" },
-	["<leader>h"] = { name = "[H]arpoon", _ = "which_key_ignore" },
-	["<leader>s"] = { name = "[S]earch", _ = "which_key_ignore" },
-	["<leader>w"] = { name = "[W]orkspace", _ = "which_key_ignore" },
-	["<leader>t"] = { name = "[T]est", _ = "which_key_ignore" },
-	["<leader>u"] = { name = "[U]rl", _ = "which_key_ignore" },
-})
+-- -- document existing key chains
+-- require("which-key").register({
+--     { "<leader>c", group = "[C]ode" },
+--     { "<leader>c_", hidden = true },
+--     { "<leader>d", group = "[D]ocument" },
+--     { "<leader>d_", hidden = true },
+--     { "<leader>h", group = "[H]arpoon" },
+--     { "<leader>h_", hidden = true },
+--     { "<leader>r", group = "[R]ename" },
+--     { "<leader>r_", hidden = true },
+--     { "<leader>s", group = "[S]earch" },
+--     { "<leader>s_", hidden = true },
+--     { "<leader>t", group = "[T]est" },
+--     { "<leader>t_", hidden = true },
+--     { "<leader>u", group = "[U]rl" },
+--     { "<leader>u_", hidden = true },
+--     { "<leader>w", group = "[W]orkspace" },
+--     { "<leader>w_", hidden = true },
+-- })
 
 vim.api.nvim_create_user_command("FormatDisable", function(args)
 	if args.bang then
