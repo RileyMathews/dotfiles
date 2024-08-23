@@ -4,3 +4,4 @@ aurinstall.sh
 archinstall.sh
 .git
 .gitignore
+flake.nix
