@@ -226,6 +226,7 @@ def create_widgets(main=False):
         widgets += [widget.Systray()]
 
     widgets += [
+        widget.Battery(format='{char} {percent:2.0%} {hour}:{min}'),
         widget.Clock(format="%Y-%m-%d %a %I:%M %p  ", padding=8),
     ]
 
