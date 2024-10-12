@@ -33,7 +33,6 @@ return { -- Autocompletion
 	},
 	config = function()
 		-- See `:help cmp`
-		print("setting up cmp")
 		local cmp = require("cmp")
 		-- local luasnip = require("luasnip")
 		-- luasnip.config.setup({})

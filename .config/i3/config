@@ -166,6 +166,7 @@ bar {
                 urgent_workspace $mantle $base $yellow
                 statusline $text
         }
+        tray_output primary
 }
 
 # Zoom
