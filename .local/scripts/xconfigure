@@ -2,12 +2,6 @@
 
 xset -dpms
 xset s off
-setxkbmap -option caps:escape
+# setxkbmap -option caps:escape
 xrdb -merge "$HOME/.config/X11/.Xresources"
 xsetroot -solid "#000000"
-xidlehook \
-    --not-when-audio \
-    --not-when-fullscreen \
-    --timer 300 \
-    'betterlockscreen -l' \
-    '' &

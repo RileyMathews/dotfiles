@@ -195,5 +195,9 @@ _tmux_switch_or_activate() {
     tmux $command -t $session_name
 }
 
+nixvm() {
+    nixos-rebuild switch --flake .#$1 --target-host root@$1
+}
+
 eval "$(starship init zsh)"
 
