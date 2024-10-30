@@ -88,7 +88,7 @@ alias gco='git checkout'
 alias gcb='git checkout -b'
 alias gcm='git checkout $(git_main_branch)'
 
-alias l='ls -la --color'
+alias l='ls -lah --color'
 alias ls='ls --color'
 
 ######################################
