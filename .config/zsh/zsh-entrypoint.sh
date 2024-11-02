@@ -46,12 +46,15 @@ setopt hist_save_no_dups
 setopt hist_ignore_dups
 setopt hist_find_no_dups
 
+
+#####################################
+# Environment Variables             #
+#####################################
 export EDITOR="nvim"
-# .local/secret-bin is for binaries that I do not want to share via dotfiles repo
 export PATH="$PATH:$HOME/.local/bin:$HOME/.local/scripts:$HOME/.screenlayout"
 export KEYTIMEOUT=1
+export BROWSER=librewolf
 
-[ -f "$HOME/.config/zsh/.zshrc.secret" ] && source "$HOME/.config/zsh/.zshrc.secret"
 
 #####################################
 # Aliases                           #
@@ -85,7 +88,7 @@ alias gco='git checkout'
 alias gcb='git checkout -b'
 alias gcm='git checkout $(git_main_branch)'
 
-alias l='ls -la --color'
+alias l='ls -lah --color'
 alias ls='ls --color'
 
 ######################################
