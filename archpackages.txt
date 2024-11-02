@@ -38,3 +38,4 @@ pavucontrol
 cpupower
 unzip
 flameshot
+playerctl

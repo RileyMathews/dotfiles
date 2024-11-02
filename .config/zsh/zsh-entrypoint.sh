@@ -125,7 +125,7 @@ if type pyenv > /dev/null; then
     }
 fi
 
-[ -f "$HOME/.rbenv/bin/rbenv" ] && eval "$(~/.rbenv/bin/rbenv init - zsh)"
+if command -v rbenv > /dev/null; then eval "$(rbenv init - zsh)"; fi
 
 [ -f "/home/rileymathews/.ghcup/env" ] && . "/home/rileymathews/.ghcup/env" # ghcup-env
 ######################################
