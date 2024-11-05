@@ -176,5 +176,3 @@ for_window [title="^Zoom Workplace$"] floating enable
 for_window [title="^Meeting$"] floating disable
 bindcode $mod+Shift+65 floating toggle
 
-for_window [urgent="latest" class="Slack"] focus
-for_window [urgent="latest" class="LibreWolf"] focus
