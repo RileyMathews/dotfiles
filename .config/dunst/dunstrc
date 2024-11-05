@@ -13,6 +13,7 @@ icon_position = left
 min_icon_size = 50
 max_icon_size = 60
 icon_path = $HOME/.local/share/icons/dunst
+mouse_right_click = context
 
 [urgency_critical]
 frame_color = "#f38ba8"
