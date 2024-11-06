@@ -91,6 +91,10 @@ alias gcm='git checkout $(git_main_branch)'
 alias l='ls -lah --color'
 alias ls='ls --color'
 
+alias k='kubectl'
+alias ka='kubectl apply -f'
+alias kar='kubectl apply --recursive -f'
+
 ######################################
 # Language Managers                  #
 ######################################
