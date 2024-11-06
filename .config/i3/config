@@ -60,7 +60,7 @@ floating_modifier $mod
 tiling_drag modifier titlebar
 # set an i3 specific config for showing rofi. This is in case anything goes wrong with sxhkd
 # I still have an escape hatch for launching applications
-bindsym $mod+d exec "rofi -show drun"
+bindsym $mod+d exec "dmenu_run"
 
 # kill focused window
 bindsym $mod+q kill
@@ -153,24 +153,14 @@ mode "resize" {
 default_border pixel 1
 gaps inner 8px
 
-# exec_always --no-startup-id ~/.config/polybar/launch_polybar.sh
+exec_always --no-startup-id ~/.config/polybar/launch_polybar.sh
+exec --no-startup-id i3-focuser
 
-bar {
-        padding 0 8px
-        status_command i3status
-        font pango:Hack Nerd Font 10
-        colors {
-                background $base
-                focused_workspace $mantle $crust $sapphire
-                inactive_workspace $mantle $base $text
-                urgent_workspace $mantle $base $yellow
-                statusline $text
-        }
-        tray_output primary
-}
+# bar {
+#         padding 0 20px
 
 # Zoom
 for_window [title="^zoom$"] floating enable
 for_window [title="^Zoom Workplace$"] floating enable 
 for_window [title="^Meeting$"] floating disable
-bindcode $mod+Shift+65 floating toggle
+
