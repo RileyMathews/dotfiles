@@ -155,10 +155,21 @@ default_border pixel 1
 gaps inner 8px
 
 exec_always --no-startup-id ~/.config/polybar/launch_polybar.sh
-exec --no-startup-id i3-focuser
+# exec --no-startup-id i3-focuser
 
 # bar {
-#         padding 0 20px
+#         padding 0 8px
+#         status_command i3status
+#         font pango:Hack Nerd Font 10
+#         colors {
+#                 background $base
+#                 focused_workspace $mantle $crust $sapphire
+#                 inactive_workspace $mantle $base $text
+#                 urgent_workspace $mantle $base $yellow
+#                 statusline $text
+#         }
+#         tray_output primary
+# }
 
 # Zoom
 for_window [title="^zoom$"] floating enable
