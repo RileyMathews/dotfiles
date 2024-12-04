@@ -11,5 +11,6 @@ return {
 		url_open.setup({
 			open_app = "librewolf",
 		})
+		vim.keymap.set("n", "<leader>uo", "<esc>:URLOpenUnderCursor<cr>", { desc = "[U]rl [O]pen" })
 	end,
 }

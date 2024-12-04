@@ -11,8 +11,7 @@ return {
 				},
 			})
 
-			vim.keymap.set("n", "-", "<CMD>Oil<CR>", { desc = "Open directory" })
-			vim.keymap.set("n", "<space>-", oil.toggle_float)
+			vim.keymap.set("n", "<leader>e", oil.toggle_float)
 		end,
 	},
 }

@@ -15,6 +15,8 @@ return {
 		"folke/neodev.nvim",
 	},
 	config = function()
+		vim.keymap.set("n", "[d", vim.diagnostic.goto_prev)
+		vim.keymap.set("n", "]d", vim.diagnostic.goto_next)
 		-- Brief Aside: **What is LSP?**
 		--
 		-- LSP is an acronym you've probably heard, but might not understand what it is.
