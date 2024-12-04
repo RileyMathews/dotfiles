@@ -3,7 +3,7 @@ return {
 	"nvim-treesitter/nvim-treesitter",
 	dependencies = {
 		"nvim-treesitter/nvim-treesitter-textobjects",
-        "RRethy/nvim-treesitter-endwise",
+		"RRethy/nvim-treesitter-endwise",
 	},
 	build = ":TSUpdate",
 	config = function()
@@ -11,7 +11,7 @@ return {
 			auto_install = true,
 			highlight = { enable = true },
 			indent = { enable = true },
-            endwise = { enable = true },
+			endwise = { enable = true },
 		})
 	end,
 }
