@@ -9,7 +9,6 @@ return {
 				gitsigns = true,
 				mason = true,
 				cmp = true,
-				neotree = true,
 				mini = {
 					enabled = true,
 				},
