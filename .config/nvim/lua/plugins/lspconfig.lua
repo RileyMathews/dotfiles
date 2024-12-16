@@ -225,6 +225,7 @@ return {
 		-- setup servers that we manage ourselves
 		local manual_servers = {
 			hls = hls_server,
+			gdscript = {},
 		}
 
 		for server_name, server_settings in pairs(manual_servers) do
