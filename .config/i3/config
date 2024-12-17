@@ -155,7 +155,7 @@ default_border pixel 1
 gaps inner 8px
 
 exec_always --no-startup-id ~/.config/polybar/launch_polybar.sh
-# exec --no-startup-id i3-focuser
+exec --no-startup-id i3-focuser
 
 # bar {
 #         padding 0 8px
