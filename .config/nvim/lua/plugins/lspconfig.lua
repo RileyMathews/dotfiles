@@ -215,6 +215,7 @@ return {
 		if vim.fn.getenv("ENABLE_STATIC_LS") == "true" then
 			hls_server = {
 				cmd = { "static-ls", "--lsp" },
+				root_dir = lspconfig.util.root_pattern("*.cabal", "stack.yaml", "cabal.project", "package.yaml", ".git"),
 			}
 		else
 			hls_server = {
