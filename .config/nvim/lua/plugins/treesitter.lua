@@ -6,6 +6,7 @@ return {
 		"RRethy/nvim-treesitter-endwise",
 	},
 	build = ":TSUpdate",
+	event = "BufRead",
 	config = function()
 		require("nvim-treesitter.configs").setup({
 			auto_install = true,

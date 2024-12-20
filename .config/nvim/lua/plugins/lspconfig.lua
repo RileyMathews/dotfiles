@@ -14,6 +14,7 @@ return {
 		-- Additional lua configuration, makes nvim stuff amazing!
 		"folke/neodev.nvim",
 	},
+	event = "BufReadPre",
 	config = function()
 		vim.keymap.set("n", "[d", vim.diagnostic.goto_prev)
 		vim.keymap.set("n", "]d", vim.diagnostic.goto_next)

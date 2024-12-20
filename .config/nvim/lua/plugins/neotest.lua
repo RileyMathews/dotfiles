@@ -7,6 +7,15 @@ return {
 		"nvim-treesitter/nvim-treesitter",
 		"nvim-neotest/neotest-jest",
 	},
+	keys = {
+		{ "<leader>tn", "<cmd>lua require('neotest').run.run()<CR>", desc = "Test nearest" },
+		{ "<leader>to", "<cmd>lua require('neotest').output.open()<CR>", desc = "Test open output" },
+		{ "<leader>tf", "<cmd>lua require('neotest').run.run(vim.fn.expand('%'))<CR>", desc = "Test file" },
+		{ "<leader>td", "<cmd>lua require('neotest').run.run({ strategy = 'dap' })<CR>", desc = "Test debug" },
+		{ "<leader>ts", "<cmd>lua require('neotest').run.run({ suite = true })<CR>", desc = "Test all" },
+		{ "<leader>tl", "<cmd>lua require('neotest').run.run_last()<CR>", desc = "Test last" },
+		{ "<leader>tb", "<cmd>lua require('neotest').summary.toggle()<CR>", desc = "Test breakdown" },
+	},
 	config = function()
 		local neotest = require("neotest")
 		neotest.setup({
@@ -16,26 +25,5 @@ return {
 				}),
 			},
 		})
-		vim.keymap.set("n", "<leader>tn", function()
-			neotest.run.run()
-		end, { desc = "[T]est [N]earest" })
-
-		vim.keymap.set("n", "<leader>to", neotest.output.open, { desc = "[T]est [O]pen output" })
-
-		vim.keymap.set("n", "<leader>tf", function()
-			neotest.run.run(vim.fn.expand("%"))
-		end, { desc = "[T]est [F]ile" })
-
-		vim.keymap.set("n", "<leader>td", function()
-			neotest.run.run({ strategy = "dap" })
-		end, { desc = "[T]est [D]ebug" })
-
-		vim.keymap.set("n", "<leader>ts", function()
-			neotest.run.run({ suite = true })
-		end, { desc = "[T]est [A]ll" })
-
-		vim.keymap.set("n", "<leader>tl", neotest.run.run_last, { desc = "[T]est [A]ll" })
-
-		vim.keymap.set("n", "<leader>tb", neotest.summary.toggle, { desc = "[T]est [B]reakdown" })
 	end,
 }
