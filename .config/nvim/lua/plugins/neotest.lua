@@ -22,6 +22,9 @@ return {
 			adapters = {
 				require("neotest-jest")({
 					jest_test_discovery = false,
+					env = {
+						NODE_ENV = "test",
+					},
 				}),
 			},
 		})
