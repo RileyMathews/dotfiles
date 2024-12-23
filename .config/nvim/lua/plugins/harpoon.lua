@@ -12,7 +12,7 @@ return {
 		for i = 1, 9 do
 			vim.keymap.set("n", "<leader>" .. i, function()
 				ui.nav_file(i)
-			end)
+			end, { desc = "Harpoon go to " .. i })
 		end
 	end,
 }
