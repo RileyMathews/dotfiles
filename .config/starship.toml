@@ -1,10 +1,12 @@
 "$schema" = 'https://starship.rs/config-schema.json'
 
 format = """
-[$hostname$os$username](bg:blue fg:mantle)\
-[$directory](bg:blue fg:mantle)\
-[$git_branch$git_status](bg:peach fg:mantle)\
-[$python](bg:green fg:mantle)\
+[$os]()  \
+[$hostname](fg:red)\
+[$username](fg:mauve)  \
+[$directory](fg:blue)  \
+[$git_branch$git_status](fg:peach)  \
+[$python](fg:green)  \
 $line_break$character"""
 
 palette = 'catppuccin_mocha'
@@ -13,7 +15,6 @@ palette = 'catppuccin_mocha'
 rosewater = "#f5e0dc"
 flamingo = "#f2cdcd"
 pink = "#f5c2e7"
-orange = "#cba6f7"
 red = "#f38ba8"
 maroon = "#eba0ac"
 peach = "#fab387"
@@ -41,11 +42,11 @@ crust = "#11111b"
 [hostname]
 ssh_only = true
 ssh_symbol = '󰑔 '
-format = ' $ssh_symbol$hostname'
+format = '$ssh_symbol$hostname  '
 
 [os]
 disabled = false
-format = ' $symbol'
+format = '$symbol'
 
 [os.symbols]
 Windows = "󰍲"
@@ -57,10 +58,10 @@ Macos = ""
 
 [username]
 show_always = true
-format = ' $user'
+format = ' $user'
 
 [directory]
-format = " $path "
+format = " $path"
 
 [directory.substitutions]
 "Documents" = "󰈙"
@@ -72,14 +73,14 @@ format = " $path "
 
 [git_branch]
 symbol = ""
-format = ' $symbol $branch'
+format = '$symbol $branch'
 
 [git_status]
-format = '$all_status$ahead_behind '
+format = '$all_status$ahead_behind'
 
 [python]
 symbol = ""
-format = ' $symbol $version $virtualenv '
+format = '$symbol $version $virtualenv'
 
 [line_break]
 disabled = false
