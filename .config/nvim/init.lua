@@ -93,6 +93,23 @@ vim.api.nvim_create_autocmd("TextYankPost", {
 local spec_comment_lines = { "-- $> hspec spec", "" }
 local spec_web_comment_lines = { "-- $> :import-spec-web", "", "-- $> hspecWithEnv spec", "" }
 
+local function hspec_comment_exists()
+	local search_result = vim.fn.search(spec_comment_lines[1])
+
+	if search_result > 0 then
+		return true
+	end
+
+	search_result = vim.fn.search(spec_web_comment_lines[1])
+
+	if search_result > 0 then
+		return true
+	end
+
+	return false
+end
+
+
 local function add_hspec_comments()
 	local function add_hspec_comment(search_string, comment_lines)
 		local search_result = vim.fn.search(search_string)
@@ -141,16 +158,24 @@ local function delete_hspec_comments()
 	delete_hspec_comment(spec_web_comment_lines)
 end
 
+local function toggle_hspec_comments()
+	print("searching...")
+	if hspec_comment_exists() then
+		print("deleting...")
+		delete_hspec_comments()
+	else
+		print("adding...")
+		add_hspec_comments()
+	end
+end
 local which_key = require("which-key")
-which_key.setup({})
+
 which_key.add({
-	{ "<leader>e", group = "GHCi eval", icon = { cat = "extension", name = "hs" } },
-	{ "<leader>et", group = "GHCi eval test", icon = { icon = "🧪", hl = "" } },
-	{ "<leader>eta", add_hspec_comments, name = "Add HSpec test eval comments", icon = { icon = "➕", hl = "" } },
-	{
-		"<leader>etd",
-		delete_hspec_comments,
-		name = "Delete HSpec test eval comments",
-		icon = { icon = "✗", hl = "" },
-	},
+	{ "<leader>th", toggle_hspec_comments, name = "Add HSpec test eval comments", icon = { icon = "➕", hl = "" } },
+	-- {
+	-- 	"<leader>thd",
+	-- 	delete_hspec_comments,
+	-- 	name = "Delete HSpec test eval comments",
+	-- 	icon = { icon = "✗", hl = "" },
+	-- },
 })
