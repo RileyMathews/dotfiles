@@ -1,5 +1,7 @@
 #!/bin/sh
 
+export QT_QPA_PLATFORMTHEME=qt5ct
+
 exec xconfigure &
 exec sxhkd &
 exec $HOME/.config/dunst/launch.sh &
