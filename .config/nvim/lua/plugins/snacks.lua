@@ -11,13 +11,18 @@ return {
     dashboard = { enabled = true },
     indent = { enabled = true },
     input = { enabled = true },
-    notifier = { enabled = true },
+    notifier = { 
+      enabled = true, 
+      top_down = false, 
+      margin = { bottom = 1 }, 
+    },
     quickfile = { enabled = true },
     scroll = { enabled = false },
     statuscolumn = { enabled = true },
     words = { enabled = true },
   },
   keys = {
-    {"<leader>nh", "<cmd>lua Snacks.notifier.show_history()<CR>", desc = "History"}
+    { "<leader>nh", "<cmd>lua Snacks.notifier.show_history()<CR>", desc = "History" },
+    { "<leader>nc", "<cmd>lua Snacks.notifier.hide()<CR>", desc = "clear" },
   }
 }
