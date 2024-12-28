@@ -12,6 +12,7 @@ return {
 			{ "<leader>t", "test" },
 			{ "<leader>t", "test" },
 			{ "<leader>u", "url" },
+			{ "<leader>n", "notifications" },
 		})
 	end,
 }

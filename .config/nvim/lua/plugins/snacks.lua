@@ -17,4 +17,7 @@ return {
     statuscolumn = { enabled = true },
     words = { enabled = true },
   },
+  keys = {
+    {"<leader>nh", "<cmd>lua Snacks.notifier.show_history()<CR>", desc = "History"}
+  }
 }
