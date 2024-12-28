@@ -2,7 +2,7 @@ super + b
     librewolf
 
 super + t
-    alacritty
+    ghostty
 
 super + shift + p
     powermenu
@@ -36,6 +36,15 @@ XF86AudioPrev
 
 XF86AudioPlay
     playerctl play-pause
+
+super + ctrl + k
+    playerctl play-pause
+
+super + ctrl + j
+    playerctl position 5-
+
+super + ctrl + l
+    playerctl position 5+
 
 Print
     flameshot gui
