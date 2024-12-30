@@ -8,6 +8,7 @@ exec $HOME/.config/dunst/launch.sh &
 exec xiccd &
 exec playerctld daemon &
 exec picom -b &
+exec nitrogen --restore &
 
 if [ "$#" -eq 0 ]; then
     exec i3

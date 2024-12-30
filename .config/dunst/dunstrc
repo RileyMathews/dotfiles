@@ -3,17 +3,19 @@ frame_color = "#8aadf4"
 separator_color= frame
 separator_height = 1
 frame_width = 1
-width = (0, 300) 
-padding = 8 
+width = (400, 400)
+padding = 16
+horizontal_padding = 32
 font = "Hack Nerd Font"
-background = "#11111b"
+background = "#313244"
 foreground = "#cdd6f4"
-corner_radius = 0
+corner_radius = 8
 icon_position = left
 min_icon_size = 50
 max_icon_size = 60
 icon_path = $HOME/.local/share/icons/dunst
 mouse_right_click = context
+highlight = "#f38ba8,#a6e3a1"
 
 [urgency_critical]
 frame_color = "#f38ba8"
