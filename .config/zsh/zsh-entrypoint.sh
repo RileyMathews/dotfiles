@@ -95,6 +95,8 @@ alias k='kubectl'
 alias ka='kubectl apply -f'
 alias kar='kubectl apply --recursive -f'
 
+alias n='nvim'
+
 ######################################
 # Language Managers                  #
 ######################################
