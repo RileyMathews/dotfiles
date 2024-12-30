@@ -9,12 +9,17 @@ return {
     -- refer to the configuration section below
     bigfile = { enabled = true },
     dashboard = { enabled = true },
-    indent = { enabled = true },
+    indent = {
+      enabled = true,
+      animate = {
+        enabled = false,
+      },
+    },
     input = { enabled = true },
-    notifier = { 
-      enabled = true, 
-      top_down = false, 
-      margin = { bottom = 1 }, 
+    notifier = {
+      enabled = true,
+      top_down = false,
+      margin = { bottom = 1 },
     },
     quickfile = { enabled = true },
     scroll = { enabled = false },
