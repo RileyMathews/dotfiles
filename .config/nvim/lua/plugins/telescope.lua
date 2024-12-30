@@ -31,13 +31,6 @@ return {
 					require("telescope.themes").get_dropdown(),
 				},
 			},
-			-- defaults = {
-			-- 	vimgrep_arguments = {
-			-- 		"rg",
-			-- 		"--hidden",
-			-- 		'--glob "!.git"',
-			-- 	},
-			-- },
 		})
 		pcall(telescope.load_extension, "fzf")
 		-- pcall(telescope.load_extension, "ui-select")
