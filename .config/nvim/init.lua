@@ -94,3 +94,5 @@ vim.api.nvim_create_autocmd("TextYankPost", {
 	end,
 })
 
+local hspec_toggle = require("custom.hspec")
+vim.keymap.set("n", "<leader>th", hspec_toggle.toggle_hspec_comments, { desc = "Toggle [H]spec comments" })
