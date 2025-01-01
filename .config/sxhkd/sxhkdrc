@@ -8,7 +8,7 @@ super + shift + p
     powermenu
 
 super + x
-    betterlockscreen -l
+    betterlockscreen -l blur
 
 super + space
     rofi -show drun
