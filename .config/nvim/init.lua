@@ -20,6 +20,7 @@ vim.opt.signcolumn = "yes"
 vim.opt.updatetime = 50
 
 vim.g.mapleader = " "
+vim.g.db_ui_execute_on_save = 0
 vim.cmd("autocmd BufEnter * set formatoptions-=cro")
 
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
@@ -71,6 +72,8 @@ vim.keymap.set("n", "<leader>Y", '"+Y', { desc = "[Y]ank into system clipboard" 
 -- delete into the void
 vim.keymap.set("n", "<leader>d", '"_d', { desc = "[D]elete into void" })
 vim.keymap.set("v", "<leader>d", '"_d', { desc = "[D]elete into void" })
+
+vim.keymap.set('n', '<leader>r', '<Plug>(DBUI_ExecuteQuery)', { desc = "[R]un SQL" })
 
 -- disable Q
 vim.keymap.set("n", "Q", "<nop>")
