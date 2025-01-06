@@ -3,3 +3,4 @@
 chosen=$(command ls ~/.screenlayout | rofi -dmenu -i)
 
 ~/.screenlayout/$chosen
+nitrogen --restore
