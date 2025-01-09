@@ -194,7 +194,7 @@ _tmux_switch_or_activate() {
         command="attach"
     fi
 
-    if tmux has-session -t $session_name 2>/dev/null; then
+    if tmux ls | grep -q "^${session_name}:"; then
     else
         tmux new-session -d -s $session_name -c $directory
     fi
