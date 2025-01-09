@@ -1,7 +1,7 @@
-(deflisten i3-workspace0 "~/.local/bin/i3-eww DP-0")
-(deflisten i3-workspace2 "~/.local/bin/i3-eww DP-2")
+(deflisten i3-workspace0 "i3-eww eDP-1")
+(deflisten i3-workspace2 "i3-eww DP-1-5")
 (defwindow bar
-   :monitor 'DP-0'
+   :monitor 'eDP-1'
    :geometry (geometry 
                        :width "100%"
                        :height "1%"
@@ -17,7 +17,7 @@
 )
 
 (defwindow bar2
-   :monitor 'DP-2'
+   :monitor 'DP-1-5'
    :geometry (geometry 
                        :width "100%"
                        :height "1%"
