@@ -3,4 +3,8 @@
 chosen=$(command ls ~/.screenlayout | rofi -dmenu -i)
 
 ~/.screenlayout/$chosen
+# if pollybar is running, restart it
+echo "restarting polybar"
+sleep 2
+~/.config/polybar/launch_polybar.sh
 nitrogen --restore
