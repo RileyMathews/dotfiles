@@ -97,6 +97,8 @@ alias kar='kubectl apply --recursive -f'
 
 alias n='nvim'
 
+alias upd='update-arch'
+
 ######################################
 # Language Managers                  #
 ######################################
