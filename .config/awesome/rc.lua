@@ -52,11 +52,11 @@ end
 
 -- {{{ Variable definitions
 -- Themes define colours, icons, font and wallpapers.
-beautiful.init(gears.filesystem.get_themes_dir() .. "default/theme.lua")
+beautiful.init("/home/riley/.config/awesome/theme.lua")
 
 -- This is used later as the default terminal and editor to run.
-terminal = "alacritty"
-editor = os.getenv("EDITOR") or "nano"
+terminal = "ghostty"
+editor = os.getenv("EDITOR") or "vim"
 editor_cmd = terminal .. " -e " .. editor
 
 -- Default modkey.
@@ -234,6 +234,8 @@ awful.screen.connect_for_each_screen(function(s)
 		layout = wibox.layout.align.horizontal,
 		{ -- Left widgets
 			layout = wibox.layout.fixed.horizontal,
+			-- margin
+			wibox.widget.textbox("  "),
 			mylauncher,
 			s.mytaglist,
 			s.mypromptbox,
@@ -245,6 +247,8 @@ awful.screen.connect_for_each_screen(function(s)
 			wibox.widget.systray(),
 			mytextclock,
 			s.mylayoutbox,
+			-- margin
+			wibox.widget.textbox("  "),
 		},
 	})
 end)
