@@ -99,6 +99,8 @@ alias n='nvim'
 
 alias upd='update-arch'
 
+alias ap='ansible-playbook'
+
 ######################################
 # Language Managers                  #
 ######################################
