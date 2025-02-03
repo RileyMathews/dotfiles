@@ -44,10 +44,10 @@ window#waybar {
 
 #workspaces button {
     border-radius: 0;
+    border-bottom: 3px solid transparent;
 }
 
 #workspaces button.active {
-    border-bottom: 3px solid transparent;
     border-bottom-color: @primary;
 }
 
