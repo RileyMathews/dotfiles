@@ -55,9 +55,6 @@ export PATH="$PATH:$HOME/.local/bin:$HOME/.local/scripts:$HOME/.screenlayout"
 export KEYTIMEOUT=1
 export BROWSER=librewolf
 
-[ -f "$HOME/.local/device-specific/environment.sh" ] && source "$HOME/.local/device-specific/environment.sh"
-
-
 #####################################
 # Aliases                           #
 #####################################

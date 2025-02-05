@@ -1,6 +1,4 @@
 #! /bin/sh
 
-# swhks &
-# pkexec swhkd
-exec xiccd &
-sway
+[ -f ~/.local/device-specific/hyprland-vars.sh ] && . ~/.local/device-specific/hyprland-vars.sh
+Hyprland
