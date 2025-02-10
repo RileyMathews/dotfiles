@@ -13,7 +13,7 @@ echo "Kernel version: ${KERNEL_VERSION}"
 
 # https://github.com/geoffreybennett/linux-fcp/releases/download/v6.12-f8/snd-usb-audio-kmod-v6.12.10-f8.tar.xz
 
-wget https://github.com/geoffreybennett/linux-fcp/releases/download/v6.12-f8/snd-usb-audio-kmod-v${KERNEL_VERSION}-f8.tar.xz -O /tmp/snd-usb-audio-kmod.tar.xz
+wget https://github.com/geoffreybennett/linux-fcp/releases/download/v6.12-f8/snd-usb-audio-kmod-v6.12.10-f8.tar.xz -O /tmp/snd-usb-audio-kmod.tar.xz
 tar -xf /tmp/snd-usb-audio-kmod.tar.xz -C /tmp/snd-usb-audio-kmod --strip-components=1
 rm -rf /tmp/snd-usb-audio-kmod.tar.xz
 cd /tmp/snd-usb-audio-kmod
