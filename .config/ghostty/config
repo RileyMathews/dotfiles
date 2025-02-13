@@ -1,3 +1,4 @@
 theme = catppuccin-mocha
 gtk-titlebar      = false
 gtk-adwaita       = false
+confirm-close-surface = false

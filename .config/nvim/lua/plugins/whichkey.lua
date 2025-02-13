@@ -1,18 +1,23 @@
 return {
-	'folke/which-key.nvim',
+	"folke/which-key.nvim",
 	opts = {},
-	event = 'BufWinEnter',
+	event = "BufWinEnter",
 	config = function()
-		local wk = require('which-key')
+		local wk = require("which-key")
 		wk.add({
 			{ "<leader>l", "lsp" },
 			{ "<leader>x", "trouble" },
 			{ "<leader>h", "harpoon" },
-			{ "<leader>s", "search" },
-			{ "<leader>t", "test" },
-			{ "<leader>t", "test" },
+			{ "<leader>f", "find" },
+			{ "<leader>s", "spec" },
+			{ "<leader>t", "tabs" },
 			{ "<leader>u", "url" },
 			{ "<leader>n", "notifications" },
 		})
+		for i = 1, 9 do
+			wk.add({
+				{ "<leader>" .. i, hidden = true },
+			})
+		end
 	end,
 }

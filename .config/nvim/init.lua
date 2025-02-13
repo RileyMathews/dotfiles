@@ -37,7 +37,7 @@ end
 vim.opt.rtp:prepend(lazypath)
 require("lazy").setup({
 	spec = {
-		{ import = "plugins" }
+		{ import = "plugins" },
 	},
 })
 vim.filetype.add({
@@ -69,11 +69,7 @@ vim.keymap.set("x", "<leader>p", '"_dP', { desc = "[P]aste without replacing buf
 vim.keymap.set("v", "<leader>y", '"+y', { desc = "[Y]ank into system clipboard" })
 vim.keymap.set("n", "<leader>Y", '"+Y', { desc = "[Y]ank into system clipboard" })
 
--- delete into the void
-vim.keymap.set("n", "<leader>d", '"_d', { desc = "[D]elete into void" })
-vim.keymap.set("v", "<leader>d", '"_d', { desc = "[D]elete into void" })
-
-vim.keymap.set('n', '<leader>r', '<Plug>(DBUI_ExecuteQuery)', { desc = "[R]un SQL" })
+vim.keymap.set("n", "<leader>r", "<Plug>(DBUI_ExecuteQuery)", { desc = "[R]un SQL" })
 
 -- disable Q
 vim.keymap.set("n", "Q", "<nop>")
@@ -98,4 +94,9 @@ vim.api.nvim_create_autocmd("TextYankPost", {
 })
 
 local hspec_toggle = require("custom.hspec")
-vim.keymap.set("n", "<leader>th", hspec_toggle.toggle_hspec_comments, { desc = "Toggle [H]spec comments" })
+vim.keymap.set("n", "<leader>sh", hspec_toggle.toggle_hspec_comments, { desc = "Toggle [H]spec comments" })
+
+vim.keymap.set("n", "<leader>tt", "<cmd>:tabnew<CR>", { desc = "[T]ab [T]ouch" })
+vim.keymap.set("n", "<leader>tc", "<cmd>:tabclose<CR>", { desc = "[T]ab [C]lose" })
+vim.keymap.set("n", "<leader>tn", "<cmd>:tabnext<CR>", { desc = "[T]ab [N]ext" })
+vim.keymap.set("n", "<leader>tp", "<cmd>:tabprevious<CR>", { desc = "[T]ab [P]revious" })

@@ -8,13 +8,13 @@ return {
 		"nvim-neotest/neotest-jest",
 	},
 	keys = {
-		{ "<leader>tn", "<cmd>lua require('neotest').run.run()<CR>", desc = "Test nearest" },
-		{ "<leader>to", "<cmd>lua require('neotest').output.open()<CR>", desc = "Test open output" },
-		{ "<leader>tf", "<cmd>lua require('neotest').run.run(vim.fn.expand('%'))<CR>", desc = "Test file" },
-		{ "<leader>td", "<cmd>lua require('neotest').run.run({ strategy = 'dap' })<CR>", desc = "Test debug" },
-		{ "<leader>ts", "<cmd>lua require('neotest').run.run({ suite = true })<CR>", desc = "Test all" },
-		{ "<leader>tl", "<cmd>lua require('neotest').run.run_last()<CR>", desc = "Test last" },
-		{ "<leader>tb", "<cmd>lua require('neotest').summary.toggle()<CR>", desc = "Test breakdown" },
+		{ "<leader>sn", "<cmd>lua require('neotest').run.run()<CR>", desc = "[S]pec [N]earest" },
+		{ "<leader>so", "<cmd>lua require('neotest').output.open()<CR>", desc = "[S]pec [O]pen output" },
+		{ "<leader>sf", "<cmd>lua require('neotest').run.run(vim.fn.expand('%'))<CR>", desc = "[S]pec [F]ile" },
+		{ "<leader>sd", "<cmd>lua require('neotest').run.run({ strategy = 'dap' })<CR>", desc = "[S]pec [D]ebug" },
+		{ "<leader>ss", "<cmd>lua require('neotest').run.run({ suite = true })<CR>", desc = "[S]pec [A]ll" },
+		{ "<leader>sl", "<cmd>lua require('neotest').run.run_last()<CR>", desc = "[S]pec [L]ast" },
+		{ "<leader>sb", "<cmd>lua require('neotest').summary.toggle()<CR>", desc = "[S]pec [B]reakdown" },
 	},
 	config = function()
 		local neotest = require("neotest")
