@@ -53,7 +53,6 @@ setopt hist_find_no_dups
 export EDITOR="nvim"
 export PATH="$PATH:$HOME/.local/bin:$HOME/.local/scripts:$HOME/.screenlayout"
 export KEYTIMEOUT=1
-export BROWSER=librewolf
 
 #####################################
 # Aliases                           #

@@ -1,5 +1,5 @@
 super + b
-    librewolf
+    xdg-open about:blank
 
 super + t
     ghostty
