@@ -51,21 +51,11 @@ COLOR_OVERLAY0 = "#6c7086"
 COLOR_OVERLAY1 = "#7f849c"
 COLOR_OVERLAY2 = "#585b70"
 
-@hook.subscribe.focus_change
-def _():
-    for screen in qtile.screens:
-        if screen is qtile.current_screen:
-            screen.bottom.background = COLOR_BASE
-        else:
-            screen.bottom.background = COLOR_CRUST
-        screen.bottom.draw()
-
-
-# @hook.subscribe.startup
-# def launch_polybar():
-#     logger.warning("In startup func")
-#     polybar_script = os.path.expanduser('~/.config/polybar/launch_polybar.sh')
-#     subprocess.Popen([polybar_script])
+@hook.subscribe.startup
+def launch_polybar():
+    logger.warning("In startup func")
+    polybar_script = os.path.expanduser('~/.config/polybar/launch_polybar.sh')
+    subprocess.Popen([polybar_script])
 
 
 mod = "mod4"
@@ -234,11 +224,6 @@ def create_widgets(main=False):
 
 screens = [
     Screen(
-        bottom=bar.Bar(
-            create_widgets(main=True),  # main screen widgets
-            24, # Bar Size 
-            background=COLOR_BASE,
-        ),
         left=Gap(8),
         right=Gap(8),
     )
