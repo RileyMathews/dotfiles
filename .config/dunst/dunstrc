@@ -20,3 +20,12 @@ highlight = "#f38ba8,#a6e3a1"
 [urgency_critical]
 frame_color = "#f38ba8"
 foreground = "#f38ba8"
+
+[fullscreen_delay_everything]
+    fullscreen = delay
+[fullscreen_show_critical]
+    msg_urgency = critical
+    fullscreen = show
+[fullscreen_show_slack]
+    appname = "Slack"
+    fullscreen = show
