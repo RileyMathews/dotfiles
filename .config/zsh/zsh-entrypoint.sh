@@ -51,6 +51,7 @@ setopt hist_find_no_dups
 # Environment Variables             #
 #####################################
 export EDITOR="nvim"
+export BROWSER="/opt/zen-browser-bin/zen-bin"
 export PATH="$PATH:$HOME/.local/bin:$HOME/.local/scripts:$HOME/.screenlayout"
 export KEYTIMEOUT=1
 

@@ -51,7 +51,7 @@ COLOR_OVERLAY0 = "#6c7086"
 COLOR_OVERLAY1 = "#7f849c"
 COLOR_OVERLAY2 = "#585b70"
 
-@hook.subscribe.startup
+@hook.subscribe.startup_complete
 def launch_polybar():
     logger.warning("In startup func")
     polybar_script = os.path.expanduser('~/.config/polybar/launch_polybar.sh')
@@ -223,6 +223,10 @@ def create_widgets(main=False):
     return widgets
 
 screens = [
+    Screen(
+        left=Gap(8),
+        right=Gap(8),
+    ),
     Screen(
         left=Gap(8),
         right=Gap(8),
