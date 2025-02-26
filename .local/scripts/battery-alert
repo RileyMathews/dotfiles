@@ -6,11 +6,23 @@
 export DISPLAY=:0
 export DBUS_SESSION_BUS_ADDRESS="unix:path=/run/user/1000/bus"
 
+find_battery() {
+	# return which dir in power_supply contains BAT
+	# if multiple BAT dirs exist exit with error
+	BAT_DIRS=$(ls /sys/class/power_supply/ | grep BAT)
+	if [ $(echo $BAT_DIRS | wc -w) -gt 1 ]; then
+		echo "Multiple BAT dirs found: $BAT_DIRS" >&2
+		exit 1
+	fi
+	echo $BAT_DIRS
+}
+
 # Battery percentage at which to notify
 WARNING_LEVEL=20
 CRITICAL_LEVEL=5
-BATTERY_DISCHARGING=$(cat /sys/class/power_supply/BAT0/status | grep -c "Discharging")
-BATTERY_LEVEL=$(cat /sys/class/power_supply/BAT0/capacity)
+BATTERY=$(find_battery)
+BATTERY_DISCHARGING=$(cat /sys/class/power_supply/$BATTERY/status | grep -c "Discharging")
+BATTERY_LEVEL=$(cat /sys/class/power_supply/$BATTERY/capacity)
 
 # Use files to store whether we've shown a notification or not (to prevent multiple notifications)
 FULL_FILE=/tmp/batteryfull
