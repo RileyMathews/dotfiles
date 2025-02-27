@@ -204,6 +204,12 @@ _tmux_switch_or_activate() {
     tmux $command -t $session_name
 }
 
+if [[ "$TERM" == "linux" ]]; then
+    export STARSHIP_CONFIG="$HOME/.config/starship/starship-tty.toml"
+else
+    export STARSHIP_CONFIG="$HOME/.config/starship/starship-graphical.toml"
+fi
+
 eval "$(starship init zsh)"
 
 hyprlog() {
