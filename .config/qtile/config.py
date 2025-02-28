@@ -30,6 +30,7 @@ from libqtile.config import Click, Drag, Group, Key, Match, Screen
 from libqtile.lazy import lazy
 from libqtile.utils import guess_terminal
 from libqtile.log_utils import logger
+from Xlib import display as xdisplay
 import os
 import subprocess
 
@@ -51,11 +52,44 @@ COLOR_OVERLAY0 = "#6c7086"
 COLOR_OVERLAY1 = "#7f849c"
 COLOR_OVERLAY2 = "#585b70"
 
-@hook.subscribe.startup_complete
-def launch_polybar():
-    logger.warning("In startup func")
-    polybar_script = os.path.expanduser('~/.config/polybar/launch_polybar.sh')
-    subprocess.Popen([polybar_script])
+@hook.subscribe.focus_change
+def _():
+    for screen in qtile.screens:
+        if screen is qtile.current_screen:
+            screen.bottom.background = COLOR_BASE
+        else:
+            screen.bottom.background = COLOR_CRUST
+        screen.bottom.draw()
+
+def get_num_monitors():
+    num_monitors = 0
+    try:
+        display = xdisplay.Display()
+        screen = display.screen()
+        resources = screen.root.xrandr_get_screen_resources()
+
+        for output in resources.outputs:
+            monitor = display.xrandr_get_output_info(output, resources.config_timestamp)
+            preferred = False
+            if hasattr(monitor, "preferred"):
+                preferred = monitor.preferred
+            elif hasattr(monitor, "num_preferred"):
+                preferred = monitor.num_preferred
+            if preferred:
+                num_monitors += 1
+    except Exception as e:
+        # always setup at least one monitor
+        return 1
+    else:
+        return num_monitors
+
+num_monitors = get_num_monitors()
+
+# @hook.subscribe.startup
+# def launch_polybar():
+#     logger.warning("In startup func")
+#     polybar_script = os.path.expanduser('~/.config/polybar/launch_polybar.sh')
+#     subprocess.Popen([polybar_script])
 
 
 mod = "mod4"
@@ -199,24 +233,17 @@ def create_widgets(main=False):
         # widget.TextBox("default config", name="default"),
         # NB Systray is incompatible with Wayland, consider using StatusNotifier instead
         # widget.StatusNotifier(),
-        widget.WidgetBox(
-            widgets=[
-                widget.TextBox("Mem", name="memory_text"),
-                widget.MemoryGraph(),
-                widget.TextBox("Swap", name="swap_text"),
-                widget.SwapGraph(),
-                widget.TextBox("CPU", name="cpu_text"),
-                widget.CPUGraph(),
-            ],
-             close_button_location='right',
-        ),
+        widget.Spacer(),
     ]
 
     if main:
         widgets += [widget.Systray()]
 
     widgets += [
-        widget.Battery(format='{char} {percent:2.0%} {hour}:{min}'),
+        widget.Spacer(),
+        widget.Battery(format="󰁹 {percent:2.0%} {hour:d}:{min:02d}", padding=8),
+        widget.Backlight(fmt="󰃠  {}", padding=8),
+        widget.PulseVolume(fmt="   {}", padding=8),
         widget.Clock(format="%Y-%m-%d %a %I:%M %p  ", padding=8),
     ]
 
@@ -224,14 +251,29 @@ def create_widgets(main=False):
 
 screens = [
     Screen(
-        left=Gap(8),
-        right=Gap(8),
-    ),
-    Screen(
+        top=bar.Bar(
+            create_widgets(main=True),  # main screen widgets
+            24, # Bar Size 
+            background=COLOR_BASE,
+        ),
         left=Gap(8),
         right=Gap(8),
     )
 ]
+
+if num_monitors > 1:
+    for m in range(num_monitors - 1):
+        screens.append(
+            Screen(
+                top=bar.Bar(
+                    create_widgets(main=False),  # other screens widgets
+                    24,
+                    background=COLOR_BASE,
+                ),
+                left=Gap(8),
+                right=Gap(8),
+            )
+        )
 
 # Drag floating layouts.
 mouse = [
