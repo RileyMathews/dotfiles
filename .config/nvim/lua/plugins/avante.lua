@@ -7,10 +7,19 @@ return {
 	opts = {
 		-- add any opts here
 		-- for example
-		provider = "copilot",
-		auto_suggestions_provider = "openai",
+		provider = "ollama",
+		auto_suggestions_provider = "ollama",
 		copilot = {
 			model = "claude-3.7-sonnet",
+		},
+		vendors = {
+			["ollama"] = {
+				__inherited_from = "openai",
+				api_key_name = "",
+				endpoint = "http://127.0.0.1:11434/v1",
+				model = "llama3.1:8b",
+				max_tokens = 32768,
+			},
 		},
 	},
 	-- if you want to build from source then do `make BUILD_FROM_SOURCE=true`

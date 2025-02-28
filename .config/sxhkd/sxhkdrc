@@ -4,6 +4,9 @@ super + b
 super + t
     ghostty
 
+super + a
+    alacritty
+
 super + shift + p
     powermenu
 

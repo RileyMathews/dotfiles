@@ -253,7 +253,7 @@ screens = [
     Screen(
         top=bar.Bar(
             create_widgets(main=True),  # main screen widgets
-            24, # Bar Size 
+            16, # Bar Size 
             background=COLOR_BASE,
         ),
         left=Gap(8),
