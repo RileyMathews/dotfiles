@@ -52,15 +52,6 @@ COLOR_OVERLAY0 = "#6c7086"
 COLOR_OVERLAY1 = "#7f849c"
 COLOR_OVERLAY2 = "#585b70"
 
-@hook.subscribe.focus_change
-def _():
-    for screen in qtile.screens:
-        if screen is qtile.current_screen:
-            screen.bottom.background = COLOR_BASE
-        else:
-            screen.bottom.background = COLOR_CRUST
-        screen.bottom.draw()
-
 def get_num_monitors():
     num_monitors = 0
     try:
@@ -85,15 +76,34 @@ def get_num_monitors():
 
 num_monitors = get_num_monitors()
 
-# @hook.subscribe.startup
-# def launch_polybar():
-#     logger.warning("In startup func")
-#     polybar_script = os.path.expanduser('~/.config/polybar/launch_polybar.sh')
-#     subprocess.Popen([polybar_script])
+binary_to_window_class = {
+    "ghostty": "com.mitchellh.ghostty",
+    "/opt/zen-browser-bin/zen-bin": "zen",
+    "slack": "Slack",
+    "betterbird": "eu.betterbird.Betterbird",
+}
+window_class_to_workspace = {
+    "com.mitchellh.ghostty": "3",
+    "zen": "2",
+    "Slack": "6",
+    "eu.betterbird.Betterbird": "7",
+}
+pending_clients = {}
 
+def launch_applications(qtile):
+    for binary, window_class in binary_to_window_class.items():
+        pending_clients[window_class] = True
+        qtile.spawn(binary)
+
+@hook.subscribe.client_new
+def on_new_client(client):
+    logger.warn(client._wm_class)
+    w_class = client._wm_class[1]
+    if w_class in pending_clients:
+        client.togroup(window_class_to_workspace[w_class])
+        pending_clients.pop(w_class, None)
 
 mod = "mod4"
-terminal = guess_terminal()
 
 keys = [
     # A list of available commands that can be bound to keys can be found
@@ -127,7 +137,6 @@ keys = [
         lazy.layout.toggle_split(),
         desc="Toggle between split and unsplit sides of stack",
     ),
-    # Key([mod], "Return", lazy.spawn(terminal), desc="Launch terminal"),
     # Toggle between different layouts as defined below
     Key([mod], "Tab", lazy.next_layout(), desc="Toggle between layouts"),
     Key([mod], "q", lazy.window.kill(), desc="Kill focused window"),
@@ -140,6 +149,7 @@ keys = [
     Key([mod, "shift"], "f", lazy.window.toggle_floating(), desc="Toggle floating on the focused window"),
     Key([mod, "shift"], "r", lazy.restart(), desc="restart qtile"),
     Key([mod, "shift"], "q", lazy.shutdown(), desc="Shutdown Qtile"),
+    Key([mod, "shift"], "y", lazy.function(launch_applications)),
 ]
 
 # Add key bindings to switch VTs in Wayland.
