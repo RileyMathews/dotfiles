@@ -54,6 +54,7 @@ export EDITOR="nvim"
 export BROWSER="/opt/zen-browser-bin/zen-bin"
 export PATH="$PATH:$HOME/.local/bin:$HOME/.local/scripts:$HOME/.screenlayout"
 export KEYTIMEOUT=1
+export XDG_DATA_DIRS="$XDG_DATA_DIRS:/var/lib/flatpak/exports/share:/home/riley/.local/share/flatpak/exports/share"
 
 #####################################
 # Aliases                           #
