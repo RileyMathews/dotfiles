@@ -101,6 +101,8 @@ alias upd='update-arch'
 
 alias ap='ansible-playbook'
 
+alias s7='system76-power'
+
 ######################################
 # Language Managers                  #
 ######################################
