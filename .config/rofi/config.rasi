@@ -2,10 +2,12 @@ configuration{
     modi: "drun";
     icon-theme: "Oranchelo";
     show-icons: true;
-    terminal: "alacritty";
-    drun-display-format: "{icon} {name}";
-    location: 1;
+    terminal: "ghostty";
+    drun-display-format: "{icon} {name} <span size='small' weight='light'>({comment})</span>";
     disable-history: false;
     hide-scrollbar: true;
+    drun {
+        display-name: ">";
+    }
 }
 @theme "theme"

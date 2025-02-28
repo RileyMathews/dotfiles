@@ -17,10 +17,12 @@ element-text, element-icon , mode-switcher {
 }
 
 window {
-    height: 1000;
     border: 1px;
+    width: 40%;
     border-color: @border-col;
     background-color: @bg-col;
+    location: center;
+    anchor: center;
 }
 
 mainbox {
@@ -34,7 +36,7 @@ inputbar {
 
 prompt {
     padding: 0 10px;
-    background-color: #89b4fa;
+    background-color: @blue;
 }
 
 entry {
