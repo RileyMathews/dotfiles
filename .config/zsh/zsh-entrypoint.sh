@@ -103,6 +103,8 @@ alias ap='ansible-playbook'
 
 alias s7='system76-power'
 
+alias tss='sudo tailscale switch'
+
 ######################################
 # Language Managers                  #
 ######################################
