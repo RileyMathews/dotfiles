@@ -193,25 +193,6 @@ dote() {
     _tmux_switch_or_activate ~/dotfiles "dotfiles"
 }
 
-cpf() {
-    if (( $# == 0 )); then
-    echo "Usage: copy_files_to_clipboard file1 [file2 ...]"
-    return 1
-    fi
-
-    local uris=()
-    for file in "$@"; do
-    if [[ -e "$file" ]]; then
-    uris+=("file://$(realpath "$file")")
-    else
-    echo "File not found: $file"
-    return 1
-    fi
-    done
-
-    printf "%s\n" "${uris[@]}" | xclip -selection clipboard -t text/uri-list
-}
-
 _tmux_switch_or_activate() {
     directory=$1
     session_name=$2
