@@ -103,6 +103,15 @@ def on_new_client(client):
         client.togroup(window_class_to_workspace[w_class])
         pending_clients.pop(w_class, None)
 
+@hook.subscribe.current_screen_change
+def update_bar_colors():
+    for screen in qtile.screens:
+        if screen == qtile.current_screen:
+            screen.top.background = COLOR_BASE
+        else:
+            screen.top.background = COLOR_CRUST
+        screen.top.draw()
+
 mod = "mod4"
 
 keys = [
