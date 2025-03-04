@@ -11,7 +11,7 @@ exec picom -b &
 exec nitrogen --restore &
 
 if [ "$#" -eq 0 ]; then
-    exec i3
+    exec qtile start
 else
     exec "$@"
 fi
