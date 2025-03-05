@@ -1,5 +1,6 @@
 theme = catppuccin-mocha
 gtk-titlebar      = false
 gtk-adwaita       = false
-window-decoration = server
+window-decoration = false
 confirm-close-surface = false
+gtk-custom-css = ./custom.css
