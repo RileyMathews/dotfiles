@@ -1,8 +1,8 @@
 #! /bin/sh
 
-chosen=$(command ls ~/.screenlayout | rofi -dmenu -i)
+chosen=$(autorandr --list | rofi -dmenu -i)
 
-~/.screenlayout/$chosen
+autorandr --load $chosen
 # if pollybar is running, restart it
 if  pgrep -x "polybar"; then
     echo "restarting polybar"
