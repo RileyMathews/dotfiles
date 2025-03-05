@@ -16,6 +16,14 @@ cleanup() {
     xauth remove :"$tty"
 }
 
+# detect if --nvidia is in any argument
+for arg in "$@"; do
+    if [ "$arg" = "--nvidia" ]; then
+        echo "nvidia flag detected, setting XORGCONFIG env var to use nvidia as primary GPU"
+        export XORGCONFIG="nvididia-primary.conf"
+    fi
+done
+
 stty=$(stty -g)
 tty=$(tty)
 tty=${tty#/dev/tty}
