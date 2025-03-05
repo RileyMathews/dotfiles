@@ -2,7 +2,7 @@
 
 chosen=$(autorandr --list | rofi -dmenu -i)
 
-autorandr --load $chosen
+autorandr --load $chosen --skip-options crtc
 # if pollybar is running, restart it
 if  pgrep -x "polybar"; then
     echo "restarting polybar"
