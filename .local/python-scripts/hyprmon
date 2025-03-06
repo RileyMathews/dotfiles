@@ -1,10 +1,12 @@
 #!/usr/bin/env -S sh -c 'exec "$(dirname "$0")/.venv/bin/python" "$0" "$@"'
 # vim:ft=python
 import os
-import sys
-import json
 import socket
+import argparse
+from typing import Dict, List
 from lib.hypr_lib import HyprlandMonitorsResponse
+
+PROFILE_DIRECTORY = f"{os.getenv("HOME")}/.local/share/hyprmon"
 
 def send_hyprland_command(command):
     # Get the socket path from environment variable
@@ -51,21 +53,44 @@ def find_in_list(pred, l: list):
             return item
     return None
 
-# Example usage
-if __name__ == "__main__":
-    # Example: Get active window information
-    monitor_order = sys.argv[1:]
+def get_monitors() -> List[HyprlandMonitorsResponse]:
     hypr_response = send_hyprland_command("j/monitors")
-    data = HyprlandMonitorsResponse.schema().loads(hypr_response, many=True)
-    print(data[0].id)
-    # current_x = 0
-    # for monitor in monitor_order:
-    #     hypr_monitor = find_in_list(lambda mon: mon["name"] == monitor, monitors_response)
-    #     if not hypr_monitor:
-    #         continue
-    #     command = f"keyword monitor {hypr_monitor['name']},{hypr_monitor['width']}x{hypr_monitor['height']},{current_x}x0,1"
-    #     resp = send_hyprland_command(command)
-    #     current_x += hypr_monitor['width']
+    return HyprlandMonitorsResponse.schema().loads(hypr_response or b'[]', many=True)
+
+def save_profile(profile_name: str):
+    print(f"saving current monitor layout as {profile_name}")
+    data = get_monitors()
+    os.makedirs(PROFILE_DIRECTORY, exist_ok=True)
+    with open(f"{PROFILE_DIRECTORY}/{profile_name}.json", "w") as f:
+        f.write(HyprlandMonitorsResponse.schema().dumps(data, many=True))
+
+def load_profile(profile_name: str):
+    print(f"loading monitor layout from {profile_name}")
+    with open(f"{PROFILE_DIRECTORY}/{profile_name}.json", "r") as f:
+        data = f.read()
+        monitors = HyprlandMonitorsResponse.schema().loads(data, many=True)
+        monitors_in_use_by_profile = []
+        for monitor in monitors:
+            send_hyprland_command(monitor.keyword_restore_command())
+            monitors_in_use_by_profile.append(monitor.name)
+
+        all_monitors = get_monitors()
+        for monitor in all_monitors:
+            if monitor.name not in monitors_in_use_by_profile:
+                send_hyprland_command(monitor.disable_command())
 
 
 
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description='store and retrieve hyprland monitor profiles')
+    parser.add_argument('command', choices=['save', 'load'], help='the command to execute')
+    parser.add_argument('profile', help='the name of the profile to save or load')
+    args = parser.parse_args()
+    print(args)
+    match args.command:
+        case "save":
+            save_profile(args.profile)
+
+        case "load":
+            load_profile(args.profile)
