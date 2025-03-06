@@ -1,0 +1,67 @@
+#! python
+import os
+import sys
+import json
+import socket
+
+def send_hyprland_command(command):
+    # Get the socket path from environment variable
+    socket_path = os.environ.get('HYPRLAND_INSTANCE_SIGNATURE')
+    
+    if not socket_path:
+        print("Error: HYPRLAND_INSTANCE_SIGNATURE environment variable not set")
+        return None
+    
+    # Construct the full socket path
+    socket_path = f"/run/user/1000/hypr/{socket_path}/.socket.sock"
+    
+    # Create a Unix socket
+    sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+    
+    try:
+        # Connect to the socket
+        sock.connect(socket_path)
+        
+        # Send the command
+        sock.send(command.encode())
+        
+        # Receive the response properly by accumulating chunks
+        chunks = []
+        while True:
+            chunk = sock.recv(1024)  # Using a larger buffer size
+            if not chunk:  # If no data received, we're done
+                break
+            chunks.append(chunk)
+        
+        # Combine all chunks and decode
+        response = b''.join(chunks).decode()
+        
+        return response
+    except Exception as e:
+        print(f"Error communicating with Hyprland: {e}")
+        return None
+    finally:
+        sock.close()
+
+def find_in_list(pred, l: list):
+    for item in l:
+        if pred(item):
+            return item
+    return None
+
+# Example usage
+if __name__ == "__main__":
+    # Example: Get active window information
+    monitor_order = sys.argv[1:]
+    monitors_response = json.loads(send_hyprland_command("j/monitors"))
+    current_x = 0
+    for monitor in monitor_order:
+        hypr_monitor = find_in_list(lambda mon: mon["name"] == monitor, monitors_response)
+        if not hypr_monitor:
+            continue
+        command = f"keyword monitor {hypr_monitor['name']},{hypr_monitor['width']}x{hypr_monitor['height']},{current_x}x0,1"
+        resp = send_hyprland_command(command)
+        current_x += hypr_monitor['width']
+
+
+
