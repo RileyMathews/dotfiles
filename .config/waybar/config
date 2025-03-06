@@ -5,6 +5,10 @@
     // "width": 1280, // Waybar width
     "spacing": 4, // Gaps between modules (4px)
     // Choose the order of the modules
+    "margin-left": 30,
+    "margin-right": 30,
+    "margin-top": 4,
+    "margin-bottom": 4,
     "modules-left": [
         "hyprland/workspaces",
         "hyprland/submap",

@@ -81,16 +81,34 @@ def load_profile(profile_name: str):
 
 
 
+def list_profiles():
+    profiles = os.listdir(PROFILE_DIRECTORY)
+    for profile in profiles:
+        # strip out .json
+        profile = profile[:-5]
+        print(profile)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='store and retrieve hyprland monitor profiles')
-    parser.add_argument('command', choices=['save', 'load'], help='the command to execute')
-    parser.add_argument('profile', help='the name of the profile to save or load')
+    subparsers = parser.add_subparsers(dest='command', help='the command to execute')
+    
+    # Command-specific subparsers
+    save_parser = subparsers.add_parser('save', help='save the current monitor profile')
+    save_parser.add_argument('profile', help='the name of the profile to save')
+    
+    load_parser = subparsers.add_parser('load', help='load a saved monitor profile')
+    load_parser.add_argument('profile', help='the name of the profile to load')
+    
+    # List command doesn't need a profile argument
+    subparsers.add_parser('list', help='list all saved profiles')
+    
     args = parser.parse_args()
-    print(args)
     match args.command:
         case "save":
             save_profile(args.profile)
 
         case "load":
             load_profile(args.profile)
+
+        case "list":
+            list_profiles()

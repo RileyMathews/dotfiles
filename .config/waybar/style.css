@@ -33,15 +33,30 @@
     min-height: 0;
 }
 
-window#waybar {
-    background-color: rgba(30, 30, 46, 0.5);
-    border-bottom: 3px solid rgba(108, 112, 134, 0.5);
-    color: @text;
-    transition-property: background-color;
-    transition-duration: .5s;
-    margin-left: 29px;
+window {
 }
 
+window#waybar {
+    all:unset;
+}
+
+.modules-left {
+    background: @crust;
+    padding: 0 4px;
+    margin-left: 39px;
+    border-radius: 8px;
+}
+.modules-right {
+    background: @crust;
+    padding: 0 4px;
+    border-radius: 8px;
+}
+
+.modules-center {
+    background: @crust;
+    padding: 0 20px;
+    border-radius: 8px;
+}
 #workspaces button {
     border-radius: 0;
     border-bottom: 3px solid transparent;
