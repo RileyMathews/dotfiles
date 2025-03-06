@@ -1,8 +1,10 @@
-#! python
+#!/usr/bin/env -S sh -c 'exec "$(dirname "$0")/.venv/bin/python" "$0" "$@"'
+# vim:ft=python
 import os
 import sys
 import json
 import socket
+from lib.hypr_lib import HyprlandMonitorsResponse
 
 def send_hyprland_command(command):
     # Get the socket path from environment variable
@@ -53,15 +55,17 @@ def find_in_list(pred, l: list):
 if __name__ == "__main__":
     # Example: Get active window information
     monitor_order = sys.argv[1:]
-    monitors_response = json.loads(send_hyprland_command("j/monitors"))
-    current_x = 0
-    for monitor in monitor_order:
-        hypr_monitor = find_in_list(lambda mon: mon["name"] == monitor, monitors_response)
-        if not hypr_monitor:
-            continue
-        command = f"keyword monitor {hypr_monitor['name']},{hypr_monitor['width']}x{hypr_monitor['height']},{current_x}x0,1"
-        resp = send_hyprland_command(command)
-        current_x += hypr_monitor['width']
+    hypr_response = send_hyprland_command("j/monitors")
+    data = HyprlandMonitorsResponse.schema().loads(hypr_response, many=True)
+    print(data[0].id)
+    # current_x = 0
+    # for monitor in monitor_order:
+    #     hypr_monitor = find_in_list(lambda mon: mon["name"] == monitor, monitors_response)
+    #     if not hypr_monitor:
+    #         continue
+    #     command = f"keyword monitor {hypr_monitor['name']},{hypr_monitor['width']}x{hypr_monitor['height']},{current_x}x0,1"
+    #     resp = send_hyprland_command(command)
+    #     current_x += hypr_monitor['width']
 
 
 
