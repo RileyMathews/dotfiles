@@ -111,6 +111,7 @@ alias tss='sudo tailscale switch'
 export PATH="$PATH:$HOME/.cargo/bin"
 
 [ -f "$HOME/.ghcup/env" ] && source "$HOME/.ghcup/env" # ghcup-env
+export PATH="$HOME/.cabal/bin:$HOME/.ghcup/bin:$PATH"
 
 export PATH=$PATH:/usr/local/go/bin:$HOME/go/bin
 
