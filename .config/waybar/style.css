@@ -90,8 +90,6 @@ window#waybar {
     padding: 0 10px;
     color: @text; 
     background-color: transparent;
-    border-bottom: 3px solid transparent;
-    border-bottom-color: @primary;
 }
 
 .modules-left {

@@ -66,7 +66,11 @@ return {
 				map("<leader>ld", require("telescope.builtin").lsp_definitions, "[D]efinition")
 
 				-- Find references for the word under your cursor.
-				map("<leader>lr", require("telescope.builtin").lsp_references, "[R]eferences")
+				map("<leader>lr", function()
+					require("telescope.builtin").lsp_references({
+						show_line = false,
+					})
+				end, "[R]eferences")
 
 				-- Jump to the implementation of the word under your cursor.
 				--  Useful when your language has ways of declaring types without an actual implementation.
@@ -212,7 +216,13 @@ return {
 		if vim.fn.getenv("ENABLE_STATIC_LS") == "true" then
 			hls_server = {
 				cmd = { "static-ls", "--lsp" },
-				root_dir = lspconfig.util.root_pattern("*.cabal", "stack.yaml", "cabal.project", "package.yaml", ".git"),
+				root_dir = lspconfig.util.root_pattern(
+					"*.cabal",
+					"stack.yaml",
+					"cabal.project",
+					"package.yaml",
+					".git"
+				),
 			}
 		else
 			hls_server = {
