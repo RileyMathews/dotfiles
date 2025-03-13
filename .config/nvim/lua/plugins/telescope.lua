@@ -31,6 +31,15 @@ return {
 					require("telescope.themes").get_dropdown(),
 				},
 			},
+			defaults = {
+				dynamic_preview_tile = true,
+				path_display = {
+					shorten = {
+						len = 3,
+						exclude = { -3, -2, -1 },
+					},
+				},
+			},
 		})
 		pcall(telescope.load_extension, "fzf")
 		-- pcall(telescope.load_extension, "ui-select")
