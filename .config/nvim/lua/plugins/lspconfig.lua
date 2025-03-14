@@ -213,7 +213,11 @@ return {
 		})
 		local hls_server
 
-		if vim.fn.getenv("ENABLE_STATIC_LS") == "true" then
+		if vim.fn.getenv("DISABLE_STATIC_LS") == "true" then
+			hls_server = {
+				cmd = { "haskell-language-server-wrapper", "--lsp" },
+			}
+		else
 			hls_server = {
 				cmd = { "static-ls", "--lsp" },
 				root_dir = lspconfig.util.root_pattern(
@@ -223,10 +227,6 @@ return {
 					"package.yaml",
 					".git"
 				),
-			}
-		else
-			hls_server = {
-				cmd = { "haskell-language-server-wrapper", "--lsp" },
 			}
 		end
 
