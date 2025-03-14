@@ -6,10 +6,8 @@ set -eux
 if [ "$XDG_SESSION_TYPE" = "wayland" ] || [ "$XDG_SESSION_TYPE" = "hyprland" ]; then
     # Wayland session
     # Add your Wayland-specific screen layout code here
-    env
-    hyprmon list
-    chosen=$(hyprmon list | rofi -dmenu -i)
-    hyprmon load $chosen
+    chosen=$(hyprmonad list | rofi -dmenu -i)
+    hyprmonad load $chosen
 else
     # Xorg session - use existing code
     chosen=$(autorandr --list | rofi -dmenu -i)
