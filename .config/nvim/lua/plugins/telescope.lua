@@ -33,6 +33,7 @@ return {
 			},
 			defaults = {
 				dynamic_preview_tile = true,
+				layout_strategy = 'flex',
 				path_display = {
 					shorten = {
 						len = 3,
@@ -42,7 +43,7 @@ return {
 			},
 		})
 		pcall(telescope.load_extension, "fzf")
-		-- pcall(telescope.load_extension, "ui-select")
+		pcall(telescope.load_extension, "ui-select")
 
 		local builtin = require("telescope.builtin")
 		vim.keymap.set("n", "<leader>fh", builtin.help_tags, { desc = "[F]ind [H]elp" })
