@@ -162,10 +162,10 @@ gaps horizontal 2px
 bar {
         padding 0 8px
         status_command i3status
-        font pango:Hack Nerd Font 10
+        font pango:Hack Nerd Font 8
         colors {
-                background $base
-                focused_workspace $mantle $crust $sapphire
+                background $crust
+                focused_workspace $sapphire $crust $text
                 inactive_workspace $mantle $base $text
                 urgent_workspace $mantle $base $yellow
                 statusline $text
