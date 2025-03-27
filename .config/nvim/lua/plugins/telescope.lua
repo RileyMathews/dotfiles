@@ -1,6 +1,7 @@
 return {
 	"nvim-telescope/telescope.nvim",
 	tag = "0.1.4",
+	cmd = { "Telescope" },
 	dependencies = {
 		"nvim-lua/plenary.nvim",
 		{
@@ -33,7 +34,7 @@ return {
 			},
 			defaults = {
 				dynamic_preview_tile = true,
-				layout_strategy = 'flex',
+				layout_strategy = "flex",
 				path_display = {
 					shorten = {
 						len = 3,
