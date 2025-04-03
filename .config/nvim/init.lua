@@ -45,7 +45,7 @@ vim.filetype.add({
 		tera = "htmldjango",
 	},
 })
-vim.cmd.colorscheme("catppuccin")
+vim.cmd.colorscheme("tokyonight-night")
 vim.opt.showmode = false
 
 -- misc rebinds

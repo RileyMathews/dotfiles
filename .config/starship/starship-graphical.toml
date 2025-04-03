@@ -5,39 +5,25 @@ format = """
 [$hostname](fg:red)\
 [$username](fg:mauve)  \
 [$directory](fg:blue)  \
-[$git_branch$git_status](fg:peach)  \
+[$git_branch$git_status](fg:orange)  \
 [$python](fg:green)  \
 $line_break$character"""
 
-palette = 'catppuccin_mocha'
+palette = 'tokyo_night'
 
 [palettes.catppuccin_mocha]
-rosewater = "#f5e0dc"
-flamingo = "#f2cdcd"
-pink = "#f5c2e7"
 red = "#f38ba8"
-maroon = "#eba0ac"
-peach = "#fab387"
-yellow = "#f9e2af"
+orange = "#fab387" # peach in cattppuccin specifically
 green = "#a6e3a1"
-teal = "#94e2d5"
-sky = "#89dceb"
-sapphire = "#74c7ec"
 blue = "#89b4fa"
-lavender = "#b4befe"
 mauve = "#cba6f7"
-text = "#cdd6f4"
-subtext1 = "#bac2de"
-subtext0 = "#a6adc8"
-overlay2 = "#9399b2"
-overlay1 = "#7f849c"
-overlay0 = "#6c7086"
-surface2 = "#585b70"
-surface1 = "#45475a"
-surface0 = "#313244"
-base = "#1e1e2e"
-mantle = "#181825"
-crust = "#11111b"
+
+[palettes.tokyo_night]
+red = "#f7768e"
+orange = "#ff9e64"
+green = "#9ece6a"
+blue = "#7aa2f7"
+mauve = "#bb9af7"
 
 [hostname]
 ssh_only = true
@@ -89,7 +75,7 @@ disabled = false
 disabled = false
 success_symbol = '[](bold fg:green)'
 error_symbol = '[](bold fg:red)'
-vimcmd_symbol = '[](bold fg:creen)'
-vimcmd_replace_one_symbol = '[](bold fg:purple)'
-vimcmd_replace_symbol = '[](bold fg:purple)'
-vimcmd_visual_symbol = '[](bold fg:lavender)'
+vimcmd_symbol = '[](bold fg:green)'
+vimcmd_replace_one_symbol = '[](bold fg:green)'
+vimcmd_replace_symbol = '[](bold fg:green)'
+vimcmd_visual_symbol = '[](bold fg:green)'

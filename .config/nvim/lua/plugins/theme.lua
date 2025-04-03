@@ -1,24 +1,5 @@
 return {
 	{
-		"catppuccin/nvim",
-		name = "catppuccin",
-		lazy = true,
-		opts = {
-			integrations = {
-				harpoon = true,
-				gitsigns = true,
-				mason = true,
-				cmp = true,
-				mini = {
-					enabled = true,
-				},
-				telescope = {
-					enabled = true,
-				},
-			},
-		},
-	},
-	{
 		"echasnovski/mini.statusline",
 		config = function()
 			local statusline = require("mini.statusline")
@@ -33,5 +14,11 @@ return {
 				return "%2l:%-2v"
 			end
 		end,
+	},
+	{
+		"folke/tokyonight.nvim",
+		lazy = false,
+		priority = 1000,
+		opts = {},
 	},
 }
