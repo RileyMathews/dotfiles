@@ -15,6 +15,19 @@ return {
 			end
 		end,
 	},
+	-- {
+	-- 	"nvim-lualine/lualine.nvim",
+	-- 	dependencies = { "nvim-tree/nvim-web-devicons" },
+	-- 	opts = {
+	-- 		options = {
+	-- 			refresh = {
+	-- 				statusline = 100, -- Note these are in mili second and default is 1000
+	-- 				tabline = 200,
+	-- 				winbar = 100,
+	-- 			},
+	-- 		},
+	-- 	},
+	-- },
 	{
 		"folke/tokyonight.nvim",
 		lazy = false,
