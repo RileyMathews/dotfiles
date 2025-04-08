@@ -9,40 +9,16 @@
 # layout, use the i3-config-wizard
 #
 
-# Catppuccin colors
-set $rosewater #f5e0dc
-set $flamingo  #f2cdcd
-set $pink      #f5c2e7
-set $mauve     #cba6f7
-set $red       #f38ba8
-set $maroon    #eba0ac
-set $peach     #fab387
-set $yellow    #f9e2af
-set $green     #a6e3a1
-set $teal      #94e2d5
-set $sky       #89dceb
-set $sapphire  #74c7ec
-set $blue      #89b4fa
-set $lavender  #b4befe
-set $text      #cdd6f4
-set $subtext1  #bac2de
-set $subtext0  #a6adc8
-set $overlay2  #9399b2
-set $overlay1  #7f849c
-set $overlay0  #6c7086
-set $surface2  #585b70
-set $surface1  #45475a
-set $surface0  #313244
-set $base      #1e1e2e
-set $mantle    #181825
-set $crust     #11111b
-# target                 title     bg    text   indicator  border
-client.focused           $lavender $base $text  $rosewater $sapphire
-client.focused_inactive  $overlay0 $base $text  $rosewater $overlay0
-client.unfocused         $overlay0 $base $text  $rosewater $overlay0
-client.urgent            $peach    $base $peach $overlay0  $peach
-client.placeholder       $overlay0 $base $text  $overlay0  $overlay0
-client.background        $base
+#tokyonight night colors
+set $orange #ff9e64
+set $blue #7aa2f7
+set $text #c0caf5
+set $base #1a1b26
+# target                 title     bg    text    indicator  border
+client.focused           $base     $base $text   $orange $blue
+client.focused_inactive  $base     $base $text   $base $base
+client.unfocused         $base     $base $text   $orange $base
+client.urgent            $orange   $base $orange $base      $orange
 
 # Font for window titles. Will also be used by the bar unless a different font
 # is used in the bar {} block below.
@@ -164,10 +140,10 @@ bar {
         status_command i3status
         font pango:Hack Nerd Font 8
         colors {
-                background $crust
-                focused_workspace $sapphire $crust $text
-                inactive_workspace $mantle $base $text
-                urgent_workspace $mantle $base $yellow
+                background $base
+                focused_workspace $blue $base $text
+                inactive_workspace $base $base $text
+                urgent_workspace $base $base $orange
                 statusline $text
         }
         tray_output primary
