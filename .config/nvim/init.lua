@@ -23,6 +23,11 @@ vim.g.mapleader = " "
 vim.g.db_ui_execute_on_save = 0
 vim.cmd("autocmd BufEnter * set formatoptions-=cro")
 
+vim.opt.foldlevelstart = 99
+vim.opt.foldcolumn = "1"
+vim.opt.foldlevel = 99
+vim.opt.foldenable = true
+
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
 	vim.fn.system({
