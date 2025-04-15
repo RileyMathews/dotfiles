@@ -9,8 +9,8 @@ return {
 			{ "<leader>x", "trouble" },
 			{ "<leader>h", "harpoon" },
 			{ "<leader>f", "find" },
-			{ "<leader>s", "spec" },
-			{ "<leader>t", "tabs" },
+			{ "<leader>s", "search" },
+			{ "<leader>t", "test" },
 			{ "<leader>u", "url" },
 			{ "<leader>n", "notifications" },
 		})
