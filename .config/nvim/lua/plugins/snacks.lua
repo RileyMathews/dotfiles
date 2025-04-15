@@ -11,7 +11,6 @@ return {
 		dashboard = {
 			sections = {
 				{ section = "header" },
-				{ section = "keys", gap = 1, padding = 1 },
 				{ icon = " ", title = "Recent Files", section = "recent_files", indent = 2, padding = 1 },
 				{
 					icon = " ",
@@ -110,7 +109,7 @@ return {
 		{
 			"<leader>ff",
 			function()
-				Snacks.picker.files()
+				Snacks.picker.files({ hidden = true })
 			end,
 			desc = "Find Files",
 		},
