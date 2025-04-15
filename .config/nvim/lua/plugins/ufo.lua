@@ -5,7 +5,7 @@ return {
 		local ufo = require("ufo")
 		ufo.setup({
 			provider_selector = function(bufnr, filetype, buftype)
-				if buftype == "nofile" or filetype == "oil" or filetype == "snacks_dashboard" then
+				if buftype == "nofile" or filetype == "oil" or filetype == "snacks_dashboard" or filetype == "netrw" then
 					return
 				end
 				return { "lsp", "treesitter" }
