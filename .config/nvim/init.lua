@@ -99,12 +99,12 @@ vim.api.nvim_create_autocmd("TextYankPost", {
 })
 
 local hspec_toggle = require("custom.hspec")
-vim.keymap.set("n", "<leader>sh", hspec_toggle.toggle_hspec_comments, { desc = "Toggle [H]spec comments" })
+vim.keymap.set("n", "<leader>th", hspec_toggle.toggle_hspec_comments, { desc = "Toggle [H]spec comments" })
 
-vim.keymap.set("n", "<leader>tt", "<cmd>:tabnew<CR>", { desc = "[T]ab [T]ouch" })
-vim.keymap.set("n", "<leader>tc", "<cmd>:tabclose<CR>", { desc = "[T]ab [C]lose" })
-vim.keymap.set("n", "<leader>tn", "<cmd>:tabnext<CR>", { desc = "[T]ab [N]ext" })
-vim.keymap.set("n", "<leader>tp", "<cmd>:tabprevious<CR>", { desc = "[T]ab [P]revious" })
+-- vim.keymap.set("n", "<leader>tt", "<cmd>:tabnew<CR>", { desc = "[T]ab [T]ouch" })
+-- vim.keymap.set("n", "<leader>tc", "<cmd>:tabclose<CR>", { desc = "[T]ab [C]lose" })
+-- vim.keymap.set("n", "<leader>tn", "<cmd>:tabnext<CR>", { desc = "[T]ab [N]ext" })
+-- vim.keymap.set("n", "<leader>tp", "<cmd>:tabprevious<CR>", { desc = "[T]ab [P]revious" })
 
 vim.opt.guicursor = "n-v-c:block-Cursor/lCursor,i-ci-ve:ver25-Cursor2/lCursor2,r-cr:hor20,o:hor50"
 vim.api.nvim_set_hl(0, "Cursor", { fg = "#cdd6f4", bg = "#6c7086" })
