@@ -1,6 +1,6 @@
 local M = {}
 
-local spec_comment_lines = { "-- $> hspec-spec", "" }
+local spec_comment_lines = { "-- $> hspec spec", "" }
 local spec_web_comment_lines = { "-- $> :import-spec-web", "", "-- $> hspecWithEnv spec", "" }
 
 local function hspec_comment_exists()
@@ -18,7 +18,6 @@ local function hspec_comment_exists()
 
 	return false
 end
-
 
 local function add_hspec_comments()
 	local function add_hspec_comment(search_string, comment_lines)
@@ -79,6 +78,4 @@ M.toggle_hspec_comments = function()
 	end
 end
 
-
 return M
-
