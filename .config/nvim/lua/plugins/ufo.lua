@@ -5,6 +5,10 @@ return {
 		local ufo = require("ufo")
 		ufo.setup({
 			provider_selector = function(bufnr, filetype, buftype)
+				if filetype == "" then
+					vim.notify("no filetype detected, setting ufo to indent")
+					return { "indent" }
+				end
 				if buftype == "nofile" or filetype == "oil" or filetype == "snacks_dashboard" or filetype == "netrw" then
 					return
 				end
