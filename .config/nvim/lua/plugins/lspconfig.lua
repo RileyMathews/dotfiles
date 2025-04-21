@@ -10,7 +10,7 @@ return {
 		-- Additional lua configuration, makes nvim stuff amazing!
 		"folke/neodev.nvim",
 	},
-	event = "BufReadPre",
+	-- event = "BufReadPre",
 	config = function()
 		vim.keymap.set("n", "[d", vim.diagnostic.goto_prev)
 		vim.keymap.set("n", "]d", vim.diagnostic.goto_next)
@@ -192,16 +192,16 @@ return {
 
 		-- You can add other tools here that you want Mason to install
 		-- for you, so that they are available from within Neovim.
-		-- local ensure_installed = vim.tbl_keys(servers or {})
-		-- vim.list_extend(ensure_installed, {
-		-- 	"stylua", -- Used to format lua code
-		-- })
-		-- require("mason-tool-installer").setup({ ensure_installed = ensure_installed })
+		local ensure_installed = vim.tbl_keys(servers or {})
+		vim.list_extend(ensure_installed, {
+			"stylua", -- Used to format lua code
+		})
+		require("mason-tool-installer").setup({ ensure_installed = ensure_installed })
 
 		local lspconfig = require("lspconfig")
 
 		-- wire up servers that mason is managing for us
-		require("mason-lspconfig").setup_handlers {
+		require("mason-lspconfig").setup_handlers({
 			function(server_name)
 				local server = servers[server_name] or {}
 				-- This handles overriding only values explicitly passed
@@ -210,7 +210,7 @@ return {
 				server.capabilities = vim.tbl_deep_extend("force", {}, capabilities, server.capabilities or {})
 				lspconfig[server_name].setup(server)
 			end,
-		}
+		})
 
 		local hls_server
 
@@ -235,6 +235,8 @@ return {
 		local manual_servers = {
 			hls = hls_server,
 			gdscript = {},
+			-- djlsp still installed via mason but named something else
+			-- so just throwing it here to ensure it is loaded
 			djlsp = {},
 		}
 
