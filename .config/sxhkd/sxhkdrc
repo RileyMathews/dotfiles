@@ -1,5 +1,5 @@
 super + b
-    /opt/zen-browser-bin/zen-bin
+    librewolf
 
 super + t
     ghostty
