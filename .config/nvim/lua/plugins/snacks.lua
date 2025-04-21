@@ -44,7 +44,10 @@ return {
 		scroll = { enabled = false },
 		statuscolumn = { enabled = true },
 		words = { enabled = true },
-		picker = {},
+		picker = {
+			hidden = true,
+			cwd = vim.fn.getcwd(),
+		},
 	},
 	keys = {
 		{ "<leader>nh", "<cmd>lua Snacks.notifier.show_history()<CR>", desc = "History" },
@@ -52,7 +55,7 @@ return {
 		{
 			"<leader><space>",
 			function()
-				Snacks.picker.smart()
+				Snacks.picker.smart({ filter = { cwd = true } })
 			end,
 			desc = "Smart Find Files",
 		},
@@ -78,7 +81,7 @@ return {
 			desc = "Command History",
 		},
 		{
-			"<leader>n",
+			"<leader>ns",
 			function()
 				Snacks.picker.notifications()
 			end,
@@ -342,7 +345,7 @@ return {
 			desc = "Quickfix List",
 		},
 		{
-			"<leader>sR",
+			"<leader>sr",
 			function()
 				Snacks.picker.resume()
 			end,
