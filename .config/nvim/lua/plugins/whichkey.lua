@@ -5,14 +5,14 @@ return {
 	config = function()
 		local wk = require("which-key")
 		wk.add({
-			{ "<leader>l", "lsp" },
-			{ "<leader>x", "trouble" },
-			{ "<leader>h", "harpoon" },
-			{ "<leader>f", "find" },
-			{ "<leader>s", "search" },
-			{ "<leader>t", "test" },
-			{ "<leader>u", "url" },
-			{ "<leader>n", "notifications" },
+			{ "<leader>l", group = "lsp" },
+			{ "<leader>x", group = "trouble" },
+			{ "<leader>h", group = "harpoon" },
+			{ "<leader>f", group = "find" },
+			{ "<leader>s", group = "search" },
+			{ "<leader>t", group = "test" },
+			{ "<leader>u", group = "url" },
+			{ "<leader>n", group = "notifications" },
 		})
 		for i = 1, 9 do
 			wk.add({
