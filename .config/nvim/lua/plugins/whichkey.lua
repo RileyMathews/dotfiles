@@ -11,8 +11,10 @@ return {
 			{ "<leader>f", group = "find" },
 			{ "<leader>s", group = "search" },
 			{ "<leader>t", group = "test" },
-			{ "<leader>u", group = "url" },
 			{ "<leader>n", group = "notifications" },
+			{ "<leader>c", group = "copilot" },
+			{ "<leader>g", group = "git" },
+			{ "<leader>j", group = "flash" },
 		})
 		for i = 1, 9 do
 			wk.add({
