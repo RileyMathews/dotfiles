@@ -5,14 +5,42 @@ return {
 		local ufo = require("ufo")
 		ufo.setup({
 			provider_selector = function(bufnr, filetype, buftype)
+				-- Return 'indent' if no filetype is detected
 				if filetype == "" then
-					vim.notify("no filetype detected, setting ufo to indent")
+					vim.notify("No filetype detected, defaulting to 'indent' for folding.")
 					return { "indent" }
 				end
-				if buftype == "nofile" or filetype == "oil" or filetype == "snacks_dashboard" or filetype == "netrw" or filetype == "bigfile" then
+
+				-- Exclude certain buffer types or filetypes
+				local excluded_buftypes = { "nofile" }
+				local excluded_filetypes = { "oil", "snacks_dashboard", "netrw", "bigfile" }
+				if vim.tbl_contains(excluded_buftypes, buftype) or vim.tbl_contains(excluded_filetypes, filetype) then
 					return
 				end
-				return { "lsp", "treesitter" }
+
+				local providers = {}
+
+				-- Check for attached LSP clients
+				local lsp_clients = vim.lsp.get_clients({ bufnr = bufnr })
+				if lsp_clients and #lsp_clients > 0 then
+					table.insert(providers, "lsp")
+				end
+
+				-- Check for available Tree-sitter parser
+				local has_ts, parsers = pcall(require, "nvim-treesitter.parsers")
+				if has_ts and parsers.has_parser(filetype) then
+					table.insert(providers, "treesitter")
+				end
+
+				-- Always include 'indent' as a fallback
+				table.insert(providers, "indent")
+
+				-- Return the top two available providers
+				local result = {}
+				for i = 1, math.min(2, #providers) do
+					table.insert(result, providers[i])
+				end
+				return result
 			end,
 		})
 
