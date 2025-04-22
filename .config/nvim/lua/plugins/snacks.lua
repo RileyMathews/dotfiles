@@ -11,7 +11,14 @@ return {
 		dashboard = {
 			sections = {
 				{ section = "header" },
-				{ icon = " ", title = "Recent Files", section = "recent_files", indent = 2, padding = 1 },
+				{
+					icon = " ",
+					title = "Recent Files",
+					section = "recent_files",
+					indent = 2,
+					padding = 1,
+					cwd = true,
+				},
 				{
 					icon = " ",
 					title = "Git Status",
