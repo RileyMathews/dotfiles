@@ -4,6 +4,18 @@ vim.g.mapleader = " "
 vim.g.maplocalleader = "\\"
 
 require("config.lazy")
+local opt = vim.opt
+
+----- Interesting Options -----
+
+-- Best search settings :)
+opt.smartcase = true
+opt.ignorecase = true
+
+----- Personal Preferences -----
+opt.number = true
+opt.relativenumber = true
+
 
 vim.opt.shiftwidth = 4
 vim.opt.clipboard = "unnamedplus"
@@ -19,3 +31,4 @@ vim.api.nvim_create_autocmd('TextYankPost', {
     vim.highlight.on_yank()
   end,
 })
+
