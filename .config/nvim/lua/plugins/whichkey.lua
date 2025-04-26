@@ -6,7 +6,7 @@ return {
 		local wk = require("which-key")
 		wk.add({
 			{ "<leader>l", group = "lsp" },
-			{ "<leader>x", group = "trouble" },
+			{ "<leader>d", group = "diagnostics" },
 			{ "<leader>h", group = "harpoon" },
 			{ "<leader>f", group = "find" },
 			{ "<leader>s", group = "search" },
