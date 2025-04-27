@@ -1,9 +1,10 @@
 return {
-    {
-	'echasnovski/mini.nvim',
+	"echasnovski/mini.nvim",
 	config = function()
-	    local statusline = require 'mini.statusline'
-	    statusline.setup { use_icons = true }
-	end
-    }
+		require("mini.statusline").setup({
+			use_icons = true,
+		})
+		vim.notify("loading move")
+		require("mini.move").setup()
+	end,
 }

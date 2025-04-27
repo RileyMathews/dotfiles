@@ -5,26 +5,26 @@ return {
 		model = "claude-3.7-sonnet-thought",
 		mappings = {
 			reset = {
-				normal = "<leader>cx"
-			}
-		}
+				normal = "<leader>ox",
+			},
+		},
 	},
 	keys = {
 		{
-			"<leader>ca",
+			"<leader>oa",
 			function()
 				local actions = require("CopilotChat.actions")
 				require("CopilotChat.integrations.telescope").pick(actions.prompt_actions())
 			end,
-			desc = "CopilotChat",
+			desc = "C[o]pilotChat",
 			mode = { "n", "v" },
 		},
 		{
-			"<leader>cc",
+			"<leader>ot",
 			function()
 				require("CopilotChat").toggle()
 			end,
-			desc = "CopilotChat toggle",
+			desc = "C[o]pilotChat toggle",
 			mode = { "n", "v" },
 		},
 	},

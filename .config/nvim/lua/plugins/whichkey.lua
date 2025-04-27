@@ -12,7 +12,7 @@ return {
 			{ "<leader>s", group = "search" },
 			{ "<leader>t", group = "test" },
 			{ "<leader>n", group = "notifications" },
-			{ "<leader>c", group = "copilot" },
+			{ "<leader>c", group = "code" },
 			{ "<leader>g", group = "git" },
 			{ "<leader>j", group = "flash" },
 		})

@@ -4,6 +4,8 @@ return {
 	dependencies = {
 		"nvim-treesitter/nvim-treesitter-textobjects",
 		"RRethy/nvim-treesitter-endwise",
+		-- "windwp/nvim-ts-autotag",
+		-- "windwp/nvim-autopairs",
 	},
 	build = ":TSUpdate",
 	event = "BufRead",
@@ -23,5 +25,7 @@ return {
 			indent = { enable = true },
 			endwise = { enable = true },
 		})
+		-- require("nvim-ts-autotag").setup()
+		-- require("nvim-autopairs").setup()
 	end,
 }
