@@ -3,6 +3,10 @@ return {
 	version = "1.*",
 	---@module 'blink.cmp'
 	---@type blink.cmp.Config
+	dependencies = {
+		"saghen/blink.compat",
+		"MattiasMTS/cmp-dbee",
+	},
 	opts = {
 		keymap = { preset = "default" },
 
@@ -13,6 +17,12 @@ return {
 		completion = { documentation = { auto_show = true } },
 		sources = {
 			default = { "lsp", "path", "buffer" },
+			providers = {
+				cmp_dbee = {
+					name = "cmp-dbee",
+					module = "blink.compat.source",
+				},
+			},
 		},
 		fuzzy = { implementation = "prefer_rust_with_warning" },
 	},
