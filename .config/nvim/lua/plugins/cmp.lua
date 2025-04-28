@@ -15,15 +15,6 @@ return {
 		},
 
 		completion = { documentation = { auto_show = true } },
-		sources = {
-			default = { "lsp", "path", "buffer" },
-			providers = {
-				cmp_dbee = {
-					name = "cmp-dbee",
-					module = "blink.compat.source",
-				},
-			},
-		},
 		fuzzy = { implementation = "prefer_rust_with_warning" },
 	},
 	opts_extend = { "sources.default" },

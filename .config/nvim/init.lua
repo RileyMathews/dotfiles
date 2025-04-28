@@ -4,3 +4,7 @@ require("custom.keymaps")
 require("custom.lsp_spinner")
 require("custom.yank_highlight")
 require("custom.hspec")
+
+vim.keymap.set("i", "<C-p>", function()
+	require("blink-cmp").show()
+end)
