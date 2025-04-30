@@ -4,19 +4,9 @@ return {
 	cmd = "Trouble",
 	keys = {
 		{
-			"<leader>xd",
+			"<leader>dt",
 			"<cmd>Trouble diagnostics toggle<cr>",
 			desc = "Diagnostics",
-		},
-		{
-			"<leader>xs",
-			"<cmd>Trouble symbols toggle<cr>",
-			desc = "Symbols",
-		},
-		{
-			"<leader>xl",
-			"<cmd>Trouble lsp toggle<cr>",
-			desc = "LSP",
 		},
 	},
 }

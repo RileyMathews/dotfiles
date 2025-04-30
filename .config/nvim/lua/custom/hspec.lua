@@ -78,4 +78,8 @@ M.toggle_hspec_comments = function()
 	end
 end
 
+M.setup = function(_)
+	vim.keymap.set("n", "<leader>th", M.toggle_hspec_comments, { desc = "Toggle [H]spec comments" })
+end
+
 return M
