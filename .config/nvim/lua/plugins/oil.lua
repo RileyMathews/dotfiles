@@ -7,7 +7,8 @@ return {
 			view_options = {
 				show_hidden = true,
 			},
+			skip_confirm_for_simple_edits = true,
 		},
-		keys = { { "<leader>e", "<cmd>Oil --float<CR>", desc = "Toggle oil" } },
+		keys = { { "<leader>-", "<cmd>Oil --float<CR>", desc = "Toggle oil" } },
 	},
 }
