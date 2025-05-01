@@ -7,6 +7,9 @@ super + t
 super + a
     alacritty
 
+super + shift + t
+    wezterm
+
 super + shift + p
     powermenu
 
