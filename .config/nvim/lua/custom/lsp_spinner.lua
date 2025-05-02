@@ -1,3 +1,7 @@
+-- This spinner was originally here as an example of using snacks nvim notify
+-- plugin. However after adding noice.nvim I saw that noice provices its own
+-- lsp spinner so this file is not being required currently but here in case I
+-- want it again in the future
 ---@type table<number, {token:lsp.ProgressToken, msg:string, done:boolean}[]>
 local progress = vim.defaulttable()
 vim.api.nvim_create_autocmd("LspProgress", {

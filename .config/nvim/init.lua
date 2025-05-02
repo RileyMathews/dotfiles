@@ -1,7 +1,6 @@
 require("custom.options")
 require("custom.lazy_setup")
 require("custom.keymaps")
-require("custom.lsp_spinner")
 require("custom.yank_highlight")
 require("custom.hspec").setup()
 
