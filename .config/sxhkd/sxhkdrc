@@ -2,13 +2,10 @@ super + b
     librewolf
 
 super + t
-    ghostty
-
-super + a
-    alacritty
+    wezterm
 
 super + shift + t
-    wezterm
+    ghostty
 
 super + shift + p
     powermenu
