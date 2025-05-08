@@ -46,6 +46,7 @@ local function show_buffer()
 		border = "rounded",
 	}
 	vim.api.nvim_open_win(buf, true, opts)
+	vim.bo[buf].filetype = "terminal"
 end
 
 local function handle_output(_, data)
@@ -66,6 +67,7 @@ end
 local function initialize()
 	notify_info("starting up")
 	buf = vim.api.nvim_create_buf(false, true)
+	vim.bo[buf].filetype = "terminal"
 	job_id = vim.fn.jobstart(ghciwatch_command, {
 		stdout_buffered = false,
 		stderr_buffered = false,
@@ -89,8 +91,6 @@ end
 vim.api.nvim_create_user_command("GhciwatchStart", initialize, { nargs = 0 })
 vim.api.nvim_create_user_command("GhciwatchStop", deinitialize, { nargs = 0 })
 vim.api.nvim_create_user_command("GhciwatchShow", show_buffer, { nargs = 0 })
-
--- local job_id = vim.fn.jobstart({ "your", "command", "here" })
 
 vim.api.nvim_create_autocmd("VimLeavePre", {
 	callback = function()
