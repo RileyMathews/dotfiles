@@ -3,3 +3,8 @@ require("custom.lazy_setup")
 require("custom.keymaps")
 require("custom.yank_highlight")
 require("custom.hspec").setup()
+local ghciwatch = require("custom.ghciwatch").setup()
+
+vim.keymap.set("n", "<leader>gs", ghciwatch.initialize)
+vim.keymap.set("n", "<leader>gk", ghciwatch.deinitialize)
+vim.keymap.set("n", "<leader>gw", ghciwatch.show_buffer)
