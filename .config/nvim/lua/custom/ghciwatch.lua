@@ -24,10 +24,11 @@ local function start_spinner_notification(message)
 end
 
 local function stop_spinner_notification(message)
-	message = message or "done!"
-	notify_info(message)
 	if timer then
 		timer:stop()
+	end
+	if message then
+		notify_info(message)
 	end
 end
 
@@ -54,6 +55,23 @@ local function show_buffer()
 	vim.api.nvim_open_win(buf, true, get_window_config())
 end
 
+local function extract_numbers_from_line(line)
+	-- Pattern to capture the two numbers within the brackets
+	local pattern = "%[%s*(%d+)%s*of%s*(%d+)%s*%]"
+
+	-- Use string.match to find the pattern and capture the numbers starting from the beginning (index 1)
+	local num1_str, num2_str = string.match(line, pattern, 1)
+
+	-- Check if the match and capture were successful
+	if num1_str and num2_str then
+		-- Return the captured strings in a table
+		return num1_str, num2_str
+	else
+		-- Return nil if the pattern doesn't match the start of the line
+		return nil
+	end
+end
+
 local function handle_output(_, buffer, _, firstline, lastline, _, _, _, _)
 	local lines = vim.api.nvim_buf_get_lines(buffer, firstline, lastline, false)
 	for _, line in ipairs(lines) do
@@ -65,6 +83,13 @@ local function handle_output(_, buffer, _, firstline, lastline, _, _, _, _)
 		end
 		if line:match("Reloading failed") then
 			stop_spinner_notification("Ghciwatch finished with errors")
+		end
+		if line:match("Compiling") then
+			stop_spinner_notification()
+			local current, total = extract_numbers_from_line(line)
+			if current and total then
+				notify_info(current .. "/" .. total .. " modules loaded", "")
+			end
 		end
 	end
 end
