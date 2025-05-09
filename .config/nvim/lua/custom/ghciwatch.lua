@@ -1,8 +1,8 @@
 local timer = vim.loop.new_timer()
 local buf = -1
-local job_id = -1
 local ghciwatch_command =
 	"echo there was an error determining the ghciwatch command to run. Please consult documentation"
+local current_spinner_message = ""
 
 local notify_info = function(content, icon)
 	icon = icon or ""
@@ -11,12 +11,19 @@ end
 
 local spinner_frames = { "⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏" }
 
-local function start_spinner_notification(message)
+local function start_spinner_notification()
+	if timer == nil then
+		Snacks.notify.error("Somehow the timer was nil. This should have never happened")
+		return
+	end
+	if timer:is_active() then
+		return
+	end
 	local spinner_index = 1
 	local function update_spinner()
 		local spinner = spinner_frames[spinner_index]
 		spinner_index = (spinner_index % #spinner_frames) + 1
-		notify_info(message, spinner)
+		notify_info(current_spinner_message, spinner)
 	end
 
 	update_spinner()
@@ -52,7 +59,11 @@ local function get_window_config()
 end
 
 local function show_buffer()
-	vim.api.nvim_open_win(buf, true, get_window_config())
+	if vim.api.nvim_buf_is_valid(buf) then
+		vim.api.nvim_open_win(buf, true, get_window_config())
+	else
+		notify_info("ghciwatch must be started first", "")
+	end
 end
 
 local function extract_numbers_from_line(line)
@@ -79,16 +90,17 @@ local function handle_output(_, buffer, _, firstline, lastline, _, _, _, _)
 			stop_spinner_notification("Ghciwatch done")
 		end
 		if line:match("Running") then
-			start_spinner_notification("Ghciwatch loading modules...")
+			start_spinner_notification()
+			current_spinner_message = "Ghciwatch loading"
 		end
 		if line:match("Reloading failed") then
 			stop_spinner_notification("Ghciwatch finished with errors")
 		end
 		if line:match("Compiling") then
-			stop_spinner_notification()
+			start_spinner_notification()
 			local current, total = extract_numbers_from_line(line)
 			if current and total then
-				notify_info(current .. "/" .. total .. " modules loaded", "")
+				current_spinner_message = current .. "/" .. total .. " modules loaded"
 			end
 		end
 	end
@@ -98,13 +110,29 @@ local function initialize()
 	notify_info("starting up")
 	buf = vim.api.nvim_create_buf(false, true)
 	show_buffer()
-	vim.cmd.term(ghciwatch_command)
+	vim.cmd.terminal(ghciwatch_command)
+	vim.api.nvim_create_autocmd("TermClose", {
+		group = vim.api.nvim_create_augroup("MyPluginTermHandling", { clear = true }),
+		buffer = buf,
+		callback = function(_)
+			stop_spinner_notification("ghciwatch process quit")
+		end,
+	})
 	vim.api.nvim_buf_attach(buf, false, { on_lines = handle_output })
 end
 
 local function deinitialize()
 	notify_info("shutting down ghciwatch")
-	vim.fn.jobstop(job_id)
+	local chan_id = vim.b[buf].terminal_job_id
+
+	if chan_id then
+		-- Send the Ctrl+C character (ASCII 3)
+		vim.fn.chansend(chan_id, "\x03!")
+	else
+		print("Not a terminal buffer or no job associated.")
+	end
+	vim.api.nvim_buf_delete(buf, { force = true })
+	buf = -1
 end
 
 vim.api.nvim_create_user_command("GhciwatchStart", initialize, { nargs = 0 })
