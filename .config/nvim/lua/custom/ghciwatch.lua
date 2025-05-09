@@ -1,7 +1,8 @@
 local timer = vim.loop.new_timer()
 local buf = -1
 local job_id = -1
-local ghciwatch_command = "make ghciwatch"
+local ghciwatch_command =
+	"echo there was an error determining the ghciwatch command to run. Please consult documentation"
 
 local notify_info = function(content, icon)
 	icon = icon or ""
@@ -30,7 +31,7 @@ local function stop_spinner_notification(message)
 	end
 end
 
-local function show_buffer()
+local function get_window_config()
 	local width = math.floor(vim.o.columns * 0.8)
 	local height = math.floor(vim.o.lines * 0.8)
 	local row = math.floor((vim.o.lines - height) / 2)
@@ -45,13 +46,17 @@ local function show_buffer()
 		col = col,
 		border = "rounded",
 	}
-	vim.api.nvim_open_win(buf, true, opts)
-	vim.bo[buf].filetype = "terminal"
+
+	return opts
 end
 
-local function handle_output(_, data)
-	for _, line in ipairs(data) do
-		vim.api.nvim_buf_set_lines(buf, -1, -1, false, { line })
+local function show_buffer()
+	vim.api.nvim_open_win(buf, true, get_window_config())
+end
+
+local function handle_output(_, buffer, _, firstline, lastline, _, _, _, _)
+	local lines = vim.api.nvim_buf_get_lines(buffer, firstline, lastline, false)
+	for _, line in ipairs(lines) do
 		if line:match("All good!") then
 			stop_spinner_notification("Ghciwatch done")
 		end
@@ -67,20 +72,9 @@ end
 local function initialize()
 	notify_info("starting up")
 	buf = vim.api.nvim_create_buf(false, true)
-	vim.bo[buf].filetype = "terminal"
-	job_id = vim.fn.jobstart(ghciwatch_command, {
-		stdout_buffered = false,
-		stderr_buffered = false,
-		on_stdout = handle_output,
-		on_stderr = handle_output,
-		on_exit = function(_, code)
-			stop_spinner_notification()
-			if code ~= 0 then
-				notify_info("Job exited with code: " .. code, "")
-			end
-		end,
-	})
-	start_spinner_notification("starting up...")
+	show_buffer()
+	vim.cmd.term(ghciwatch_command)
+	vim.api.nvim_buf_attach(buf, false, { on_lines = handle_output })
 end
 
 local function deinitialize()
@@ -98,11 +92,20 @@ vim.api.nvim_create_autocmd("VimLeavePre", {
 	end,
 })
 
-local function setup(opts)
-	if opts and opts.ghciwatch_command then
-		ghciwatch_command = opts.ghciwatch_command
-	end
+local function file_exists(path)
+	local root = vim.fn.getcwd()
+	local file = root .. "/" .. path
+	local ok, _ = vim.uv.fs_stat(file)
+	return ok
+end
 
+local function setup()
+	if file_exists("Justfile") then
+		ghciwatch_command = "just ghciwatch"
+	end
+	if file_exists("Makefile") then
+		ghciwatch_command = "make ghciwatch"
+	end
 	return {
 		initialize = initialize,
 		deinitialize = deinitialize,
