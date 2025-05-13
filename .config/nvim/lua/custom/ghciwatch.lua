@@ -123,14 +123,6 @@ end
 
 local function deinitialize()
 	notify_info("shutting down ghciwatch")
-	local chan_id = vim.b[buf].terminal_job_id
-
-	if chan_id then
-		-- Send the Ctrl+C character (ASCII 3)
-		vim.fn.chansend(chan_id, "\x03!")
-	else
-		print("Not a terminal buffer or no job associated.")
-	end
 	vim.api.nvim_buf_delete(buf, { force = true })
 	buf = -1
 end
