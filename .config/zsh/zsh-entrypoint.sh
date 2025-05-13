@@ -197,7 +197,7 @@ dote() {
 _tmux_switch_or_activate() {
     directory=$1
     session_name=$2
-    if [ -n "$TMUX" ]; then
+    if [[ $TERM_PROGRAM == "tmux" ]]; then
         command="switch"
     else
         command="attach"
