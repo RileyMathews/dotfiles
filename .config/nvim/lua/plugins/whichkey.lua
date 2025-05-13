@@ -7,7 +7,7 @@ return {
 		wk.add({
 			{ "<leader>d", group = "[D]iagnostics" },
 			{ "<leader>h", group = "[H]arpoon" },
-			{ "<leader>f", group = "[F]ind" },
+			{ "<leader>s", group = "[S]earch" },
 			{ "<leader>t", group = "[T]est" },
 			{ "<leader>n", group = "[N]otifications" },
 			{ "<leader>c", group = "[C]ode actions" },

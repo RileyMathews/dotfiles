@@ -60,14 +60,14 @@ return {
 		{ "<leader>nh", "<cmd>lua Snacks.notifier.show_history()<CR>", desc = "History" },
 		{ "<leader>nc", "<cmd>lua Snacks.notifier.hide()<CR>", desc = "clear" },
 		{
-			"<leader><space>",
+			"<leader>sf",
 			function()
 				Snacks.picker.smart({ filter = { cwd = true } })
 			end,
 			desc = "Smart Find Files",
 		},
 		{
-			"<leader>f:",
+			"<leader>s:",
 			function()
 				Snacks.picker.command_history()
 			end,
@@ -89,14 +89,14 @@ return {
 		-- },
 		-- find
 		{
-			"<leader>fb",
+			"<leader>sb",
 			function()
 				Snacks.picker.buffers()
 			end,
 			desc = "Buffers",
 		},
 		{
-			"<leader>ff",
+			"<leader>sF",
 			function()
 				Snacks.picker.files({ hidden = true })
 			end,
@@ -104,21 +104,21 @@ return {
 		},
 		-- Grep
 		{
-			"<leader>fG",
+			"<leader>sG",
 			function()
 				Snacks.picker.grep_buffers()
 			end,
 			desc = "Grep Open Buffers",
 		},
 		{
-			"<leader>fg",
+			"<leader>sg",
 			function()
 				Snacks.picker.grep({ hidden = true })
 			end,
 			desc = "Grep",
 		},
 		{
-			"<leader>fw",
+			"<leader>sw",
 			function()
 				Snacks.picker.grep_word()
 			end,
@@ -127,63 +127,63 @@ return {
 		},
 		-- search
 		{
-			"<leader>fC",
+			"<leader>sC",
 			function()
 				Snacks.picker.commands()
 			end,
 			desc = "Commands",
 		},
 		{
-			"<leader>fd",
+			"<leader>sd",
 			function()
 				Snacks.picker.diagnostics()
 			end,
 			desc = "Diagnostics",
 		},
 		{
-			"<leader>fD",
+			"<leader>sD",
 			function()
 				Snacks.picker.diagnostics_buffer()
 			end,
 			desc = "Buffer Diagnostics",
 		},
 		{
-			"<leader>fh",
+			"<leader>sh",
 			function()
 				Snacks.picker.help()
 			end,
 			desc = "Help Pages",
 		},
 		{
-			"<leader>fi",
+			"<leader>si",
 			function()
 				Snacks.picker.icons()
 			end,
 			desc = "Icons",
 		},
 		{
-			"<leader>fk",
+			"<leader>sk",
 			function()
 				Snacks.picker.keymaps()
 			end,
 			desc = "Keymaps",
 		},
 		{
-			"<leader>fq",
+			"<leader>sq",
 			function()
 				Snacks.picker.qflist()
 			end,
 			desc = "Quickfix List",
 		},
 		{
-			"<leader>fr",
+			"<leader>sr",
 			function()
 				Snacks.picker.resume()
 			end,
 			desc = "Resume",
 		},
 		{
-			"<leader>fC",
+			"<leader>sC",
 			function()
 				Snacks.picker.colorschemes()
 			end,
