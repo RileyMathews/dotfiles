@@ -122,9 +122,11 @@ local function initialize()
 end
 
 local function deinitialize()
-	notify_info("shutting down ghciwatch")
-	vim.api.nvim_buf_delete(buf, { force = true })
-	buf = -1
+	if vim.api.nvim_buf_is_valid(buf) then
+		notify_info("shutting down ghciwatch")
+		vim.api.nvim_buf_delete(buf, { force = true })
+		buf = -1
+	end
 end
 
 vim.api.nvim_create_user_command("GhciwatchStart", initialize, { nargs = 0 })
@@ -132,6 +134,7 @@ vim.api.nvim_create_user_command("GhciwatchStop", deinitialize, { nargs = 0 })
 vim.api.nvim_create_user_command("GhciwatchShow", show_buffer, { nargs = 0 })
 
 vim.api.nvim_create_autocmd("VimLeavePre", {
+	group = vim.api.nvim_create_augroup("ghciwatch.nvim", {}),
 	callback = function()
 		deinitialize()
 	end,
