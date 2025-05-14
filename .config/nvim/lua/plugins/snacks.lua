@@ -226,5 +226,12 @@ return {
 			end,
 			desc = "Goto [T]ype Definition",
 		},
+		{
+			"<leader>go",
+			function()
+				Snacks.lazygit.open()
+			end,
+			desc = "[G]it [O]pen",
+		},
 	},
 }
