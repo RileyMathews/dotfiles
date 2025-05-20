@@ -233,5 +233,12 @@ return {
 			end,
 			desc = "[G]it [O]pen",
 		},
+		{
+			"<leader>gh",
+			function()
+				Snacks.gitbrowse.open()
+			end,
+			desc = "[G]it [H]ub",
+		},
 	},
 }
