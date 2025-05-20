@@ -1,8 +1,8 @@
 super + b
-    brave
+    brave --profile-directory="Default"
 
 super + shift + b
-    librewolf
+    brave --profile-directory="Profile 1"
 
 super + t
     wezterm
