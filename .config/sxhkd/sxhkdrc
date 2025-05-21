@@ -47,10 +47,10 @@ super + ctrl + k
     playerctl play-pause
 
 super + ctrl + j
-    playerctl position 5-
+    playerctl position 10-
 
 super + ctrl + l
-    playerctl position 5+
+    playerctl position 10+
 
 Print
     flameshot gui
