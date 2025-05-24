@@ -1,4 +1,14 @@
 #! /bin/sh
 
-[ -f ~/.local/device-specific/hyprland-vars.sh ] && . ~/.local/device-specific/hyprland-vars.sh
+for arg in "$@"; do
+    if [ "$arg" = "--nvidia" ]; then
+        export LIBVA_DRIVER_NAME=nvidia
+        # export GBM_BACKEND=nvidia-drm
+        export __GLX_VENDOR_LIBRARY_NAME=nvidia
+        export NVD_BACKEND=direct
+        # export MOZ_DISABLE_RDD_SANDBOX=1
+        # export OGL_DEDICATED_HW_STATE_PER_CONTEXT=ENABLE_ROBUST
+    fi
+done
+
 Hyprland
