@@ -59,6 +59,7 @@ set $mod Mod4
 bindsym $mod+d exec "rofi -show drun"
 bindsym $mod+space exec "rofi -show run"
 bindsym $mod+Shift+p exec "powermenu"
+bindsym $mod+t exec "wezterm"
 bindsym XF86AudioLowerVolume exec "volume down"
 bindsym XF86AudioRaiseVolume exec "volume up"
 bindsym XF86AudioMute exec "volume mute"
