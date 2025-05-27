@@ -156,4 +156,6 @@ for_window [title="^Meeting$"] floating disable
 no_focus [title="^Meeting$"]
 no_focus [title="^zoom$"]
 no_focus [title="^Zoom Workplace$"]
+no_focus [class="zoom"]
+no_focus [class="^zoom$"]
 

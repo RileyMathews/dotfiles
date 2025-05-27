@@ -186,30 +186,6 @@ gacp() {
     fi
 }
 
-tsg() {
-    directory=$(command ls ~/code | fzf)
-    _tmux_switch_or_activate ~/code/$directory $directory
-}
-
-dote() {
-    _tmux_switch_or_activate ~/dotfiles "dotfiles"
-}
-
-_tmux_switch_or_activate() {
-    directory=$1
-    session_name=$2
-    if [[ $TERM_PROGRAM == "tmux" ]]; then
-        command="switch"
-    else
-        command="attach"
-    fi
-
-    if tmux ls | grep -q "^${session_name}:"; then
-    else
-        tmux new-session -d -s $session_name -c $directory
-    fi
-    tmux $command -t $session_name
-}
 
 if [[ "$TERM" == "linux" ]]; then
     export STARSHIP_CONFIG="$HOME/.config/starship/starship-tty.toml"
