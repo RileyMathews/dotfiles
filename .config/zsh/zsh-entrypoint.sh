@@ -1,5 +1,5 @@
 autoload -U colors && colors
-PS1="%B%{$fg[red]%}[%{$fg[yellow]%}%n%{$fg[green]%}@%{$fg[blue]%}%M %{$fg[magenta]%}%~%{$fg[red]%}]%{$reset_color%}$%b "
+PS1="%B%{$fg[green]%}%~ >%{$reset_color%}%b "
 
 ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
 TPM_PATH="${HOME}/.tmux/plugins/tpm"
@@ -93,7 +93,6 @@ alias gcb='git checkout -b'
 alias gcm='git checkout $(git_main_branch)'
 
 alias l='ls -lah --color'
-alias ls='ls --color'
 
 alias k='kubectl'
 alias ka='kubectl apply -f'
