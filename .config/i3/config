@@ -10,10 +10,15 @@
 #
 
 #tokyonight night colors
-set $orange #ff9e64
-set $blue #7aa2f7
-set $text #c0caf5
-set $base #1a1b26
+# set $orange #ff9e64
+# set $blue #7aa2f7
+# set $text #c0caf5
+# set $base #1a1b26
+#catppuccin mocha colors
+set $orange #fab387
+set $blue #89b4fa
+set $text #cdd6f4
+set $base #1e1e2e
 # target                 title     bg    text    indicator  border
 client.focused           $base     $base $text   $orange $blue
 client.focused_inactive  $base     $base $text   $base $base

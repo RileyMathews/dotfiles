@@ -1,3 +1,6 @@
+autoload -U colors && colors
+PS1="%B%{$fg[red]%}[%{$fg[yellow]%}%n%{$fg[green]%}@%{$fg[blue]%}%M %{$fg[magenta]%}%~%{$fg[red]%}]%{$reset_color%}$%b "
+
 ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
 TPM_PATH="${HOME}/.tmux/plugins/tpm"
 
@@ -187,13 +190,13 @@ gacp() {
 }
 
 
-if [[ "$TERM" == "linux" ]]; then
-    export STARSHIP_CONFIG="$HOME/.config/starship/starship-tty.toml"
-else
-    export STARSHIP_CONFIG="$HOME/.config/starship/starship-graphical.toml"
-fi
-
-eval "$(starship init zsh)"
+# if [[ "$TERM" == "linux" ]]; then
+#     export STARSHIP_CONFIG="$HOME/.config/starship/starship-tty.toml"
+# else
+#     export STARSHIP_CONFIG="$HOME/.config/starship/starship-graphical.toml"
+# fi
+#
+# eval "$(starship init zsh)"
 
 hyprlog() {
     echo "copying the last hyprland log to home dir as hyprland.log"

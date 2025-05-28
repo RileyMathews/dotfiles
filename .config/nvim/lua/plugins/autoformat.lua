@@ -19,6 +19,7 @@ return { -- Autoformat
 			typescriptreact = { "prettier" },
 			scss = { "prettier" },
 			haskell = { "fourmolu" },
+			sql = { "sleek" },
 		},
 	},
 }
