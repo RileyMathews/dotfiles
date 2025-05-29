@@ -35,6 +35,33 @@ bindkey '^y' autosuggest-accept
 bindkey '^p' history-search-backward
 bindkey '^n' history-search-forward
 
+bindkey -v
+
+# Change cursor shape for different vi modes (non-blinking).
+function zle-keymap-select () {
+    case $KEYMAP in
+        vicmd) echo -ne '\e[2 q';;  # steady block
+        viins|main) echo -ne '\e[6 q';; # steady beam
+    esac
+}
+zle -N zle-keymap-select
+
+# Set initial cursor to steady beam for vi insert mode.
+zle-line-init() {
+    zle -K viins # initiate `vi insert` as keymap
+    echo -ne "\e[6 q" # steady beam
+}
+zle -N zle-line-init
+
+# Use steady beam shape cursor on startup.
+echo -ne '\e[6 q'
+
+# Use steady beam shape cursor for each new prompt.
+# Consider using precmd_functions for this as it's generally preferred
+# over preexec for prompt-related actions.
+precmd() { echo -ne '\e[6 q' ;}
+
+
 eval "$(fzf --zsh)"
 
 HISTSIZE=5000

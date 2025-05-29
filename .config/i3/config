@@ -46,7 +46,7 @@ bindsym $mod+d exec "dmenu_run"
 # kill focused window
 bindsym $mod+q kill
 
-bindsym $mod+Shift+n move workspace to output right
+bindsym $mod+Shift+n exec --no-startup-id i3-move-and-focus
 
 # change focus
 bindsym $mod+$left focus left
