@@ -127,7 +127,6 @@ bindsym $mod+Shift+0 move container to workspace number $ws10
 
 bindsym $mod+Shift+r reload
 bindsym $mod+Shift+q exec "i3-msg exit"
-bindsym $mod+t exec "ghostty"
 bindsym $mod+b exec "/opt/zen-browser-bin/zen-bin"
 
 # resize window (you can also use the mouse for that)
