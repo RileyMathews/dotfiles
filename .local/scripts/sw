@@ -1,18 +1,22 @@
 #! /bin/sh
 
-DRM_DEVICES=/dev/dri/card1:/dev/dri/card2
+INTEL_GPU=$(readlink -f /dev/dri/by-path/pci-0000:00:02.0-card)
+NVIDIA_GPU=$(readlink -f /dev/dri/by-path/pci-0000:02:00.0-card)
 
-for arg in "$@"; do
-    if [ "$arg" = "--nvidia" ]; then
-        export LIBVA_DRIVER_NAME=nvidia
-        # export GBM_BACKEND=nvidia-drm
-        export __GLX_VENDOR_LIBRARY_NAME=nvidia
-        export NVD_BACKEND=direct
-        export AQ_DRM_DEVICES=$DRM_DEVICES
-        export WLR_DRM_DEVICES=$DRM_DEVICES
-        # export MOZ_DISABLE_RDD_SANDBOX=1
-        # export OGL_DEDICATED_HW_STATE_PER_CONTEXT=ENABLE_ROBUST
-    fi
-done
+if [ "$1" = "--nvidia" ]; then
+    export LIBVA_DRIVER_NAME=nvidia
+    # export GBM_BACKEND=nvidia-drm
+    export __GLX_VENDOR_LIBRARY_NAME=nvidia
+    export NVD_BACKEND=direct
+    DRM_DEVICES=$NVIDIA_GPU:$INTEL_GPU
+    export AQ_DRM_DEVICES=$DRM_DEVICES
+    export WLR_DRM_DEVICES=$DRM_DEVICES
+    # export MOZ_DISABLE_RDD_SANDBOX=1
+    # export OGL_DEDICATED_HW_STATE_PER_CONTEXT=ENABLE_ROBUST
+else
+    DRM_DEVICES=$NVIDIA_GPU:$INTEL_GPU
+    export AQ_DRM_DEVICES=$DRM_DEVICES
+    export WLR_DRM_DEVICES=$DRM_DEVICES
+fi
 
 Hyprland
