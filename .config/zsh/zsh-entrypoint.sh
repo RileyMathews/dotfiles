@@ -1,5 +1,12 @@
 autoload -U colors && colors
-PS1="%B%{$fg[green]%}%~ >%{$reset_color%}%b "
+autoload -Uz vcs_info
+zstyle ':vcs_info:*' enable git      # <- this turns the Git backend on
+zstyle ':vcs_info:git:*' formats '%F{blue}(%b)' # branch only
+add-zsh-hook precmd vcs_info             # run before every prompt
+setopt PROMPT_SUBST
+
+PS1='%B%{$fg[green]%}%~%{$reset_color%}%b ${vcs_info_msg_0_}%{$fg[green]%} > %{$reset_color%}'
+
 
 ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
 TPM_PATH="${HOME}/.tmux/plugins/tpm"
