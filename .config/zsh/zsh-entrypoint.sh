@@ -1,7 +1,10 @@
 autoload -U colors && colors
 autoload -Uz vcs_info
 zstyle ':vcs_info:*' enable git      # <- this turns the Git backend on
-zstyle ':vcs_info:git:*' formats ' %F{blue}(%b)' # branch only
+zstyle ':vcs_info:*' check-for-changes true
+zstyle ':vcs_info:*' unstagedstr '*'
+zstyle ':vcs_info:*' stagedstr '+'
+zstyle ':vcs_info:git:*' formats ' %F{blue}(%b%u%c)' # branch only
 add-zsh-hook precmd vcs_info             # run before every prompt
 setopt PROMPT_SUBST
 
