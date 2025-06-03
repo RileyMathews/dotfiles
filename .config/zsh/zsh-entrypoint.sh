@@ -1,5 +1,6 @@
 autoload -U colors && colors
 autoload -Uz vcs_info
+autoload -U add-zsh-hook
 zstyle ':vcs_info:*' enable git      # <- this turns the Git backend on
 zstyle ':vcs_info:*' check-for-changes true
 zstyle ':vcs_info:*' unstagedstr '*'
