@@ -13,6 +13,7 @@ application/xhtml+xml=brave.desktop
 application/x-extension-xhtml=brave.desktop
 application/x-extension-xht=brave.desktop
 x-scheme-handler/bruno=bruno.desktop
+x-scheme-handler/mailto=brave-browser.desktop
 
 [Added Associations]
 inode/directory=thunar.desktop;
