@@ -1,5 +1,6 @@
-theme = tokyonight_night
+theme = catppuccin-mocha
 gtk-titlebar      = false
 gtk-adwaita       = false
 window-decoration = server
 confirm-close-surface = false
+font-size = 12
