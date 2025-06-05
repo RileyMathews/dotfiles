@@ -5,7 +5,7 @@ super + shift + b
     brave --profile-directory="Profile 1"
 
 super + t
-    wezterm
+    alacritty
 
 super + shift + t
     ghostty
