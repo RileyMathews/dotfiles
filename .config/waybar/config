@@ -1,3 +1,4 @@
+// vim:ft=json
 // -*- mode: jsonc -*-
 {
     // "layer": "top", // Waybar at top layer
@@ -12,6 +13,7 @@
     "modules-left": [
         "hyprland/workspaces",
         "hyprland/submap",
+        "river/tags",
     ],
     "modules-center": [
         "hyprland/window"

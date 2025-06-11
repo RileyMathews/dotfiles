@@ -59,7 +59,9 @@ set $mod Mod4
 bindsym $mod+d exec "rofi -show drun"
 bindsym $mod+space exec "rofi -show run"
 bindsym $mod+Shift+p exec "powermenu"
-bindsym $mod+t exec "wezterm"
+bindsym $mod+t exec "alacritty"
+bindsym $mod+b exec 'brave --profile-directory="Default"'
+bindsym $mod+Shift+b exec 'brave --profile-directory="Profile 1"'
 bindsym XF86AudioLowerVolume exec "volume down"
 bindsym XF86AudioRaiseVolume exec "volume up"
 bindsym XF86AudioMute exec "volume mute"
@@ -127,7 +129,6 @@ bindsym $mod+Shift+0 move container to workspace number $ws10
 
 bindsym $mod+Shift+r reload
 bindsym $mod+Shift+q exec "i3-msg exit"
-bindsym $mod+b exec "/opt/zen-browser-bin/zen-bin"
 
 # resize window (you can also use the mouse for that)
 bindsym $mod+r mode "resize"

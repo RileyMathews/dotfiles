@@ -33,11 +33,10 @@
     min-height: 0;
 }
 
-window {
-}
+window {}
 
 window#waybar {
-    all:unset;
+    all: unset;
 }
 
 .modules-left {
@@ -46,6 +45,7 @@ window#waybar {
     margin-left: 39px;
     border-radius: 8px;
 }
+
 .modules-right {
     background: @crust;
     padding: 0 4px;
@@ -57,6 +57,7 @@ window#waybar {
     padding: 0 20px;
     border-radius: 8px;
 }
+
 #workspaces button {
     border-radius: 0;
     border-bottom: 3px solid transparent;
@@ -67,6 +68,19 @@ window#waybar {
 }
 
 #workspaces button.urgent {
+    background-color: @red;
+}
+
+#tags button {
+    border-radius: 0;
+    border-bottom: 3px solid transparent;
+}
+
+#tags button.focused {
+    border-bottom-color: @primary;
+}
+
+#tags button.urgent {
     background-color: @red;
 }
 
@@ -88,7 +102,7 @@ window#waybar {
 #power-profiles-daemon,
 #mpd {
     padding: 0 10px;
-    color: @text; 
+    color: @text;
     background-color: transparent;
 }
 
@@ -126,11 +140,11 @@ window#waybar {
     background-color: transparent;
 }
 
-#tray > .passive {
+#tray>.passive {
     -gtk-icon-effect: dim;
 }
 
-#tray > .needs-attention {
+#tray>.needs-attention {
     -gtk-icon-effect: highlight;
     background-color: @red;
 }
@@ -151,4 +165,3 @@ window#waybar {
 #mpd.paused {
     background-color: #51a37a;
 }
-
