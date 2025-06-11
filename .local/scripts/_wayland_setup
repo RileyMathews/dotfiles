@@ -6,6 +6,7 @@ NVIDIA_GPU=$(readlink -f /dev/dri/by-path/pci-0000:02:00.0-card)
 export ELECTRON_OZONE_PLATFORM_HINT=auto
 
 if [ "$1" = "--nvidia" ]; then
+    # TODO: test if I need to set other env variables that are set by the 'prime-run' script here??
     export LIBVA_DRIVER_NAME=nvidia
     export __GLX_VENDOR_LIBRARY_NAME=nvidia
     export NVD_BACKEND=direct
