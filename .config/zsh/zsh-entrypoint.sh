@@ -239,3 +239,5 @@ hyprlog() {
     echo "copying the last hyprland log to home dir as hyprland.log"
     cp /run/user/1000/hypr/$(command ls -t /run/user/1000/hypr/ | head -n 1)/hyprland.log ~/hyprland.log
 }
+
+[ -f "$HOME/.local/secrets" ] && source "$HOME/.local/secrets" # ghcup-env
