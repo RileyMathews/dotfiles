@@ -9,6 +9,11 @@ local notify_info = function(content, icon)
 	Snacks.notify.info(content, { icon = icon, id = "ghciwatch.nvim", title = "ghciwatch.nvim" })
 end
 
+local notify_error = function(content, icon)
+	icon = icon or ""
+	Snacks.notify.error(content, { icon = icon, id = "ghciwatch.nvim", title = "ghciwatch.nvim" })
+end
+
 local spinner_frames = { "⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏" }
 
 local function start_spinner_notification()
@@ -30,12 +35,17 @@ local function start_spinner_notification()
 	timer:start(100, 100, vim.schedule_wrap(update_spinner))
 end
 
-local function stop_spinner_notification(message)
+local function stop_spinner_notification(message, error)
+	error = error or false
 	if timer then
 		timer:stop()
 	end
 	if message then
-		notify_info(message)
+		if error then
+			notify_error(message)
+		else
+			notify_info(message)
+		end
 	end
 end
 
@@ -94,7 +104,7 @@ local function handle_output(_, buffer, _, firstline, lastline, _, _, _, _)
 			current_spinner_message = "Ghciwatch loading"
 		end
 		if line:match("Reloading failed") then
-			stop_spinner_notification("Ghciwatch finished with errors")
+			stop_spinner_notification("Ghciwatch finished with errors", true)
 		end
 		if line:match("Compiling") then
 			start_spinner_notification()
@@ -107,6 +117,10 @@ local function handle_output(_, buffer, _, firstline, lastline, _, _, _, _)
 end
 
 local function initialize()
+	if vim.api.nvim_buf_is_valid(buf) then
+		notify_error("Ghciwatch already running")
+		return
+	end
 	notify_info("starting up")
 	buf = vim.api.nvim_create_buf(false, true)
 	show_buffer()
