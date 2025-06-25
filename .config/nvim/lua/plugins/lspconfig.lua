@@ -78,7 +78,7 @@ return {
 		local lspconfig = require("lspconfig")
 
 		-- wire up servers that mason is managing for us
-		require("mason-lspconfig").setup_handlers({
+		require("mason-lspconfig").setup({
 			function(server_name)
 				local server = servers[server_name] or {}
 				-- This handles overriding only values explicitly passed
