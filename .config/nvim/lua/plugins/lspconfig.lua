@@ -80,12 +80,7 @@ return {
 		-- wire up servers that mason is managing for us
 		require("mason-lspconfig").setup({
 			function(server_name)
-				local server = servers[server_name] or {}
-				-- This handles overriding only values explicitly passed
-				-- by the server configuration above. Useful when disabling
-				-- certain features of an LSP (for example, turning off formatting for tsserver)
-				server.capabilities = vim.tbl_deep_extend("force", {}, capabilities, server.capabilities or {})
-				lspconfig[server_name].setup(server)
+				vim.lsp.enable(server_name)
 			end,
 		})
 
@@ -93,13 +88,6 @@ return {
 		local manual_servers = {
 			hls = {
 				cmd = { "static-ls", "--lsp" },
-				root_dir = lspconfig.util.root_pattern(
-					"*.cabal",
-					"stack.yaml",
-					"cabal.project",
-					"package.yaml",
-					".git"
-				),
 			},
 			gdscript = {},
 			-- I install djlsp via mason but have had trouble figuring out
@@ -110,7 +98,8 @@ return {
 		for server_name, server_settings in pairs(manual_servers) do
 			server_settings.capabilities =
 				vim.tbl_deep_extend("force", {}, capabilities, server_settings.capabilities or {})
-			lspconfig[server_name].setup(server_settings)
+			vim.lsp.config(server_name, server_settings)
+			vim.lsp.enable(server_name)
 		end
 	end,
 }
