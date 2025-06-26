@@ -3,6 +3,7 @@ require("custom.lazy_setup")
 require("custom.keymaps")
 require("custom.yank_highlight")
 require("custom.hspec").setup()
+require("custom.auto_commands")
 local ghciwatch = require("custom.ghciwatch").setup()
 
 vim.keymap.set("n", "<leader>gs", ghciwatch.initialize)

@@ -146,6 +146,8 @@ alias s7='system76-power'
 
 alias tss='sudo tailscale switch'
 
+alias ghd="gh-dash"
+
 ######################################
 # Language Managers                  #
 ######################################
