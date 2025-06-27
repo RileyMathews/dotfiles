@@ -14,6 +14,7 @@ bright_foreground = "#CDD6F4"
 
 [env]
 TERM = "xterm-256color"
+ACTIVATE_TMUX_SESSION = "true"
 
 [colors.cursor]
 text = "#1E1E2E"

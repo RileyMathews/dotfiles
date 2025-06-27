@@ -29,3 +29,9 @@ foreground = "#f38ba8"
 [fullscreen_show_slack]
     appname = "Slack"
     fullscreen = show
+[fullscreen_show_volume]
+    appname = "Volume"
+    fullscreen = show
+[fullscreen_show_backlight]
+    appname = "Backlight"
+    fullscreen = show

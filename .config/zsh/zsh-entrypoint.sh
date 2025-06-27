@@ -244,3 +244,6 @@ hyprlog() {
 
 [ -f "$HOME/.local/secrets" ] && source "$HOME/.local/secrets" # ghcup-env
 
+if [[ -v ACTIVATE_TMUX_SESSION && -z "$TMUX" ]]; then
+    _tmux_switch_or_activate ~ "default"
+fi
