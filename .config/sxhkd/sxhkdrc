@@ -1,8 +1,8 @@
 super + b
-    brave --profile-directory="Default"
+    brave --profile-directory="Default" --class="$(uuidgen)"
 
 super + shift + b
-    brave --profile-directory="Profile 1"
+    brave --profile-directory="Profile 1" --class="$(uuidgen)"
 
 super + t
     alacritty
