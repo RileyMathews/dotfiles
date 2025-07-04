@@ -9,7 +9,13 @@ zstyle ':vcs_info:git:*' formats ' %F{blue}(%b%u%c)' # branch only
 add-zsh-hook precmd vcs_info             # run before every prompt
 setopt PROMPT_SUBST
 
-PS1='%B%{$fg[green]%}%~%b${vcs_info_msg_0_}%{$fg[green]%} > %{$reset_color%}'
+REMOTE_ICON=""
+if [[ -n "$SSH_CONNECTION" ]]; then
+  # If SSH_CONNECTION is set, we are on a remote server
+  REMOTE_ICON="🌐 " # You can change this to any icon you prefer, e.g., "🖥️ " or "\ue0b0 "
+fi
+
+PS1="$REMOTE_ICON%B%{$fg[green]%}%~%b${vcs_info_msg_0_}%{$fg[green]%} > %{$reset_color%}"
 
 
 ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
