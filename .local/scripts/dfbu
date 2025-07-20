@@ -16,12 +16,12 @@ echo "Backup completed."
 
 # Step 2: Sync from local to NAS via SSH (using --ignore-existing)
 echo "Syncing from $LOCAL_DIR to $NAS_DIR..."
-rsync -av --ignore-existing -e ssh "$LOCAL_DIR" "$NAS_DIR"
+rsync -av -e ssh "$LOCAL_DIR" "$NAS_DIR"
 echo "Sync from local to NAS completed."
 
 # Step 3: Sync from NAS to local via SSH (using --ignore-existing)
 echo "Syncing from $NAS_DIR to $LOCAL_DIR..."
-rsync -av --ignore-existing -e ssh "$NAS_DIR" "$LOCAL_DIR"
+rsync -av -e ssh "$NAS_DIR" "$LOCAL_DIR"
 echo "Sync from NAS to local completed."
 
 echo "Script finished. Check for any errors above."
