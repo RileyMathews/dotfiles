@@ -37,6 +37,7 @@ return {
 			-- I install djlsp via mason but have had trouble figuring out
 			-- how to get it running automatically without also adding it here :(
 			djlsp = {},
+			gopls = {},
 		}
 
 		for server_name, server_settings in pairs(manual_servers) do
