@@ -31,3 +31,14 @@ end)
 vim.keymap.set("n", "]d", function()
 	vim.diagnostic.jump({ count = 1, float = true })
 end)
+
+-- Copy filepath to clipboard with optional line range
+local function copy_filepath()
+	local filepath = vim.fn.expand("%:.")
+	local text_to_copy = filepath
+
+	vim.fn.system("wl-copy", text_to_copy)
+	vim.notify("Copied to clipboard: " .. text_to_copy, vim.log.levels.INFO)
+end
+
+vim.keymap.set({ "n", "v" }, "<leader>cp", copy_filepath, { desc = "[C]opy file[p]ath to clipboard" })
