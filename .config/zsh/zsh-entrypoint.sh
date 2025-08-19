@@ -50,6 +50,9 @@ bindkey '^y' autosuggest-accept
 bindkey '^p' history-search-backward
 bindkey '^n' history-search-forward
 
+# Ctrl+F to run tmux-sessionizer
+bindkey -s '^f' '~/.local/scripts/tmux-sessionizer\n'
+
 bindkey -v
 
 # Change cursor shape for different vi modes (non-blinking).
@@ -246,6 +249,3 @@ hyprlog() {
 
 [ -f "$HOME/.local/secrets" ] && source "$HOME/.local/secrets" # ghcup-env
 
-if [[ -v ACTIVATE_TMUX_SESSION && -z "$TMUX" ]]; then
-    _tmux_switch_or_activate ~ "default"
-fi
