@@ -1,3 +1,0 @@
-betterlockscreen
-librewolf-bin
-xidlehook
