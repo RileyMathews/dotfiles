@@ -1,0 +1,11 @@
+#! bash
+
+# remove existing files
+rm -rf /home/riley/.zshrc
+rm -rf /home/riley/.config/zsh/zsh-entrypoint.sh
+
+# make directories if they do not exist
+mkdir -p /home/riley/.config/zsh
+
+cp /home/riley/dotfiles/.zshrc /home/riley/.zshrc
+cp /home/riley/dotfiles/.config/.zsh/zsh-entrypoint.sh /home/riley/.config/zsh/zsh-entrypoint.sh
