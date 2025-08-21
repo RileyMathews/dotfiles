@@ -8,4 +8,4 @@ rm -rf /home/riley/.config/zsh/zsh-entrypoint.sh
 mkdir -p /home/riley/.config/zsh
 
 cp /home/riley/dotfiles/.zshrc /home/riley/.zshrc
-cp /home/riley/dotfiles/.config/.zsh/zsh-entrypoint.sh /home/riley/.config/zsh/zsh-entrypoint.sh
+cp /home/riley/dotfiles/.config/zsh/zsh-entrypoint.sh /home/riley/.config/zsh/zsh-entrypoint.sh
