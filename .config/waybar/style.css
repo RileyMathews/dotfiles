@@ -49,11 +49,13 @@ window#waybar {
 
 .modules-center {
     padding: 0 20px;
+    color: @text;
 }
 
 #workspaces button {
     border-radius: 0;
     border-bottom: 2px solid transparent;
+    color: @text;
 }
 
 #workspaces button.active {
