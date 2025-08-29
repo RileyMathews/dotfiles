@@ -32,7 +32,16 @@ vim.opt.foldmethod = "manual"
 
 vim.opt.showmode = false
 
-vim.diagnostic.config({ virtual_text = true })
+vim.diagnostic.config({
+	virtual_text = true,
+	float = {
+		focusable = false,
+		style = "minimal",
+		border = "rounded",
+		header = "",
+		prefix = "",
+	},
+})
 vim.api.nvim_create_autocmd("FileType", {
 	pattern = "*",
 	desc = "Disable formatoptions for certain file types",
