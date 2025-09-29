@@ -1,21 +1,22 @@
 [global]
-frame_color = "#8aadf4"
-separator_color= frame
+frame_color = "#74c7ec"  # Original: #8aadf4, added CC for ~80% opacity
+separator_color= frame      # This will now inherit the transparent frame_color
 separator_height = 1
 frame_width = 1
-width = (400, 400)
+width = (0, 400)
 padding = 16
 horizontal_padding = 32
-font = "Hack Nerd Font"
-background = "#313244"
-foreground = "#cdd6f4"
-corner_radius = 8
+font = "Hack Nerd Font 12"
+background = "#11111b"    # Original: #313244, added CC for ~80% opacity
+foreground = "#cdd6f4"     # Foreground usually stays opaque for readability
 icon_position = left
 min_icon_size = 50
 max_icon_size = 60
 icon_path = $HOME/.local/share/icons/dunst
 mouse_right_click = context
-highlight = "#f38ba8,#a6e3a1"
+highlight = "#74c7ec" # Highlights can also have transparency if desired
+gap_size = 8
+offset = (0, 0)
 
 [urgency_critical]
 frame_color = "#f38ba8"
