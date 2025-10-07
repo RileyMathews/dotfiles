@@ -10,20 +10,31 @@ if [[ -z $selected ]]; then
     exit 0
 fi
 
-selected_name=$(basename "$selected" | tr . _)
+cd $selected
+
+is_bare=$(git rev-parse --is-bare-repository)
+echo $is_bare
+
+if [ "$is_bare" == "true" ]; then
+    selected=$(ls | fzf)
+    cd $selected
+fi
+
 tmux_running=$(pgrep tmux)
 
+session_name=$(basename $selected)
+
 if [[ -z $TMUX ]] && [[ -z $tmux_running ]]; then
-    tmux new-session -s $selected_name -c $selected
+    tmux new-session -s $session_name
     exit 0
 fi
 
-if ! tmux has-session -t=$selected_name 2> /dev/null; then
-    tmux new-session -ds $selected_name -c $selected
+if ! tmux has-session -t=$session_name 2> /dev/null; then
+    tmux new-session -ds $session_name
 fi
 
 if [[ -z $TMUX ]]; then
-    tmux attach-session -t $selected_name
+    tmux attach-session -t $session_name
 else
-    tmux switch-client -t $selected_name
+    tmux switch-client -t $session_name
 fi
