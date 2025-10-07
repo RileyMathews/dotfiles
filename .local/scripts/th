@@ -1,0 +1,3 @@
+#! bash
+directory=$(command ls . | fzf)
+_tmux_switch_or_activate `pwd`/$directory $directory
