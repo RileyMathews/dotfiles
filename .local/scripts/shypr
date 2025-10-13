@@ -1,7 +1,0 @@
-#! sh
-
-export XDG_SESSION_DESKTOP=Hyprland
-
-source _wayland_setup
-
-Hyprland
