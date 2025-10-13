@@ -1,4 +1,4 @@
-#!/bin/bash
+#! bash
 
 # Default save directory
 SAVE_DIR="$HOME/Pictures/Screenshots"

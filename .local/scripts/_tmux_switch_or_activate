@@ -1,4 +1,4 @@
-#! /bin/zsh
+#! zsh 
 directory=$1
 session_name=$2
 if [[ $TERM_PROGRAM == "tmux" ]]; then

@@ -1,4 +1,4 @@
-#! /bin/sh
+#! sh
 
 INTEL_GPU=$(readlink -f /dev/dri/by-path/pci-0000:00:02.0-card)
 NVIDIA_GPU=$(readlink -f /dev/dri/by-path/pci-0000:02:00.0-card)
