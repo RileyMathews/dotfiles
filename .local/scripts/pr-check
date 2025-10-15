@@ -1,0 +1,84 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# gh-tail-failed.sh — interactive GitHub Actions run viewer
+# ----------------------------------------------------------
+# Fetches workflow runs for the latest commit, summarizes their status,
+# lets you pick a failed one via fzf, and tails its last 100 lines of logs.
+
+lines=100
+commit=$(git rev-parse HEAD)
+branch=$(git rev-parse --abbrev-ref HEAD)
+
+# Ensure required tools exist
+for cmd in gh jq; do
+  if ! command -v "$cmd" >/dev/null 2>&1; then
+    echo "❌ Missing dependency: $cmd"
+    exit 1
+  fi
+done
+
+# fzf optional
+if ! command -v fzf >/dev/null 2>&1; then
+  echo "⚠️  fzf not found — will auto-select first failed workflow"
+  fzf_available=false
+else
+  fzf_available=true
+fi
+
+echo "🔍 Checking workflows for commit: $commit ($branch)"
+
+# Fetch all runs for this commit (sorted newest first)
+runs_json=$(gh run list \
+  --commit "$commit" \
+  --json name,status,conclusion,databaseId,url,workflowName \
+  --limit 50)
+
+# Check if any runs were found
+if [[ "$(jq length <<<"$runs_json")" -eq 0 ]]; then
+  echo "❌ No workflows found for commit $commit."
+  exit 1
+fi
+
+# Extract failed workflows
+failed=$(jq -r '.[] | select(.conclusion == "failure") | "\(.workflowName) (\(.databaseId))"' <<<"$runs_json")
+
+if [[ -n "$failed" ]]; then
+  echo "❗ Found failed workflows:"
+  echo "$failed" | sed 's/^/   - /'
+
+  if $fzf_available; then
+    selected=$(echo "$failed" | fzf --prompt="Select failed workflow > " | awk -F '[()]' '{print $2}')
+  else
+    selected=$(echo "$failed" | head -n 1 | awk -F '[()]' '{print $2}')
+  fi
+
+  if [[ -z "$selected" ]]; then
+    echo "❌ No selection made. Exiting."
+    exit 1
+  fi
+
+  echo
+  echo "📄 Tailing last $lines lines of logs for workflow run: $selected"
+  echo "------------------------------------------------------------"
+  gh run view "$selected" --log | tail -n "$lines"
+  exit 0
+fi
+
+# If no failures, show a summary
+echo "✅ No failed workflows found."
+echo
+echo "📊 Workflow summary for $commit:"
+jq -r '
+  group_by(.status)[] |
+  {status: .[0].status, runs: .} |
+  "  • " + .status + ": " + (.runs | length | tostring) + " runs"
+' <<<"$runs_json"
+
+echo
+echo "📋 Per-run details:"
+jq -r '
+  .[] |
+  "  - " + .workflowName + " (" + .status + ", " + .conclusion + ")"
+' <<<"$runs_json"
+
