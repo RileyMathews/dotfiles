@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# gh-tail-failed.sh — interactive GitHub Actions run viewer
+# gh-tail-failed.sh — interactive GitHub Actions run viewer (job-aware)
 # ----------------------------------------------------------
-# Fetches workflow runs for the latest commit, summarizes their status,
-# lets you pick a failed one via fzf, and tails its last 100 lines of logs.
+# Fetches workflow runs for the latest commit, finds failed jobs,
+# lets you pick one via fzf, and tails its last 100 lines of logs.
 
 lines=100
 commit=$(git rev-parse HEAD)
@@ -20,7 +20,7 @@ done
 
 # fzf optional
 if ! command -v fzf >/dev/null 2>&1; then
-  echo "⚠️  fzf not found — will auto-select first failed workflow"
+  echo "⚠️  fzf not found — will auto-select the first failed workflow/job"
   fzf_available=false
 else
   fzf_available=true
@@ -41,34 +41,63 @@ if [[ "$(jq length <<<"$runs_json")" -eq 0 ]]; then
 fi
 
 # Extract failed workflows
-failed=$(jq -r '.[] | select(.conclusion == "failure") | "\(.workflowName) (\(.databaseId))"' <<<"$runs_json")
+failed_runs=$(jq -r '.[] | select(.conclusion == "failure") | "\(.workflowName) (\(.databaseId))"' <<<"$runs_json")
 
-if [[ -n "$failed" ]]; then
+if [[ -n "$failed_runs" ]]; then
   echo "❗ Found failed workflows:"
-  echo "$failed" | sed 's/^/   - /'
+  echo "$failed_runs" | sed 's/^/   - /'
 
+  # Select the workflow run that failed
   if $fzf_available; then
-    selected=$(echo "$failed" | fzf --prompt="Select failed workflow > " | awk -F '[()]' '{print $2}')
+    selected_run_id=$(echo "$failed_runs" | fzf --prompt="Select failed workflow > " | awk -F '[()]' '{print $2}')
   else
-    selected=$(echo "$failed" | head -n 1 | awk -F '[()]' '{print $2}')
+    selected_run_id=$(echo "$failed_runs" | head -n 1 | awk -F '[()]' '{print $2}')
   fi
 
-  if [[ -z "$selected" ]]; then
+  if [[ -z "$selected_run_id" ]]; then
     echo "❌ No selection made. Exiting."
     exit 1
   fi
 
   echo
-  echo "📄 Tailing last $lines lines of logs for workflow run: $selected"
+  echo "🔎 Fetching failed jobs for workflow run: $selected_run_id ..."
+  jobs_json=$(gh run view "$selected_run_id" --json jobs)
+
+  # Extract job name + ID pairs for failed jobs
+  mapfile -t failed_jobs < <(echo "$jobs_json" | jq -r '.jobs[] | select(.conclusion == "failure") | "\(.name)\t\(.databaseId)"')
+
+  if [[ ${#failed_jobs[@]} -eq 0 ]]; then
+    echo "⚠️  Workflow failed, but no specific job marked as failed (may have been cancelled or infra error)."
+    exit 0
+  fi
+
+  echo "❌ Failed jobs:"
+  printf '%s\n' "${failed_jobs[@]}" | cut -f1 | sed 's/^/   - /'
+
+  if $fzf_available; then
+    selected_line=$(printf '%s\n' "${failed_jobs[@]}" | cut -f1 | fzf --prompt="Select failed job > ")
+  else
+    selected_line=$(printf '%s\n' "${failed_jobs[0]}" | cut -f1)
+  fi
+
+  if [[ -z "$selected_line" ]]; then
+    echo "❌ No job selected. Exiting."
+    exit 1
+  fi
+
+  selected_job_id=$(printf '%s\n' "${failed_jobs[@]}" | grep -F "$selected_line" | cut -f2)
+
+  echo
+  echo "📄 Tailing last $lines lines of logs for job: $selected_line (ID $selected_job_id)"
   echo "------------------------------------------------------------"
-  gh run view "$selected" --log | tail -n "$lines"
+  gh run view "$selected_run_id" --job "$selected_job_id" --log | tail -n "$lines"
   exit 0
 fi
 
-# If no failures, show a summary
-echo "✅ No failed workflows found."
+# If no workflow failures, show summary
+echo "✅ No failed workflows found for commit $commit."
 echo
-echo "📊 Workflow summary for $commit:"
+echo "📊 Workflow summary:"
 jq -r '
   group_by(.status)[] |
   {status: .[0].status, runs: .} |
