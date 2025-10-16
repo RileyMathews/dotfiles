@@ -99,8 +99,8 @@ setopt hist_find_no_dups
 # Environment Variables             #
 #####################################
 export EDITOR="nvim"
-export BROWSER="brave"
-export GH_BROWSER="brave"
+export BROWSER="qutebrowser"
+export GH_BROWSER="qutebrowser"
 export PATH="$PATH:$HOME/.local/bin:$HOME/.local/scripts:$HOME/.local/python-scripts:$HOME/.screenlayout"
 export KEYTIMEOUT=1
 export XDG_DATA_DIRS="$XDG_DATA_DIRS:/var/lib/flatpak/exports/share:/home/riley/.local/share/flatpak/exports/share"

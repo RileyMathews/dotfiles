@@ -1,5 +1,5 @@
 super + b
-    brave --profile-directory="Default" --class="$(uuidgen)"
+    qutebrowser
 
 super + shift + b
     brave --profile-directory="Profile 1" --class="$(uuidgen)"
