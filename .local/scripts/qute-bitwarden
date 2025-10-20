@@ -240,6 +240,9 @@ def main(arguments):
 
     if len(candidates) == 1:
         selection = candidates.pop()
+
+    for c in candidates:
+        print(c['name'])
     else:
         choices = ['{:s} | {:s}'.format(c['name'], c['login']['username']) for c in candidates]
         choice = dmenu(choices, arguments.dmenu_invocation, arguments.io_encoding)
