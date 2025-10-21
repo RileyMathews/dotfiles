@@ -17,7 +17,7 @@ config.load_autoconfig(False)
 # Aliases for commands. The keys of the given dictionary are the
 # aliases, while the values are the commands they map to.
 # Type: Dict
-c.aliases = {'w': 'session-save', 'q': 'tab-close', 'qa': 'quit', 'wq': 'quit --save', 'wqa': 'quit --save'}
+c.aliases = {'w': 'session-save', 'q': 'tab-close', 'qa': 'quit', 'wq': 'quit --save', 'wqa': 'quit --save', 'r': 'reload'}
 
 # Time interval (in milliseconds) between auto-saves of
 # config/cookies/etc.
