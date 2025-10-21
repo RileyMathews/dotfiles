@@ -234,17 +234,19 @@ def main(arguments):
             break
     else:
         if not candidates:
+            qute_command(f"message-info no candidates found")
             stderr('No pass candidates for URL {!r} found!'.format(
                 arguments.url))
             return ExitCodes.NO_PASS_CANDIDATES
 
+    qute_command(f"message-info '{len(candidates)} found'")
     if len(candidates) == 1:
         selection = candidates.pop()
 
     for c in candidates:
-        print(c['name'])
+        print(c.get('login', {}).get('username', 'NULL'))
     else:
-        choices = ['{:s} | {:s}'.format(c['name'], c['login']['username']) for c in candidates]
+        choices = ['{} | {}'.format(c.get('name', 'NULL'), c.get('login', {}).get('username', 'NULL')) for c in candidates]
         choice = dmenu(choices, arguments.dmenu_invocation, arguments.io_encoding)
         choice_tokens = choice.split('|')
         choice_name = choice_tokens[0].strip()

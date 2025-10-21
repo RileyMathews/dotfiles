@@ -90,7 +90,7 @@ if [[ -n "$failed_runs" ]]; then
   echo
   echo "📄 Tailing last $lines lines of logs for job: $selected_line (ID $selected_job_id)"
   echo "------------------------------------------------------------"
-  gh run view "$selected_run_id" --job "$selected_job_id" --log | tail -n "$lines"
+  gh run view "$selected_run_id" --job "$selected_job_id" --log | less
   exit 0
 fi
 
