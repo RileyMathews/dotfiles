@@ -2,8 +2,6 @@
 
 set -e
 
-echo "hello"
-
 # Default save directory
 SAVE_DIR="$HOME/Pictures/Screenshots"
 
