@@ -31,8 +31,8 @@ echo "🔍 Checking workflows for commit: $commit ($branch)"
 # Fetch all runs for this commit (sorted newest first)
 runs_json=$(gh run list \
   --commit "$commit" \
-  --json name,status,conclusion,databaseId,url,workflowName \
-  --limit 50)
+  --all \
+  --json name,status,conclusion,databaseId,url,workflowName)
 
 # Check if any runs were found
 if [[ "$(jq length <<<"$runs_json")" -eq 0 ]]; then
