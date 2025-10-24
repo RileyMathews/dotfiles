@@ -31,28 +31,34 @@ cat <<EOF
         }
         return false;
     };
-    function loadData2Form (form) {
+
+    function setReactValue(input, value) {
+        const lastValue = input.value;
+        const nativeSetter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, "value").set;
+        nativeSetter.call(input, value);
+        input.dispatchEvent(new InputEvent("input", { bubbles: true }));
+    }
+
+    function loadData2Form(form) {
         var inputs = form.getElementsByTagName("input");
         for (var j = 0; j < inputs.length; j++) {
             var input = inputs[j];
             if (isVisible(input) && (input.type == "text" || input.type == "email")) {
-                input.focus();
-                input.value = "$(javascript_escape "${USERNAME}")";
-                input.dispatchEvent(new Event('change'));
-                input.blur();
+                setReactValue(input, "$(javascript_escape "${USERNAME}")");
             }
             if (input.type == "password") {
-                input.focus();
-                input.value = "$(javascript_escape "${PASSWORD}")";
-                input.dispatchEvent(new Event('change'));
-                input.blur();
+                setReactValue(input, "$(javascript_escape "${PASSWORD}")");
             }
         }
-    };
+    }
+
+    console.log("script started");
     var forms = document.getElementsByTagName("form");
     if("$(javascript_escape "${QUTE_URL}")" == window.location.href) {
+        console.log("URL match, inserting secrets");
         for (i = 0; i < forms.length; i++) {
             if (hasPasswordField(forms[i])) {
+                console.log(forms[i]);
                 loadData2Form(forms[i]);
             }
         }
@@ -65,8 +71,6 @@ EOF
 URL=$(echo "$QUTE_URL" | awk -F/ '{print $3}' | sed 's/www.//g')
 TOKEN_TMPDIR="${TMPDIR:-/tmp}"
 TOKEN_CACHE="$TOKEN_TMPDIR/1pass.token"
-
-echo "message-info 'Looking for password for $URL...'" >> "$QUTE_FIFO"
 
 if [ -f "$TOKEN_CACHE" ]; then
     TOKEN=$(cat "$TOKEN_CACHE")
@@ -120,7 +124,6 @@ if [ -n "$TOKEN" ]; then
             TOTP=$(op item get --otp --session="$TOKEN" "$UUID") || TOTP=""
             if [ -n "$TOTP" ]; then
                 echo "$TOTP" | xclip -in -selection clipboard
-                echo "message-info 'Pasted one time password for $TITLE to clipboard'" >> "$QUTE_FIFO"
             fi
         else
             echo "message-error 'No password found for $URL'" >> "$QUTE_FIFO"
