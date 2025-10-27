@@ -616,6 +616,6 @@ binds {
 }
 
 environment {
-    ELECTRON_OZONE_PLATFORM_HINT "wayland"
+    ELECTRON_OZONE_PLATFORM_HINT "auto"
     GTK_BACKEND "wayland"
 }
