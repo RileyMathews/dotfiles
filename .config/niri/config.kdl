@@ -35,11 +35,12 @@ input {
         // dwtp
         // drag false
         // drag-lock
-        natural-scroll
+        // natural-scroll
         // accel-speed 0.2
         // accel-profile "flat"
         // scroll-method "two-finger"
         // disabled-on-external-mouse
+        click-method "clickfinger"
     }
 
     mouse {
@@ -616,6 +617,9 @@ binds {
 }
 
 environment {
-    ELECTRON_OZONE_PLATFORM_HINT "auto"
+    ELECTRON_OZONE_PLATFORM_HINT "wayland"
+    ELECTRON_OZONE_PLATFORM "wayland"
     GTK_BACKEND "wayland"
+    XDG_DESKTOP_SESSION_TYPE "wayland"
+    XDG_SESSION_TYPE "wayland"
 }
