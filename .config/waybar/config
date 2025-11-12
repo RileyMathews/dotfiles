@@ -9,6 +9,7 @@
         "hyprland/workspaces",
         "hyprland/submap",
         "river/tags",
+        "niri/workspaces"
     ],
     "modules-center": [
         "hyprland/window"
