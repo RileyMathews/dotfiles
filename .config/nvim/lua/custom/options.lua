@@ -57,6 +57,10 @@ vim.opt.undofile = true
 
 vim.g.db_ui_execute_on_save = 0
 
+vim.g.copilot_filetypes = {
+	["odin"] = false,
+}
+
 vim.api.nvim_create_autocmd("FileType", {
 	pattern = "sql",
 	group = vim.api.nvim_create_augroup("DBUI_Keymaps", {}),
