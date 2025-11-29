@@ -38,6 +38,7 @@ return {
 			-- how to get it running automatically without also adding it here :(
 			djlsp = {},
 			gopls = {},
+			zls = {},
 		}
 
 		for server_name, server_settings in pairs(manual_servers) do
