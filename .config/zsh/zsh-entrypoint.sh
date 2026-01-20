@@ -254,5 +254,5 @@ COMPUTER_NAME=$(cat /etc/hostname)
 # I want my desktop computer to boot ASAP into a
 # graphical environment.
 if [[ "$COMPUTER_NAME" == "ds9" ]] && [[ "$TERM" == "linux" ]] && [[ -z "$DISPLAY" ]] && [[ "$(tty)" == "/dev/tty1" ]]; then
-    Hyprland
+    start-hyprland
 fi
