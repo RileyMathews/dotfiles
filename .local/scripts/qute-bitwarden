@@ -5,68 +5,44 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 """
-Insert login information using Bitwarden CLI and a dmenu-compatible application
-(e.g. dmenu, rofi -dmenu, ...).
-"""
+Insert login information using Bitwarden CLI and rofi.
 
-USAGE = """The domain of the site has to be in the name of the Bitwarden entry, for example: "github.com/cryzed" or
-"websites/github.com".  The login information is inserted by emulating key events using qutebrowser's fake-key command in this manner:
-[USERNAME]<Tab>[PASSWORD], which is compatible with almost all login forms.
+The domain of the site has to be in the name of the Bitwarden entry, for example: 
+"github.com/cryzed" or "websites/github.com". 
 
-If enabled, with the `--totp` flag, it will also move the TOTP code to the
-clipboard, much like the Firefox add-on.
+The login information is inserted by emulating key events using qutebrowser's 
+fake-key command in this manner: [USERNAME]<Tab>[PASSWORD], which is compatible 
+with almost all login forms.
 
 You must log into Bitwarden CLI using `bw login` prior to use of this script.
-The session key will be stored using keyctl for the number of seconds passed to
-the --auto-lock option.
+The session key will be cached in /tmp for 24 hours.
 
 To use in qutebrowser, run: `spawn --userscript qute-bitwarden`
-"""
 
-EPILOG = """Dependencies: tldextract (Python 3 module), pyperclip (optional
-Python module, used for TOTP codes), Bitwarden CLI (1.7.4 is known to work
-but older versions may well also work)
+Dependencies: Bitwarden CLI, rofi
 
 WARNING: The login details are viewable as plaintext in qutebrowser's debug log
-(qute://log) and might be shared if you decide to submit a crash report!"""
+(qute://log) and might be shared if you decide to submit a crash report!
+"""
 
-import argparse
 import enum
 import functools
 import os
+import re
 import shlex
 import subprocess
 import sys
 import json
-import tldextract
+import time
+import stat
+from urllib.parse import urlparse
 
-argument_parser = argparse.ArgumentParser(
-    description=__doc__,
-    usage=USAGE,
-    epilog=EPILOG,
-)
-argument_parser.add_argument('url', nargs='?', default=os.getenv('QUTE_URL'))
-argument_parser.add_argument('--dmenu-invocation', '-d', default='rofi -dmenu -i -p Bitwarden',
-                             help='Invocation used to execute a dmenu-provider')
-argument_parser.add_argument('--password-prompt-invocation', '-p', default='rofi -dmenu -p "Master Password" -password -lines 0',
-                             help='Invocation used to prompt the user for their Bitwarden password')
-argument_parser.add_argument('--no-insert-mode', '-n', dest='insert_mode', action='store_false',
-                             help="Don't automatically enter insert mode")
-argument_parser.add_argument('--totp', '-t', action='store_true',
-                             help="Copy TOTP key to clipboard")
-argument_parser.add_argument('--io-encoding', '-i', default='UTF-8',
-                             help='Encoding used to communicate with subprocesses')
-argument_parser.add_argument('--merge-candidates', '-m', action='store_true',
-                             help='Merge pass candidates for fully-qualified and registered domain name')
-argument_parser.add_argument('--auto-lock', type=int, default=86400,
-                             help='Automatically lock the vault after this many seconds')
-group = argument_parser.add_mutually_exclusive_group()
-group.add_argument('--username-only', '-e',
-                   action='store_true', help='Only insert username')
-group.add_argument('--password-only', '-w',
-                   action='store_true', help='Only insert password')
-group.add_argument('--totp-only', '-T',
-                   action='store_true', help='Only insert totp code')
+# Configuration
+DMENU_INVOCATION = 'rofi -dmenu -i -p Bitwarden'
+PASSWORD_PROMPT_INVOCATION = 'rofi -dmenu -p "Master Password" -password -lines 0'
+IO_ENCODING = 'UTF-8'
+AUTO_LOCK_SECONDS = 86400  # 24 hours
+SESSION_CACHE_FILE = '/tmp/bw_session_{}'.format(os.getuid())
 
 stderr = functools.partial(print, file=sys.stderr)
 
@@ -86,9 +62,9 @@ def qute_command(command):
         fifo.flush()
 
 
-def ask_password(password_prompt_invocation):
+def ask_password():
     process = subprocess.run(
-        shlex.split(password_prompt_invocation),
+        shlex.split(PASSWORD_PROMPT_INVOCATION),
         text=True,
         stdout=subprocess.PIPE,
     )
@@ -102,88 +78,121 @@ def ask_password(password_prompt_invocation):
     ).strip()
 
 
-def get_session_key(auto_lock, password_prompt_invocation):
-    if auto_lock == 0:
-        subprocess.call(['keyctl', 'purge', 'user', 'bw_session'])
-        return ask_password(password_prompt_invocation)
-    else:
-        process = subprocess.run(
-            ['keyctl', 'request', 'user', 'bw_session'],
-            text=True,
-            stdout=subprocess.PIPE,
-        )
-        key_id = process.stdout.strip()
-        if process.returncode > 0:
-            session = ask_password(password_prompt_invocation)
-            if not session:
-                raise Exception('Could not unlock vault')
-            key_id = subprocess.check_output(
-                ['keyctl', 'add', 'user', 'bw_session', session, '@u'],
-                text=True,
-            ).strip()
+def get_session_key():
+    """
+    Get or create a Bitwarden session key with file-based caching.
+    The session is cached in /tmp with proper permissions and expires after AUTO_LOCK_SECONDS.
+    """
+    # Check if cached session exists and is valid
+    if os.path.exists(SESSION_CACHE_FILE):
+        try:
+            # Check file permissions for security
+            file_stat = os.stat(SESSION_CACHE_FILE)
+            if stat.S_IMODE(file_stat.st_mode) != 0o600:
+                stderr(f'Warning: Session cache file has incorrect permissions, removing')
+                os.remove(SESSION_CACHE_FILE)
+            else:
+                # Check if session has expired
+                file_age = time.time() - file_stat.st_mtime
+                if file_age < AUTO_LOCK_SECONDS:
+                    with open(SESSION_CACHE_FILE, 'r') as f:
+                        session = f.read().strip()
+                        if session:
+                            return session
+                else:
+                    stderr('Session cache expired, prompting for password')
+                    os.remove(SESSION_CACHE_FILE)
+        except (IOError, OSError) as e:
+            stderr(f'Error reading session cache: {e}')
+            if os.path.exists(SESSION_CACHE_FILE):
+                os.remove(SESSION_CACHE_FILE)
+    
+    # No valid cached session, ask for password
+    session = ask_password()
+    if not session:
+        raise Exception('Could not unlock vault')
+    
+    # Cache the session with secure permissions
+    try:
+        # Create file with restrictive permissions (owner read/write only)
+        fd = os.open(SESSION_CACHE_FILE, os.O_CREAT | os.O_WRONLY | os.O_TRUNC, 0o600)
+        with os.fdopen(fd, 'w') as f:
+            f.write(session)
+    except (IOError, OSError) as e:
+        stderr(f'Warning: Could not cache session: {e}')
+        # Continue anyway, we have the session
+    
+    return session
 
-        if auto_lock > 0:
-            subprocess.call(['keyctl', 'timeout', str(key_id), str(auto_lock)])
-        return subprocess.check_output(
-            ['keyctl', 'pipe', str(key_id)],
-            text=True,
-        ).strip()
 
-
-def pass_(domain, encoding, auto_lock, password_prompt_invocation):
-    session_key = get_session_key(auto_lock, password_prompt_invocation)
+def pass_(domain):
+    session_key = get_session_key()
     process = subprocess.run(
         ['bw', 'list', 'items', '--nointeraction', '--session', session_key, '--url', domain],
         capture_output=True,
     )
 
-    err = process.stderr.decode(encoding).strip()
+    err = process.stderr.decode(IO_ENCODING).strip()
     if err:
         msg = 'Bitwarden CLI returned for {:s} - {:s}'.format(domain, err)
         stderr(msg)
 
-        if "Vault is locked" in err:
-            stderr("Bitwarden Vault got locked, trying again with clean session")
-            return pass_(domain, encoding, 0, password_prompt_invocation)
-
     if process.returncode:
         return '[]'
 
-    out = process.stdout.decode(encoding).strip()
+    out = process.stdout.decode(IO_ENCODING).strip()
 
     return out
 
 
-def get_totp_code(selection_id, domain_name, encoding, auto_lock, password_prompt_invocation):
-    session_key = get_session_key(auto_lock, password_prompt_invocation)
-    process = subprocess.run(
-        ['bw', 'get', 'totp', '--nointeraction', '--session', session_key, selection_id],
-        capture_output=True,
-    )
-
-    err = process.stderr.decode(encoding).strip()
-    if err:
-        # domain_name instead of selection_id to make it more user-friendly
-        msg = 'Bitwarden CLI returned for {:s} - {:s}'.format(domain_name, err)
-        stderr(msg)
-
-        if "Vault is locked" in err:
-            stderr("Bitwarden Vault got locked, trying again with clean session")
-            return get_totp_code(selection_id, domain_name, encoding, 0, password_prompt_invocation)
-
-    if process.returncode:
-        return '[]'
-
-    out = process.stdout.decode(encoding).strip()
-
-    return out
-
-
-def dmenu(items, invocation, encoding):
-    command = shlex.split(invocation)
+def dmenu(items):
+    command = shlex.split(DMENU_INVOCATION)
     process = subprocess.run(command, input='\n'.join(
-        items).encode(encoding), stdout=subprocess.PIPE)
-    return process.stdout.decode(encoding).strip()
+        items).encode(IO_ENCODING), stdout=subprocess.PIPE)
+    return process.stdout.decode(IO_ENCODING).strip()
+
+
+def extract_domain_parts(url):
+    """
+    Extract domain parts from a URL without external dependencies.
+    Returns an object with similar attributes to tldextract.
+    """
+    class DomainParts:
+        def __init__(self):
+            self.fqdn = ''
+            self.registered_domain = ''
+            self.subdomain = ''
+            self.domain = ''
+            self.ipv4 = ''
+    
+    result = DomainParts()
+    parsed = urlparse(url)
+    hostname = parsed.hostname or parsed.netloc.split(':')[0]
+    
+    if not hostname:
+        return result
+    
+    # Check if it's an IPv4 address
+    ipv4_pattern = r'^(\d{1,3}\.){3}\d{1,3}$'
+    if re.match(ipv4_pattern, hostname):
+        result.ipv4 = hostname
+        return result
+    
+    # Split hostname into parts
+    parts = hostname.split('.')
+    result.fqdn = hostname
+    
+    if len(parts) >= 2:
+        # Simple heuristic: last two parts are domain + TLD (registered_domain)
+        result.registered_domain = '.'.join(parts[-2:])
+        result.domain = parts[-2]
+        
+        if len(parts) > 2:
+            result.subdomain = '.'.join(parts[:-2])
+    elif len(parts) == 1:
+        result.domain = parts[0]
+    
+    return result
 
 
 def fake_key_raw(text):
@@ -193,12 +202,13 @@ def fake_key_raw(text):
         qute_command('fake-key {}'.format(sequence))
 
 
-def main(arguments):
-    if not arguments.url:
-        argument_parser.print_help()
+def main():
+    url = os.getenv('QUTE_URL')
+    if not url:
+        stderr('Error: QUTE_URL environment variable not set')
         return ExitCodes.FAILURE
 
-    extract_result = tldextract.extract(arguments.url)
+    extract_result = extract_domain_parts(url)
 
     # Try to find candidates using targets in the following order: fully-qualified domain name (includes subdomains),
     # the registered domain name and finally: the IPv4 address if that's what
@@ -208,50 +218,37 @@ def main(arguments):
         None,
         [
             extract_result.fqdn,
-            (
-                extract_result.top_domain_under_public_suffix
-                if hasattr(extract_result, "top_domain_under_public_suffix")
-                else extract_result.registered_domain
-            ),
-            extract_result.subdomain + "." + extract_result.domain,
+            extract_result.registered_domain,
+            extract_result.subdomain + "." + extract_result.domain if extract_result.subdomain and extract_result.domain else None,
             extract_result.domain,
             extract_result.ipv4,
         ],
     ):
-        target_candidates = json.loads(
-            pass_(
-                target,
-                arguments.io_encoding,
-                arguments.auto_lock,
-                arguments.password_prompt_invocation,
-            )
-        )
+        target_candidates = json.loads(pass_(target))
         if not target_candidates:
             continue
 
-        candidates = candidates + target_candidates
-        if not arguments.merge_candidates:
-            break
-    else:
-        if not candidates:
-            qute_command(f"message-info no candidates found")
-            stderr('No pass candidates for URL {!r} found!'.format(
-                arguments.url))
-            return ExitCodes.NO_PASS_CANDIDATES
+        candidates = target_candidates
+        break  # Don't merge candidates, stop at first match
+
+    if not candidates:
+        qute_command("message-info 'no candidates found'")
+        stderr('No pass candidates for URL {!r} found!'.format(url))
+        return ExitCodes.NO_PASS_CANDIDATES
 
     qute_command(f"message-info '{len(candidates)} found'")
+    
     if len(candidates) == 1:
-        selection = candidates.pop()
-
-    for c in candidates:
-        print(c.get('login', {}).get('username', 'NULL'))
+        selection = candidates[0]
     else:
         choices = ['{} | {}'.format(c.get('name', 'NULL'), c.get('login', {}).get('username', 'NULL')) for c in candidates]
-        choice = dmenu(choices, arguments.dmenu_invocation, arguments.io_encoding)
+        choice = dmenu(choices)
+        if not choice:
+            return ExitCodes.SUCCESS
         choice_tokens = choice.split('|')
         choice_name = choice_tokens[0].strip()
         choice_username = choice_tokens[1].strip()
-        selection = next((c for (i, c) in enumerate(candidates)
+        selection = next((c for c in candidates
                           if c['name'] == choice_name
                           and c['login']['username'] == choice_username),
                          None)
@@ -262,52 +259,18 @@ def main(arguments):
 
     username = selection['login']['username']
     password = selection['login']['password']
-    totp = selection['login']['totp']
 
-    if arguments.username_only:
-        fake_key_raw(username)
-    elif arguments.password_only:
-        fake_key_raw(password)
-    elif arguments.totp_only:
-        # No point in moving it to the clipboard in this case
-        fake_key_raw(
-            get_totp_code(
-                selection['id'],
-                selection['name'],
-                arguments.io_encoding,
-                arguments.auto_lock,
-                arguments.password_prompt_invocation,
-            )
-        )
-    else:
-        # Enter username and password using fake-key and <Tab> (which seems to work almost universally), then switch
-        # back into insert-mode, so the form can be directly submitted by
-        # hitting enter afterwards
-        fake_key_raw(username)
-        qute_command('fake-key <Tab>')
-        fake_key_raw(password)
+    # Enter username and password using fake-key and <Tab> (which seems to work almost universally), then switch
+    # back into insert-mode, so the form can be directly submitted by
+    # hitting enter afterwards
+    fake_key_raw(username)
+    qute_command('fake-key <Tab>')
+    fake_key_raw(password)
 
-    if arguments.insert_mode:
-        qute_command('mode-enter insert')
-
-    # If it finds a TOTP code, it copies it to the clipboard,
-    # which is the same behavior as the Firefox add-on.
-    if not arguments.totp_only and totp and arguments.totp:
-        # The import is done here, to make pyperclip an optional dependency
-        import pyperclip
-        pyperclip.copy(
-            get_totp_code(
-                selection['id'],
-                selection['name'],
-                arguments.io_encoding,
-                arguments.auto_lock,
-                arguments.password_prompt_invocation,
-            )
-        )
+    qute_command('mode-enter insert')
 
     return ExitCodes.SUCCESS
 
 
 if __name__ == '__main__':
-    arguments = argument_parser.parse_args()
-    sys.exit(main(arguments))
+    sys.exit(main())
