@@ -234,6 +234,15 @@ gacp() {
 }
 
 
+######################################
+# Local overrides                    #
+######################################
+for f in "$HOME/.local/shell"/*(N); do
+  [[ -r "$f" && -f "$f" ]] && source "$f"
+done
+
+
+
 # if [[ "$TERM" == "linux" ]]; then
 #     export STARSHIP_CONFIG="$HOME/.config/starship/starship-tty.toml"
 # else
