@@ -39,6 +39,7 @@ return {
 			djlsp = {},
 			gopls = {},
 			zls = {},
+			pyright = {},
 		}
 
 		for server_name, server_settings in pairs(manual_servers) do
