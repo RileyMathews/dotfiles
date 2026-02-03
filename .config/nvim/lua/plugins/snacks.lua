@@ -236,7 +236,7 @@ return {
 		{
 			"<leader>gh",
 			function()
-				Snacks.gitbrowse.open()
+				Snacks.gitbrowse.open({ branch = "master" })
 			end,
 			desc = "[G]it [H]ub",
 		},

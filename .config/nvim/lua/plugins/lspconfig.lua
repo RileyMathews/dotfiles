@@ -39,6 +39,7 @@ return {
 			djlsp = {},
 			gopls = {},
 			zls = {},
+			lua_ls = { cmd = { "lua-lsp" } },
 		}
 
 		for server_name, server_settings in pairs(manual_servers) do

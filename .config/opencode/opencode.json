@@ -3,7 +3,7 @@
   "default_agent": "plan",
   "lsp": {
     "haskell-language-server": {
-      "command": ["static-ls", "--lsp"],
+      "command": [],
       "extensions": [".hs"]
     }
   }
