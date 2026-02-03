@@ -40,6 +40,7 @@ return {
 			gopls = {},
 			zls = {},
 			lua_ls = { cmd = { "lua-lsp" } },
+			pyright = {},
 		}
 
 		for server_name, server_settings in pairs(manual_servers) do
