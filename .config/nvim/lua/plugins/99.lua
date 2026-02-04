@@ -1,6 +1,5 @@
 return 	{
-	"rileymathews/99",
-	branch = "agent-config",
+	"theprimeagen/99",
 	config = function()
 		local _99 = require("99")
 
@@ -16,7 +15,7 @@ return 	{
 				print_on_error = true,
 			},
 
-			model = "anthropic/claude-sonnet-4-5",
+			model = "anthropic/claude-opus-4-5",
 
 			--- A new feature that is centered around tags
 			completion = {
