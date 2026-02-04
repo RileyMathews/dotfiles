@@ -155,6 +155,10 @@ alias tss='sudo tailscale switch'
 
 alias ghd="gh-dash"
 
+alias oc='opencode'
+alias ocp='opencode --agent plan'
+alias och='opencode --agent ghc-error-fixer --prompt "This project has some compile errors. Please help me fix them."'
+
 ######################################
 # Language Managers                  #
 ######################################
