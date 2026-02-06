@@ -13,7 +13,7 @@ return {
 		vim.keymap.set("n", "<leader>ht", function()
 			harpoon.ui:toggle_quick_menu(harpoon:list())
 		end, { desc = "[H]arpoon [T]oggle" })
-		for i = 1, 9 do
+		for i = 1, 5 do
 			vim.keymap.set("n", "<leader>" .. i, function()
 				harpoon:list():select(i)
 			end)
