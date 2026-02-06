@@ -1,2 +1,2 @@
 #!/bin/sh
-scp $1 riley@nas:/main/paperless/consume
+scp -r . riley@nas:/main/paperless/consume
