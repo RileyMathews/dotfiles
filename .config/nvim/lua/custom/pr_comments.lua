@@ -1,24 +1,55 @@
 -- GitHub PR Comments Plugin
 -- Displays PR review comments inline using virtual text
+--
+-- Setup:
+--   local pr_comments = require("custom.pr_comments").setup({
+--       use_fake_data = false,  -- Use real GitHub API (default: false)
+--   })
+--
+-- Requirements:
+--   - GitHub CLI (gh) installed and authenticated
+--   - Must be in a git repository with GitHub remote
+--   - Must be on a branch with an open PR
 
 local M = {}
 
--- Configuration
-local USE_FAKE_DATA = true -- Toggle for development/testing
+-- Configuration (initialized in setup)
+local config = nil
 
--- State management
-local state = {
-    active = false,
-    pr_number = nil,
-    show_resolved = true, -- Show resolved threads (dimmed)
-    show_outdated = true, -- Show outdated threads (dimmed)
-    -- threads: { [filepath] = { [line_num] = { ThreadData, ... } } }
-    threads = {},
-}
+-- State (initialized in setup)
+local state = nil
 
+-- Module-level variables
 local namespace_id = vim.api.nvim_create_namespace("pr_comments")
 local augroup_id = nil
-local current_thread_index = nil -- Cursor into sorted thread list for navigation
+local current_thread_index = nil
+
+-- Default configuration
+local default_config = {
+    use_fake_data = false, -- Use fake test data instead of GitHub API
+}
+
+-- Validate configuration
+local function validate_config(cfg)
+    if cfg == nil then
+        return -- nil is ok, will use defaults
+    end
+    
+    if type(cfg) ~= "table" then
+        error("pr_comments.setup(): config must be a table")
+    end
+    
+    if cfg.use_fake_data ~= nil and type(cfg.use_fake_data) ~= "boolean" then
+        error("pr_comments.setup(): use_fake_data must be a boolean")
+    end
+end
+
+-- Ensure setup was called before using plugin
+local function ensure_setup()
+    if not config then
+        error("pr_comments: setup() must be called before using this module")
+    end
+end
 
 -- Data Model
 --[[
@@ -438,21 +469,198 @@ local function clear_comments(bufnr)
 end
 
 -- ============================================================================
+-- GITHUB API INTEGRATION
+-- ============================================================================
+
+-- Helper: Execute shell command and return stdout
+local function execute_command(cmd)
+    local handle = io.popen(cmd .. " 2>&1")
+    if not handle then
+        return nil, "Failed to execute command"
+    end
+    local result = handle:read("*a")
+    local success = handle:close()
+    return result, success
+end
+
+-- Helper: Get repository owner and name
+local function get_repo_info()
+    local output, success = execute_command("gh repo view --json owner,name --jq '{owner: .owner.login, name: .name}'")
+    if not success or not output then
+        return nil, nil, "Failed to get repository info. Is this a GitHub repository?"
+    end
+    
+    local ok, decoded = pcall(vim.json.decode, output)
+    if not ok or not decoded or not decoded.owner or not decoded.name then
+        return nil, nil, "Invalid repository info"
+    end
+    
+    return decoded.owner, decoded.name, nil
+end
+
+-- Helper: Detect PR number for current branch
+local function detect_pr()
+    -- Get current branch
+    local branch_output, success = execute_command("git rev-parse --abbrev-ref HEAD")
+    if not success or not branch_output then
+        notify_error("Not in a git repository")
+        return nil
+    end
+    
+    local branch = vim.trim(branch_output)
+    
+    -- Check for PR using gh CLI
+    local pr_output, pr_success = execute_command("gh pr view --json number,headRefName")
+    if not pr_success or not pr_output then
+        notify_error("No PR found for branch: " .. branch)
+        return nil
+    end
+    
+    -- Parse JSON
+    local ok, pr_data = pcall(vim.json.decode, pr_output)
+    if not ok or not pr_data or not pr_data.number then
+        notify_error("Failed to parse PR data")
+        return nil
+    end
+    
+    return pr_data.number
+end
+
+-- Transform GraphQL response to our ThreadData structure
+local function transform_graphql_to_threads(graphql_threads)
+    local threads_by_file = {}
+    
+    for _, gql_thread in ipairs(graphql_threads) do
+        -- Use line if available, fallback to originalLine for outdated comments
+        local line_num = gql_thread.line or gql_thread.originalLine
+        
+        -- Skip threads without a line number
+        if not line_num then
+            goto continue
+        end
+        
+        -- Build ThreadData structure
+        local thread = {
+            id = gql_thread.id,
+            file = gql_thread.path,
+            line = line_num,
+            resolved = gql_thread.isResolved or false,
+            outdated = gql_thread.isOutdated or false,
+            comments = {}
+        }
+        
+        -- Map comments
+        local gql_comments = gql_thread.comments and gql_thread.comments.nodes or {}
+        for _, gql_comment in ipairs(gql_comments) do
+            table.insert(thread.comments, {
+                id = tostring(gql_comment.databaseId or ""),
+                user = gql_comment.author and gql_comment.author.login or "unknown",
+                body = gql_comment.body or "",
+                created_at = gql_comment.createdAt or "",
+            })
+        end
+        
+        -- Initialize nested structure if needed
+        if not threads_by_file[thread.file] then
+            threads_by_file[thread.file] = {}
+        end
+        if not threads_by_file[thread.file][thread.line] then
+            threads_by_file[thread.file][thread.line] = {}
+        end
+        
+        -- Add thread
+        table.insert(threads_by_file[thread.file][thread.line], thread)
+        
+        ::continue::
+    end
+    
+    return threads_by_file
+end
+
+-- Fetch PR review threads using GitHub GraphQL API
+local function fetch_pr_comments_graphql(owner, repo, pr_number)
+    -- Build GraphQL query (single line to avoid escaping issues)
+    local query = string.format(
+        '{ repository(owner: "%s", name: "%s") { pullRequest(number: %d) { reviewThreads(first: 100) { nodes { id isResolved isOutdated line originalLine path comments(first: 50) { nodes { databaseId body author { login } createdAt } } } } } } }',
+        owner, repo, pr_number
+    )
+    
+    -- Execute GraphQL query
+    local cmd = string.format("gh api graphql -f query='%s'", query)
+    local output, success = execute_command(cmd)
+    
+    if not success or not output then
+        notify_error("Failed to fetch PR comments. Is 'gh' authenticated? Try: gh auth login")
+        return nil
+    end
+    
+    -- Parse JSON
+    local ok, result = pcall(vim.json.decode, output)
+    if not ok or not result then
+        notify_error("Failed to parse GitHub API response")
+        return nil
+    end
+    
+    -- Check for GraphQL errors
+    if result.errors then
+        local error_msg = result.errors[1] and result.errors[1].message or "Unknown GraphQL error"
+        notify_error("GitHub API error: " .. error_msg)
+        return nil
+    end
+    
+    -- Validate response structure
+    local pr_data = result.data and result.data.repository and result.data.repository.pullRequest
+    if not pr_data then
+        notify_error("Could not access PR data. Check repository and PR access.")
+        return nil
+    end
+    
+    -- Extract threads
+    local graphql_threads = pr_data.reviewThreads and pr_data.reviewThreads.nodes or {}
+    
+    -- Transform to our data structure
+    return transform_graphql_to_threads(graphql_threads)
+end
+
+-- ============================================================================
 -- DATA LOADING
 -- ============================================================================
 
--- Load comments (fake data for now)
+-- Load comments (fake data or real GitHub API)
 local function load_comments()
-    if USE_FAKE_DATA then
-        notify_info("Loading fake PR comments for development...", "")
+    if config.use_fake_data then
+        notify_info("Loaded fake PR comments", "✓")
         state.threads = generate_fake_data()
         state.pr_number = 12345
         return true
-    else
-        -- TODO: Real GitHub API integration
-        notify_error("Real GitHub API not yet implemented")
+    end
+    
+    -- Real GitHub API
+    notify_info("Loading PR comments...", "")
+    
+    -- Get repo info
+    local owner, repo, err = get_repo_info()
+    if err then
+        notify_error(err)
         return false
     end
+    
+    -- Detect PR number
+    local pr_number = detect_pr()
+    if not pr_number then
+        return false
+    end
+    
+    -- Fetch via GraphQL
+    local threads = fetch_pr_comments_graphql(owner, repo, pr_number)
+    if not threads then
+        return false
+    end
+    
+    -- Store in state
+    state.threads = threads
+    state.pr_number = pr_number
+    return true
 end
 
 -- ============================================================================
@@ -461,6 +669,8 @@ end
 
 -- Command: Show PR comments
 local function show_pr_comments()
+    ensure_setup()
+    
     if state.active then
         notify_info("PR comments already active")
         return
@@ -493,22 +703,27 @@ local function show_pr_comments()
 
     -- Success notification
     local counts = count_threads()
-    notify_info(
-        string.format(
-            "Loaded %d thread%s (%d unresolved, %d resolved) across %d file%s",
-            counts.total,
-            counts.total == 1 and "" or "s",
-            counts.unresolved,
-            counts.resolved,
-            counts.files,
-            counts.files == 1 and "" or "s"
-        ),
-        "✓"
-    )
+    if counts.total == 0 then
+        notify_info("No review comments found on PR #" .. state.pr_number, "✓")
+    else
+        notify_info(
+            string.format(
+                "Loaded %d thread%s (%d unresolved) across %d file%s",
+                counts.total,
+                counts.total == 1 and "" or "s",
+                counts.unresolved,
+                counts.files,
+                counts.files == 1 and "" or "s"
+            ),
+            "✓"
+        )
+    end
 end
 
 -- Command: Hide PR comments
 local function hide_pr_comments()
+    ensure_setup()
+    
     if not state.active then
         notify_info("No PR comments currently shown")
         return
@@ -538,6 +753,8 @@ end
 
 -- Command: Refresh PR comments
 local function refresh_pr_comments()
+    ensure_setup()
+    
     if not state.active then
         notify_info("No PR comments to refresh. Use :PRCommentsShow first")
         return
@@ -550,6 +767,8 @@ end
 
 -- Command: Toggle PR comments
 local function toggle_pr_comments()
+    ensure_setup()
+    
     if state.active then
         hide_pr_comments()
     else
@@ -559,6 +778,8 @@ end
 
 -- Command: Toggle showing resolved threads
 local function toggle_resolved()
+    ensure_setup()
+    
     if not state.active then
         notify_info("No PR comments currently shown")
         return
@@ -579,6 +800,8 @@ end
 
 -- Command: Toggle showing outdated threads
 local function toggle_outdated()
+    ensure_setup()
+    
     if not state.active then
         notify_info("No PR comments currently shown")
         return
@@ -798,6 +1021,8 @@ end
 
 -- Command: View thread at cursor in floating window
 local function view_thread_at_cursor()
+    ensure_setup()
+    
     local threads, err = get_threads_at_cursor()
     if err then
         notify_info(err)
@@ -948,6 +1173,8 @@ end
 
 -- Command: Jump to next thread
 local function jump_to_next_thread()
+    ensure_setup()
+    
     if not state.active then
         notify_info("No PR comments loaded. Run :PRCommentsShow first")
         return
@@ -976,6 +1203,8 @@ end
 
 -- Command: Jump to previous thread
 local function jump_to_prev_thread()
+    ensure_setup()
+    
     if not state.active then
         notify_info("No PR comments loaded. Run :PRCommentsShow first")
         return
@@ -1006,26 +1235,48 @@ end
 -- SETUP
 -- ============================================================================
 
--- Create user commands
-vim.api.nvim_create_user_command("PRCommentsShow", show_pr_comments, { nargs = 0 })
-vim.api.nvim_create_user_command("PRCommentsHide", hide_pr_comments, { nargs = 0 })
-vim.api.nvim_create_user_command("PRCommentsRefresh", refresh_pr_comments, { nargs = 0 })
-vim.api.nvim_create_user_command("PRCommentsToggle", toggle_pr_comments, { nargs = 0 })
-vim.api.nvim_create_user_command("PRCommentsToggleResolved", toggle_resolved, { nargs = 0 })
-vim.api.nvim_create_user_command("PRCommentsToggleOutdated", toggle_outdated, { nargs = 0 })
-vim.api.nvim_create_user_command("PRCommentsView", view_thread_at_cursor, { nargs = 0 })
-vim.api.nvim_create_user_command("PRCommentsNext", jump_to_next_thread, { nargs = 0 })
-vim.api.nvim_create_user_command("PRCommentsPrev", jump_to_prev_thread, { nargs = 0 })
-
--- Export API
-M.show = show_pr_comments
-M.hide = hide_pr_comments
-M.refresh = refresh_pr_comments
-M.toggle = toggle_pr_comments
-M.toggle_resolved = toggle_resolved
-M.toggle_outdated = toggle_outdated
-M.view = view_thread_at_cursor
-M.next = jump_to_next_thread
-M.prev = jump_to_prev_thread
+M.setup = function(user_config)
+    -- Validate configuration
+    validate_config(user_config)
+    
+    -- Merge with defaults
+    config = vim.tbl_deep_extend("force", default_config, user_config or {})
+    
+    -- Initialize state
+    state = {
+        active = false,
+        pr_number = nil,
+        show_resolved = true,
+        show_outdated = true,
+        threads = {},
+    }
+    
+    -- Reset navigation cursor
+    current_thread_index = nil
+    
+    -- Create user commands
+    vim.api.nvim_create_user_command("PRCommentsShow", show_pr_comments, { nargs = 0 })
+    vim.api.nvim_create_user_command("PRCommentsHide", hide_pr_comments, { nargs = 0 })
+    vim.api.nvim_create_user_command("PRCommentsRefresh", refresh_pr_comments, { nargs = 0 })
+    vim.api.nvim_create_user_command("PRCommentsToggle", toggle_pr_comments, { nargs = 0 })
+    vim.api.nvim_create_user_command("PRCommentsToggleResolved", toggle_resolved, { nargs = 0 })
+    vim.api.nvim_create_user_command("PRCommentsToggleOutdated", toggle_outdated, { nargs = 0 })
+    vim.api.nvim_create_user_command("PRCommentsView", view_thread_at_cursor, { nargs = 0 })
+    vim.api.nvim_create_user_command("PRCommentsNext", jump_to_next_thread, { nargs = 0 })
+    vim.api.nvim_create_user_command("PRCommentsPrev", jump_to_prev_thread, { nargs = 0 })
+    
+    -- Return public API
+    return {
+        show = show_pr_comments,
+        hide = hide_pr_comments,
+        refresh = refresh_pr_comments,
+        toggle = toggle_pr_comments,
+        toggle_resolved = toggle_resolved,
+        toggle_outdated = toggle_outdated,
+        view = view_thread_at_cursor,
+        next = jump_to_next_thread,
+        prev = jump_to_prev_thread,
+    }
+end
 
 return M

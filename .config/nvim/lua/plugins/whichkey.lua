@@ -14,6 +14,7 @@ return {
 			{ "<leader>j", group = "[J]ump (flash)" },
 			{ "<leader>o", group = "C[o]pilot" },
 			{ "<leader>g", group = "[G]it/[G]hciwatch" },
+			{ "<leader>pr", group = "[P][R] comments" },
 		})
 		for i = 1, 9 do
 			wk.add({

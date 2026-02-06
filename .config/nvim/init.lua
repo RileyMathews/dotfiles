@@ -9,6 +9,19 @@ local ghciwatch = require("custom.ghciwatch").setup()
 local conform = require("conform")
 local trouble = require("trouble")
 
+-- PR Comments plugin setup
+local pr_comments = require("custom.pr_comments").setup({
+    use_fake_data = false, -- Use real GitHub API
+})
+
+vim.keymap.set("n", "<leader>prt", pr_comments.toggle, { desc = "Toggle" })
+vim.keymap.set("n", "<leader>prr", pr_comments.toggle_resolved, { desc = "Toggle resolved" })
+vim.keymap.set("n", "<leader>pro", pr_comments.toggle_outdated, { desc = "Toggle outdated" })
+vim.keymap.set("n", "<leader>prf", pr_comments.refresh, { desc = "Refresh" })
+vim.keymap.set("n", "<leader>prn", pr_comments.next, { desc = "Next" })
+vim.keymap.set("n", "<leader>prp", pr_comments.prev, { desc = "Previous" })
+vim.keymap.set("n", "<leader>prv", pr_comments.view, { desc = "Show" })
+
 vim.keymap.set("n", "<leader>gs", ghciwatch.initialize)
 vim.keymap.set("n", "<leader>gk", ghciwatch.deinitialize)
 vim.keymap.set("n", "<leader>gw", ghciwatch.show_buffer)
