@@ -7,8 +7,8 @@ vim.keymap.set("n", "n", "nzzzv")
 vim.keymap.set("n", "N", "Nzzzv")
 
 -- optional paste that does not put replaced text into buffer
-vim.keymap.set("x", "<leader>p", '"_dP', { desc = "[P]aste without replacing buffer" })
-vim.keymap.set("x", "<leader>p", '"_dP', { desc = "[P]aste without replacing buffer" })
+-- vim.keymap.set("x", "<leader>p", '"_dP', { desc = "[P]aste without replacing buffer" })
+-- vim.keymap.set("x", "<leader>p", '"_dP', { desc = "[P]aste without replacing buffer" })
 
 -- optional yank into system clipboard
 vim.keymap.set("v", "<leader>y", '"+y', { desc = "[Y]ank into system clipboard" })
