@@ -257,7 +257,7 @@ end
 ---@param ref string
 ---@return string?, string?
 function M.get_file_at_ref(file_path, ref)
-  local output, err = exec(string.format("git show %s:%s 2>/dev/null", ref, file_path))
+  local output, err = gh.exec(string.format("git show %s:%s 2>/dev/null", ref, file_path))
   if err then
     return nil, err
   end
