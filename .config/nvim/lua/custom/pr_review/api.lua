@@ -2,6 +2,7 @@
 -- Handles fetching PR data, diffs, comments, and posting comments
 
 local M = {}
+local gh = require("custom.pr_shared.gh")
 
 local comments_api_mod = nil
 
@@ -82,122 +83,6 @@ local cache = {
 ---@field deletions number
 ---@field status string
 
--- Execute a shell command and return output
----@param cmd string
----@return string?, string?
-local function exec(cmd)
-  local handle = io.popen(cmd .. " 2>&1")
-  if not handle then
-    return nil, "Failed to execute command"
-  end
-  local result = handle:read("*a")
-  local success = handle:close()
-  if not success then
-    return nil, result
-  end
-  return result, nil
-end
-
--- Execute gh command with JSON output
----@param args string[]
----@param opts? {repo?: string, notify?: boolean}
----@return table?, string?
-local function gh_json(args, opts)
-  opts = opts or {}
-  local cmd_parts = { "gh" }
-  vim.list_extend(cmd_parts, args)
-
-  if opts.repo then
-    vim.list_extend(cmd_parts, { "--repo", opts.repo })
-  end
-
-  local cmd = table.concat(cmd_parts, " ")
-  local output, err = exec(cmd)
-
-  if err then
-    if opts.notify ~= false then
-      Snacks.notify.error("gh command failed: " .. err, { title = "PR Review" })
-    end
-    return nil, err
-  end
-
-  if not output or output == "" then
-    return nil, "Empty response"
-  end
-
-  local ok, result = pcall(vim.json.decode, output)
-  if not ok then
-    return nil, "Failed to parse JSON: " .. tostring(result)
-  end
-
-  return result, nil
-end
-
--- Execute gh command returning raw text
----@param args string[]
----@param opts? {repo?: string}
----@return string?, string?
-local function gh_text(args, opts)
-  opts = opts or {}
-  local cmd_parts = { "gh" }
-  vim.list_extend(cmd_parts, args)
-
-  if opts.repo then
-    vim.list_extend(cmd_parts, { "--repo", opts.repo })
-  end
-
-  local cmd = table.concat(cmd_parts, " ")
-  return exec(cmd)
-end
-
--- Execute gh api command with JSON input
----@param endpoint string
----@param input table?
----@param opts? {method?: string}
----@return table?, string?
-local function gh_api(endpoint, input, opts)
-  opts = opts or {}
-  local method = opts.method or "POST"
-
-  local cmd = string.format("gh api %s -X %s", endpoint, method)
-
-  if input then
-    cmd = cmd .. " --input -"
-  end
-
-  -- Use vim.fn.system for proper stdin handling
-  local output
-  if input then
-    local json_input = vim.json.encode(input)
-    output = vim.fn.system(cmd, json_input)
-  else
-    output = vim.fn.system(cmd)
-  end
-
-  if vim.v.shell_error ~= 0 then
-    return nil, output
-  end
-
-  if not output or output == "" or not output:find("%S") then
-    return {}, nil -- Empty but successful
-  end
-
-  local ok, result = pcall(vim.json.decode, output)
-  if not ok then
-    return nil, "Failed to parse JSON: " .. output:sub(1, 200)
-  end
-
-  return result, nil
-end
-
--- Execute GraphQL query
----@param query string
----@param variables table
----@return table?, string?
-local function gh_graphql(query, variables)
-  return get_comments_api().execute_graphql(query, variables)
-end
-
 -- Get repository info
 ---@return PRReview.RepoInfo?, string?
 function M.get_repo_info()
@@ -205,7 +90,7 @@ function M.get_repo_info()
     return cache.repo_info, nil
   end
 
-  local result, err = get_comments_api().get_repo_info()
+  local result, err = gh.get_repo_info()
   if err then
     return nil, "Not in a GitHub repository or gh not authenticated"
   end
@@ -222,12 +107,12 @@ end
 -- Detect the current PR from the branch
 ---@return PRReview.PR?, string?
 function M.get_current_pr()
-  local result, err = gh_json({
+  local result, err = gh.json({
     "pr",
     "view",
     "--json",
     "number,title,state,author,headRefName,baseRefName,headRefOid,url",
-  }, { notify = false })
+  })
 
   if err then
     return nil, "No PR found for current branch"
@@ -257,7 +142,7 @@ end
 ---@param repo? string
 ---@return PRReview.PR?, string?
 function M.get_pr(pr_number, repo)
-  local result, err = gh_json({
+  local result, err = gh.json({
     "pr",
     "view",
     tostring(pr_number),
@@ -291,7 +176,7 @@ end
 ---@return string?, string?
 function M.fetch_diff(pr_number, repo)
   local args = { "pr", "diff", tostring(pr_number) }
-  return gh_text(args, { repo = repo })
+  return gh.text(args, { repo = repo })
 end
 
 -- Parse diff to extract file list
@@ -385,7 +270,7 @@ end
 ---@return boolean, string?
 function M.post_comment(pr, body)
   local endpoint = string.format("/repos/%s/issues/%d/comments", pr.repo, pr.number)
-  local result, err = gh_api(endpoint, { body = body })
+  local result, err = gh.api(endpoint, { body = body })
 
   if err then
     return false, err
@@ -399,7 +284,7 @@ end
 ---@return string?, string? -- review_id, error
 function M.start_review(pr)
   local endpoint = string.format("/repos/%s/pulls/%d/reviews", pr.repo, pr.number)
-  local result, err = gh_api(endpoint, { commit_id = pr.head_sha })
+  local result, err = gh.api(endpoint, { commit_id = pr.head_sha })
 
   if err then
     return nil, err
@@ -440,7 +325,7 @@ function M.add_review_comment(pr, review_id, opts)
     startSide = opts.start_line and opts.side:upper() or nil,
   }
 
-  local _, err = gh_graphql(query, variables)
+  local _, err = gh.graphql(query, variables)
   if err then
     return false, err
   end
@@ -468,7 +353,7 @@ function M.post_line_comment(pr, opts)
     input.start_side = opts.side:upper()
   end
 
-  local _, err = gh_api(endpoint, input)
+  local _, err = gh.api(endpoint, input)
   if err then
     return false, err
   end
@@ -496,7 +381,7 @@ function M.reply_to_comment(pr, comment_id, body, thread_id)
       }
     ]]
 
-    local _, err = gh_graphql(query, {
+    local _, err = gh.graphql(query, {
       threadId = thread_id,
       body = body,
     })
@@ -510,7 +395,7 @@ function M.reply_to_comment(pr, comment_id, body, thread_id)
   -- Fallback: No thread ID - use REST API direct reply endpoint
   local endpoint = string.format("/repos/%s/pulls/%d/comments/%d/replies", pr.repo, pr.number, comment_id)
 
-  local _, err = gh_api(endpoint, { body = body })
+  local _, err = gh.api(endpoint, { body = body })
   if err then
     return false, err
   end
@@ -532,7 +417,7 @@ function M.submit_review(pr, review_id, event, body)
     input.body = body
   end
 
-  local _, err = gh_api(endpoint, input)
+  local _, err = gh.api(endpoint, input)
   if err then
     return false, err
   end

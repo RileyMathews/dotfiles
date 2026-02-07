@@ -1,5 +1,7 @@
 local M = {}
 
+local gh = require("custom.pr_shared.gh")
+
 local function is_nil(val)
   return val == nil or val == vim.NIL
 end
@@ -15,87 +17,115 @@ local function safe_get(tbl, key)
   return val
 end
 
-local function exec(cmd)
-  local handle = io.popen(cmd .. " 2>&1")
-  if not handle then
-    return nil, "Failed to execute command"
-  end
+local QUERY_REVIEW_THREADS = [[
+  query($owner: String!, $repo: String!, $prNumber: Int!) {
+    repository(owner: $owner, name: $repo) {
+      pullRequest(number: $prNumber) {
+        reviewThreads(first: 100) {
+          nodes {
+            id
+            isResolved
+            isOutdated
+            path
+            line
+            originalLine
+            startLine
+            originalStartLine
+            diffSide
+            comments(first: 50) {
+              nodes {
+                id
+                databaseId
+                body
+                author { login }
+                createdAt
+                replyTo { id databaseId }
+                reactionGroups {
+                  content
+                  users { totalCount }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+]]
 
-  local output = handle:read("*a")
-  local success = handle:close()
-  if not success then
-    return nil, output
-  end
-
-  return output, nil
-end
+local QUERY_REVIEW_DATA = [[
+  query($owner: String!, $repo: String!, $prNumber: Int!) {
+    repository(owner: $owner, name: $repo) {
+      pullRequest(number: $prNumber) {
+        reviewThreads(first: 100) {
+          nodes {
+            id
+            isResolved
+            isOutdated
+            path
+            line
+            originalLine
+            startLine
+            originalStartLine
+            diffSide
+            comments(first: 50) {
+              nodes {
+                id
+                databaseId
+                body
+                author { login }
+                createdAt
+                replyTo { id databaseId }
+                reactionGroups {
+                  content
+                  users { totalCount }
+                }
+              }
+            }
+          }
+        }
+        reviews(first: 100) {
+          nodes {
+            id
+            databaseId
+            author { login }
+            state
+            body
+            submittedAt
+            createdAt
+            viewerDidAuthor
+            comments(first: 50) {
+              nodes {
+                id
+                databaseId
+                body
+                path
+                diffHunk
+                line
+                startLine
+                originalLine
+                originalStartLine
+                author { login }
+                createdAt
+                replyTo { id databaseId }
+                reactionGroups {
+                  content
+                  users { totalCount }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+]]
 
 ---@param query string
 ---@param variables table
 ---@return table?, string?
-function M.execute_graphql(query, variables)
-  local input = {
-    query = query,
-    variables = variables or {},
-  }
-
-  local output = vim.fn.system("gh api graphql --input -", vim.json.encode(input))
-  if vim.v.shell_error ~= 0 then
-    return nil, output
-  end
-
-  local ok, result = pcall(vim.json.decode, output)
-  if not ok then
-    return nil, "Failed to parse GraphQL response"
-  end
-
-  if result.errors then
-    local msg = result.errors[1] and result.errors[1].message or "Unknown GraphQL error"
-    return nil, msg
-  end
-
-  return result.data, nil
-end
-
----@return {owner:string, name:string, full_name:string}?, string?
-function M.get_repo_info()
-  local output, err = exec("gh repo view --json owner,name,nameWithOwner")
-  if err or not output then
-    return nil, "Not in a GitHub repository or gh not authenticated"
-  end
-
-  local ok, decoded = pcall(vim.json.decode, output)
-  if not ok or not decoded then
-    return nil, "Invalid repository info"
-  end
-
-  local owner = decoded.owner and decoded.owner.login or nil
-  local name = decoded.name
-  local full_name = decoded.nameWithOwner
-  if not owner or not name then
-    return nil, "Invalid repository info"
-  end
-
-  return {
-    owner = owner,
-    name = name,
-    full_name = full_name or (owner .. "/" .. name),
-  }, nil
-end
-
----@return number?, string?
-function M.get_current_pr_number()
-  local output, err = exec("gh pr view --json number")
-  if err or not output then
-    return nil, "No PR found for current branch"
-  end
-
-  local ok, decoded = pcall(vim.json.decode, output)
-  if not ok or not decoded or not decoded.number then
-    return nil, "Failed to parse PR data"
-  end
-
-  return tonumber(decoded.number), nil
+local function execute_graphql(query, variables)
+  return gh.graphql(query, variables)
 end
 
 local function map_comment(comment)
@@ -154,43 +184,7 @@ end
 ---@param pr_number number
 ---@return table[], string?
 function M.fetch_review_threads(owner, repo, pr_number)
-  local query = [[
-    query($owner: String!, $repo: String!, $prNumber: Int!) {
-      repository(owner: $owner, name: $repo) {
-        pullRequest(number: $prNumber) {
-          reviewThreads(first: 100) {
-            nodes {
-              id
-              isResolved
-              isOutdated
-              path
-              line
-              originalLine
-              startLine
-              originalStartLine
-              diffSide
-              comments(first: 50) {
-                nodes {
-                  id
-                  databaseId
-                  body
-                  author { login }
-                  createdAt
-                  replyTo { id databaseId }
-                  reactionGroups {
-                    content
-                    users { totalCount }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  ]]
-
-  local data, err = M.execute_graphql(query, {
+  local data, err = execute_graphql(QUERY_REVIEW_THREADS, {
     owner = owner,
     repo = repo,
     prNumber = pr_number,
@@ -217,75 +211,7 @@ end
 ---@param pr_number number
 ---@return table[], table[], table?, string?
 function M.fetch_review_data(owner, repo, pr_number)
-  local query = [[
-    query($owner: String!, $repo: String!, $prNumber: Int!) {
-      repository(owner: $owner, name: $repo) {
-        pullRequest(number: $prNumber) {
-          reviewThreads(first: 100) {
-            nodes {
-              id
-              isResolved
-              isOutdated
-              path
-              line
-              originalLine
-              startLine
-              originalStartLine
-              diffSide
-              comments(first: 50) {
-                nodes {
-                  id
-                  databaseId
-                  body
-                  author { login }
-                  createdAt
-                  replyTo { id databaseId }
-                  reactionGroups {
-                    content
-                    users { totalCount }
-                  }
-                }
-              }
-            }
-          }
-          reviews(first: 100) {
-            nodes {
-              id
-              databaseId
-              author { login }
-              state
-              body
-              submittedAt
-              createdAt
-              viewerDidAuthor
-              comments(first: 50) {
-                nodes {
-                  id
-                  databaseId
-                  body
-                  path
-                  diffHunk
-                  line
-                  startLine
-                  originalLine
-                  originalStartLine
-                  author { login }
-                  createdAt
-                  replyTo { id databaseId }
-                  reactionGroups {
-                    content
-                    users { totalCount }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  ]]
-
-  local data, err = M.execute_graphql(query, {
+  local data, err = execute_graphql(QUERY_REVIEW_DATA, {
     owner = owner,
     repo = repo,
     prNumber = pr_number,
@@ -353,7 +279,7 @@ function M.add_thread_reply(thread_id, body)
     }
   ]]
 
-  local _, err = M.execute_graphql(query, {
+  local _, err = execute_graphql(query, {
     threadId = thread_id,
     body = body,
   })
