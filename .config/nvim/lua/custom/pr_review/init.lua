@@ -15,6 +15,7 @@ local M = {}
 ---@field diff_wins {left: number?, right: number?}
 ---@field original_win number?
 ---@field original_buf number?
+---@field reviewed_files table<string, boolean>
 
 ---@type PRReview.State
 local state = {
@@ -29,6 +30,7 @@ local state = {
   diff_wins = { left = nil, right = nil },
   original_win = nil,
   original_buf = nil,
+  reviewed_files = {},
 }
 
 -- Lazy load submodules
@@ -100,6 +102,7 @@ function M.reset_state()
     diff_wins = { left = nil, right = nil },
     original_win = nil,
     original_buf = nil,
+    reviewed_files = {},
   }
 end
 
@@ -243,6 +246,72 @@ function M.prev_file()
   M.open_file(prev_idx)
 end
 
+-- Check if a file is marked as reviewed
+---@param path string
+---@return boolean
+function M.is_file_reviewed(path)
+  return state.reviewed_files[path] == true
+end
+
+-- Mark the current file as reviewed and go to next unreviewed file
+function M.mark_reviewed()
+  if state.current_file_index < 1 or state.current_file_index > #state.files then
+    Snacks.notify.warn("No file open", { title = "PR Review" })
+    return
+  end
+
+  local current_file = state.files[state.current_file_index]
+  state.reviewed_files[current_file.path] = true
+
+  Snacks.notify.info("Marked as reviewed: " .. current_file.path, { title = "PR Review" })
+
+  -- Find the next unreviewed file
+  local next_idx = nil
+  for i = 1, #state.files do
+    -- Start from the file after current, wrapping around
+    local idx = ((state.current_file_index - 1 + i) % #state.files) + 1
+    local file = state.files[idx]
+    if not state.reviewed_files[file.path] then
+      next_idx = idx
+      break
+    end
+  end
+
+  if next_idx then
+    M.open_file(next_idx)
+  else
+    Snacks.notify.info("All files have been reviewed!", { title = "PR Review" })
+  end
+end
+
+-- Unmark the current file as reviewed
+function M.unmark_reviewed()
+  if state.current_file_index < 1 or state.current_file_index > #state.files then
+    Snacks.notify.warn("No file open", { title = "PR Review" })
+    return
+  end
+
+  local current_file = state.files[state.current_file_index]
+  state.reviewed_files[current_file.path] = nil
+
+  Snacks.notify.info("Unmarked: " .. current_file.path, { title = "PR Review" })
+end
+
+-- Toggle reviewed status of current file
+function M.toggle_reviewed()
+  if state.current_file_index < 1 or state.current_file_index > #state.files then
+    Snacks.notify.warn("No file open", { title = "PR Review" })
+    return
+  end
+
+  local current_file = state.files[state.current_file_index]
+  if state.reviewed_files[current_file.path] then
+    M.unmark_reviewed()
+  else
+    M.mark_reviewed()
+  end
+end
+
 -- Show file picker
 function M.show_picker()
   get_picker().open()
@@ -361,6 +430,10 @@ function M.setup_keymaps(bufnr)
 
   -- Show status
   vim.keymap.set("n", "<leader>ri", M.show_status, vim.tbl_extend("force", opts, { desc = "Show review status" }))
+
+  -- Mark files as reviewed
+  vim.keymap.set("n", "<leader>rd", M.mark_reviewed, vim.tbl_extend("force", opts, { desc = "Mark file as reviewed (done)" }))
+  vim.keymap.set("n", "<leader>rD", M.unmark_reviewed, vim.tbl_extend("force", opts, { desc = "Unmark file as reviewed" }))
 end
 
 return M
