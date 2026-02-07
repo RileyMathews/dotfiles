@@ -151,7 +151,7 @@ end
 
 -- Open PR review
 ---@param opts? {pr?: number, repo?: string}
-function M.open(opts)
+local function open_loaded_pr(opts)
   opts = opts or {}
 
   -- Save original window/buffer
@@ -192,6 +192,25 @@ function M.open(opts)
 
   -- Open the file picker
   get_picker().open()
+end
+
+-- Open PR review by selecting from open PRs in repo
+---@param opts? {repo?: string}
+function M.open(opts)
+  opts = opts or {}
+
+  if opts.pr then
+    open_loaded_pr(opts)
+    return
+  end
+
+  get_picker().open_prs({ repo = opts.repo })
+end
+
+-- Open PR review for the current branch PR (legacy behavior)
+---@param opts? {repo?: string}
+function M.open_current(opts)
+  open_loaded_pr(opts or {})
 end
 
 -- Refresh PR data (re-fetch comments)

@@ -11,6 +11,27 @@ local function get_pr_review()
   return pr_review
 end
 
+-- Open picker with open PRs in the current repo
+---@param opts? {repo?: string}
+function M.open_prs(opts)
+  opts = opts or {}
+
+  Snacks.picker.gh_pr({
+    title = "  Select PR to Review",
+    state = "open",
+    repo = opts.repo,
+    confirm = function(picker, item)
+      picker:close()
+      if not item then
+        return
+      end
+      vim.schedule(function()
+        get_pr_review().open({ pr = item.number, repo = item.repo })
+      end)
+    end,
+  })
+end
+
 -- Format file item for display
 ---@param item table
 ---@return snacks.picker.Highlight[]
