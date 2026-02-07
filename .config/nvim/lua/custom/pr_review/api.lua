@@ -3,6 +3,15 @@
 
 local M = {}
 
+local comments_api_mod = nil
+
+local function get_comments_api()
+  if not comments_api_mod then
+    comments_api_mod = require("custom.pr_shared.comments_api")
+  end
+  return comments_api_mod
+end
+
 -- Cache for PR data
 local cache = {
   current_pr = nil,
@@ -42,8 +51,8 @@ local cache = {
 
 ---@class PRReview.ReviewThread
 ---@field id string
----@field is_resolved boolean
----@field is_outdated boolean
+---@field resolved boolean
+---@field outdated boolean
 ---@field path string
 ---@field line number?
 ---@field start_line number?
@@ -72,28 +81,6 @@ local cache = {
 ---@field additions number
 ---@field deletions number
 ---@field status string
-
--- Check if value is nil or vim.NIL (JSON null)
----@param val any
----@return boolean
-local function is_nil(val)
-  return val == nil or val == vim.NIL
-end
-
--- Safe table access that handles vim.NIL
----@param tbl any
----@param key string
----@return any
-local function safe_get(tbl, key)
-  if is_nil(tbl) then
-    return nil
-  end
-  local val = tbl[key]
-  if val == vim.NIL then
-    return nil
-  end
-  return val
-end
 
 -- Execute a shell command and return output
 ---@param cmd string
@@ -208,22 +195,7 @@ end
 ---@param variables table
 ---@return table?, string?
 local function gh_graphql(query, variables)
-  local input = {
-    query = query,
-    variables = variables,
-  }
-
-  local result, err = gh_api("graphql", input)
-  if err then
-    return nil, err
-  end
-
-  if result.errors then
-    local msg = result.errors[1] and result.errors[1].message or "Unknown GraphQL error"
-    return nil, msg
-  end
-
-  return result.data, nil
+  return get_comments_api().execute_graphql(query, variables)
 end
 
 -- Get repository info
@@ -233,15 +205,15 @@ function M.get_repo_info()
     return cache.repo_info, nil
   end
 
-  local result, err = gh_json({ "repo", "view", "--json", "owner,name,nameWithOwner" }, { notify = false })
+  local result, err = get_comments_api().get_repo_info()
   if err then
     return nil, "Not in a GitHub repository or gh not authenticated"
   end
 
   cache.repo_info = {
-    owner = result.owner.login,
+    owner = result.owner,
     name = result.name,
-    full_name = result.nameWithOwner,
+    full_name = result.full_name,
   }
 
   return cache.repo_info, nil
@@ -386,154 +358,10 @@ function M.fetch_comments(pr)
     return {}, {}, nil
   end
 
-  local query = [[
-    query($owner: String!, $name: String!, $number: Int!) {
-      repository(owner: $owner, name: $name) {
-        pullRequest(number: $number) {
-          reviewThreads(first: 100) {
-            nodes {
-              id
-              isResolved
-              isOutdated
-              path
-              line
-              startLine
-              diffSide
-              comments(first: 50) {
-                nodes {
-                  id
-                  databaseId
-                  body
-                  author { login }
-                  createdAt
-                  replyTo { id databaseId }
-                  reactionGroups {
-                    content
-                    users { totalCount }
-                  }
-                }
-              }
-            }
-          }
-          reviews(first: 100) {
-            nodes {
-              id
-              databaseId
-              author { login }
-              state
-              body
-              submittedAt
-              createdAt
-              viewerDidAuthor
-              comments(first: 50) {
-                nodes {
-                  id
-                  databaseId
-                  body
-                  path
-                  diffHunk
-                  line
-                  startLine
-                  originalLine
-                  originalStartLine
-                  author { login }
-                  createdAt
-                  replyTo { id databaseId }
-                  reactionGroups {
-                    content
-                    users { totalCount }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  ]]
-
-  local data, err = gh_graphql(query, {
-    owner = owner,
-    name = name,
-    number = pr.number,
-  })
-
+  local threads, reviews, pending_review, err = get_comments_api().fetch_review_data(owner, name, pr.number)
   if err then
     Snacks.notify.error("Failed to fetch comments: " .. err, { title = "PR Review" })
     return {}, {}, nil
-  end
-
-  local pr_data = data.repository.pullRequest
-  local threads = {} ---@type PRReview.ReviewThread[]
-  local reviews = {} ---@type PRReview.Review[]
-  local pending_review = nil ---@type PRReview.Review?
-
-  -- Process review threads
-  for _, thread in ipairs(pr_data.reviewThreads.nodes or {}) do
-    local comments = {} ---@type PRReview.Comment[]
-    for _, c in ipairs(thread.comments.nodes or {}) do
-      local author = safe_get(c, "author")
-      local reply_to = safe_get(c, "replyTo")
-      table.insert(comments, {
-        id = c.id,
-        database_id = c.databaseId,
-        author = author and author.login or "unknown",
-        body = safe_get(c, "body") or "",
-        created_at = c.createdAt,
-        reply_to_id = reply_to and reply_to.id or nil,
-        reactions = safe_get(c, "reactionGroups"),
-      })
-    end
-
-    table.insert(threads, {
-      id = thread.id,
-      is_resolved = thread.isResolved or false,
-      is_outdated = thread.isOutdated or false,
-      path = safe_get(thread, "path"),
-      line = safe_get(thread, "line"),
-      start_line = safe_get(thread, "startLine"),
-      diff_side = (safe_get(thread, "diffSide") or "RIGHT"):lower(),
-      comments = comments,
-    })
-  end
-
-  -- Process reviews
-  for _, review in ipairs(pr_data.reviews.nodes or {}) do
-    local comments = {} ---@type PRReview.Comment[]
-    for _, c in ipairs(review.comments.nodes or {}) do
-      local author = safe_get(c, "author")
-      local reply_to = safe_get(c, "replyTo")
-      table.insert(comments, {
-        id = c.id,
-        database_id = c.databaseId,
-        author = author and author.login or "unknown",
-        body = safe_get(c, "body") or "",
-        created_at = c.createdAt,
-        path = safe_get(c, "path"),
-        line = safe_get(c, "line") or safe_get(c, "originalLine"),
-        start_line = safe_get(c, "startLine") or safe_get(c, "originalStartLine"),
-        diff_hunk = safe_get(c, "diffHunk"),
-        reply_to_id = reply_to and reply_to.id or nil,
-        reactions = safe_get(c, "reactionGroups"),
-      })
-    end
-
-    local review_author = safe_get(review, "author")
-    local r = {
-      id = review.id,
-      database_id = review.databaseId,
-      author = review_author and review_author.login or "unknown",
-      state = safe_get(review, "state") or "COMMENTED",
-      body = safe_get(review, "body"),
-      submitted_at = safe_get(review, "submittedAt") or safe_get(review, "createdAt"),
-      comments = comments,
-    }
-
-    if r.state == "PENDING" and review.viewerDidAuthor then
-      pending_review = r
-    else
-      table.insert(reviews, r)
-    end
   end
 
   return threads, reviews, pending_review

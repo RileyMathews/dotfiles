@@ -55,10 +55,10 @@ local function get_file_threads(file_path)
     if thread.path == file_path then
       -- Apply visibility filters
       local show = true
-      if not display_opts.show_resolved and thread.is_resolved then
+      if not display_opts.show_resolved and thread.resolved then
         show = false
       end
-      if not display_opts.show_outdated and thread.is_outdated and not thread.is_resolved then
+      if not display_opts.show_outdated and thread.outdated and not thread.resolved then
         show = false
       end
 

@@ -1,5 +1,9 @@
 local M = {}
 
+local SEPARATOR_WIDTH = 60
+local FLOAT_WIDTH = 70
+local FLOAT_MAX_HEIGHT = 20
+
 local function format_relative_time(timestamp)
   timestamp = timestamp or ""
   local year, month, day, hour, min, sec = timestamp:match("(%d+)-(%d+)-(%d+)T(%d+):(%d+):(%d+)")
@@ -38,15 +42,61 @@ local function truncate(text, max_len)
   return text
 end
 
+---@param comment table
+---@return table
+local function normalize_comment(comment)
+  comment = comment or {}
+  return {
+    author = comment.author or "unknown",
+    body = comment.body or "",
+    created_at = comment.created_at or "",
+  }
+end
+
+---@param thread table
+---@return table
+local function normalize_thread(thread)
+  thread = thread or {}
+
+  local comments = {}
+  for _, comment in ipairs(thread.comments or {}) do
+    table.insert(comments, normalize_comment(comment))
+  end
+
+  return {
+    resolved = thread.resolved == true,
+    outdated = thread.outdated == true,
+    comments = comments,
+  }
+end
+
+---@param thread table
+---@return string
+---@return string
+local function thread_status(thread)
+  if thread.resolved then
+    return "[x] Resolved", "DiagnosticHint"
+  end
+  if thread.outdated then
+    return "[~] Outdated", "Comment"
+  end
+  return "[!] Active", "DiagnosticWarn"
+end
+
 M.truncate = truncate
 M.format_relative_time = format_relative_time
 
 ---@param opts {buf:number,line:number,threads:table[],ns_id:number,extmarks_key?:string,store_threads?:boolean}
 ---@return boolean
 function M.render_line_indicator(opts)
-  local threads = opts.threads
-  if #threads == 0 then
+  local input_threads = opts.threads or {}
+  if #input_threads == 0 then
     return false
+  end
+
+  local threads = {}
+  for _, thread in ipairs(input_threads) do
+    table.insert(threads, normalize_thread(thread))
   end
 
   local total_comments = 0
@@ -55,10 +105,10 @@ function M.render_line_indicator(opts)
 
   for _, thread in ipairs(threads) do
     total_comments = total_comments + #(thread.comments or {})
-    if not thread.is_resolved then
+    if not thread.resolved then
       has_unresolved = true
     end
-    if thread.is_outdated then
+    if thread.outdated then
       has_outdated = true
     end
   end
@@ -103,7 +153,7 @@ function M.render_line_indicator(opts)
 
   if opts.store_threads ~= false and opts.extmarks_key then
     local extmarks = vim.b[opts.buf][opts.extmarks_key] or {}
-    extmarks[opts.line] = threads
+    extmarks[opts.line] = input_threads
     vim.b[opts.buf][opts.extmarks_key] = extmarks
   end
 
@@ -112,10 +162,15 @@ end
 
 ---@param opts {threads:table[], file_path:string, line:number, side:string, notify_title:string, on_reply?:fun(ctx:table)}
 function M.show_floating(opts)
-  local threads = opts.threads or {}
-  if #threads == 0 then
+  local raw_threads = opts.threads or {}
+  if #raw_threads == 0 then
     Snacks.notify.info("No comments on this line", { title = opts.notify_title or "PR" })
     return
+  end
+
+  local threads = {}
+  for _, thread in ipairs(raw_threads) do
+    table.insert(threads, normalize_thread(thread))
   end
 
   local lines = {}
@@ -124,42 +179,34 @@ function M.show_floating(opts)
   for i, thread in ipairs(threads) do
     if i > 1 then
       table.insert(lines, "")
-      table.insert(lines, string.rep("─", 60))
+      table.insert(lines, string.rep("─", SEPARATOR_WIDTH))
       table.insert(lines, "")
     end
 
-    local status = ""
-    if thread.is_resolved then
-      status = "[x] Resolved"
-    elseif thread.is_outdated then
-      status = "[~] Outdated"
-    else
-      status = "[!] Active"
-    end
-
+    local status, status_hl = thread_status(thread)
     local status_line = string.format("Thread: %s", status)
     table.insert(lines, status_line)
     table.insert(highlights, {
       line = #lines - 1,
       col_start = 0,
       col_end = #status_line,
-      hl = thread.is_resolved and "DiagnosticHint" or thread.is_outdated and "Comment" or "DiagnosticWarn",
+      hl = status_hl,
     })
 
     table.insert(lines, "")
 
     for j, comment in ipairs(thread.comments or {}) do
       local icon = j == 1 and ">" or "  >"
-      local header = string.format("%s @%s  %s", icon, comment.author or "unknown", format_relative_time(comment.created_at))
+      local header = string.format("%s @%s  %s", icon, comment.author, format_relative_time(comment.created_at))
       table.insert(lines, header)
       table.insert(highlights, {
         line = #lines - 1,
         col_start = #icon + 1,
-        col_end = #icon + 2 + #(comment.author or "unknown"),
+        col_end = #icon + 2 + #comment.author,
         hl = "Function",
       })
 
-      for _, body_line in ipairs(vim.split(comment.body or "", "\n")) do
+      for _, body_line in ipairs(vim.split(comment.body, "\n")) do
         table.insert(lines, "  " .. body_line)
       end
 
@@ -170,7 +217,7 @@ function M.show_floating(opts)
   end
 
   table.insert(lines, "")
-  table.insert(lines, string.rep("─", 60))
+  table.insert(lines, string.rep("─", SEPARATOR_WIDTH))
   table.insert(lines, "Press 'q' to close | 'r' to reply")
   table.insert(highlights, {
     line = #lines - 1,
@@ -189,8 +236,8 @@ function M.show_floating(opts)
     relative = "cursor",
     row = 1,
     col = 0,
-    width = 70,
-    height = math.min(#lines, 20),
+    width = FLOAT_WIDTH,
+    height = math.min(#lines, FLOAT_MAX_HEIGHT),
     style = "minimal",
     border = "rounded",
     title = " Comment Thread ",
@@ -224,7 +271,7 @@ function M.show_floating(opts)
           file_path = opts.file_path,
           line = opts.line,
           side = opts.side,
-          threads = threads,
+          threads = raw_threads,
         })
       end)
     end

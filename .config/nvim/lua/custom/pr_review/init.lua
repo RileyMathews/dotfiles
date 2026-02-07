@@ -173,7 +173,7 @@ local function open_loaded_pr(opts)
   local thread_count = #state.threads
   local unresolved = 0
   for _, t in ipairs(state.threads) do
-    if not t.is_resolved then
+    if not t.resolved then
       unresolved = unresolved + 1
     end
   end

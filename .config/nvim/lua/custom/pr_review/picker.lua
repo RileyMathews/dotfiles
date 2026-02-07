@@ -103,7 +103,7 @@ local function format_file(item)
   for _, thread in ipairs(state.threads or {}) do
     if thread.path == item.path then
       comment_count = comment_count + 1
-      if not thread.is_resolved then
+      if not thread.resolved then
         unresolved_count = unresolved_count + 1
       end
     end

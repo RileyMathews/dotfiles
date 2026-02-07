@@ -26,6 +26,7 @@ local current_thread_index = nil
 local reset_thread_cursor = nil
 local reply_mod = nil
 local comments_render_mod = nil
+local comments_api_mod = nil
 
 local function get_reply()
     if not reply_mod then
@@ -39,6 +40,29 @@ local function get_comments_render()
         comments_render_mod = require("custom.pr_shared.comments_render")
     end
     return comments_render_mod
+end
+
+local function get_comments_api()
+    if not comments_api_mod then
+        comments_api_mod = require("custom.pr_shared.comments_api")
+    end
+    return comments_api_mod
+end
+
+local function get_repo_root()
+    local handle = io.popen("git rev-parse --show-toplevel 2>&1")
+    if not handle then
+        return nil
+    end
+
+    local repo_root = vim.trim(handle:read("*a") or "")
+    handle:close()
+
+    if repo_root == "" then
+        return nil
+    end
+
+    return repo_root
 end
 
 -- Default configuration
@@ -72,14 +96,14 @@ end
 --[[
 ThreadData = {
     id = "thread-123",
-    file = "relative/path/to/file.lua",
+    path = "relative/path/to/file.lua",
     line = 42,
     resolved = false,
     outdated = false,  -- Thread is outdated (code changed since comment)
     comments = {
         {
             id = "comment-1",
-            user = "username",
+            author = "username",
             body = "comment text here",
             created_at = "2026-02-04T23:16:37Z",
         },
@@ -314,15 +338,10 @@ local function get_buffer_relative_path(bufnr)
         return nil
     end
 
-    -- Get repo root
-    local handle = io.popen("git rev-parse --show-toplevel 2>&1")
-    if not handle then
+    local repo_root = get_repo_root()
+    if not repo_root then
         return nil
     end
-    local repo_root = handle:read("*a")
-    handle:close()
-
-    repo_root = vim.trim(repo_root)
 
     -- Make path relative to repo root
     if abs_path:sub(1, #repo_root) == repo_root then
@@ -331,15 +350,6 @@ local function get_buffer_relative_path(bufnr)
     end
 
     return nil
-end
-
-local function normalize_text(text)
-    text = (text or ""):gsub("\n", " "):gsub("%s+", " ")
-    return vim.trim(text)
-end
-
-local function truncate_text(text, max_len)
-    return get_comments_render().truncate(normalize_text(text), max_len)
 end
 
 local function thread_is_visible(thread)
@@ -377,26 +387,39 @@ local function get_visible_threads_for_file(rel_path)
     return visible
 end
 
-local function normalize_threads_for_shared(threads)
+local function normalize_fake_threads(raw_threads)
     local normalized = {}
-    for _, thread in ipairs(threads) do
-        local comments = {}
-        for _, comment in ipairs(thread.comments or {}) do
-            table.insert(comments, {
-                author = comment.user,
-                body = comment.body,
-                created_at = comment.created_at,
-            })
+
+    for path, lines in pairs(raw_threads or {}) do
+        normalized[path] = {}
+        for line_num, threads in pairs(lines or {}) do
+            normalized[path][line_num] = {}
+            for _, thread in ipairs(threads or {}) do
+                local comments = {}
+                for _, comment in ipairs(thread.comments or {}) do
+                    table.insert(comments, {
+                        id = comment.id,
+                        author = comment.author or comment.user or "unknown",
+                        body = comment.body or "",
+                        created_at = comment.created_at or "",
+                    })
+                end
+
+                table.insert(normalized[path][line_num], {
+                    id = thread.id,
+                    path = thread.path or thread.file or path,
+                    line = thread.line or line_num,
+                    resolved = thread.resolved == true,
+                    outdated = thread.outdated == true,
+                    comments = comments,
+                })
+            end
         end
-        table.insert(normalized, {
-            id = thread.id,
-            is_resolved = thread.resolved,
-            is_outdated = thread.outdated,
-            comments = comments,
-        })
     end
+
     return normalized
 end
+
 
 -- Count threads by status
 local function count_threads()
@@ -463,7 +486,7 @@ local function show_comments_for_buffer(bufnr)
         local ok = get_comments_render().render_line_indicator({
             buf = bufnr,
             line = line_num,
-            threads = normalize_threads_for_shared(threads),
+            threads = threads,
             ns_id = namespace_id,
             store_threads = false,
         })
@@ -483,183 +506,12 @@ local function clear_comments(bufnr)
     vim.b[bufnr].pr_comments_extmarks = nil
 end
 
--- ============================================================================
--- GITHUB API INTEGRATION
--- ============================================================================
-
--- Helper: Execute shell command and return stdout
-local function execute_command(cmd)
-    local handle = io.popen(cmd .. " 2>&1")
-    if not handle then
-        return nil, "Failed to execute command"
-    end
-    local result = handle:read("*a")
-    local success = handle:close()
-    return result, success
-end
-
--- Helper: Execute GraphQL query via gh api
-local function execute_graphql(query, variables)
-    local input = {
-        query = query,
-        variables = variables or {},
-    }
-
-    local output = vim.fn.system("gh api graphql --input -", vim.json.encode(input))
-    if vim.v.shell_error ~= 0 then
-        return nil, output
-    end
-
-    local ok, result = pcall(vim.json.decode, output)
-    if not ok then
-        return nil, "Failed to parse GraphQL response"
-    end
-
-    if result.errors then
-        local msg = result.errors[1] and result.errors[1].message or "Unknown GraphQL error"
-        return nil, msg
-    end
-
-    return result.data, nil
-end
-
--- Helper: Get repository owner and name
-local function get_repo_info()
-    local output, success = execute_command("gh repo view --json owner,name --jq '{owner: .owner.login, name: .name}'")
-    if not success or not output then
-        return nil, nil, "Failed to get repository info. Is this a GitHub repository?"
-    end
-    
-    local ok, decoded = pcall(vim.json.decode, output)
-    if not ok or not decoded or not decoded.owner or not decoded.name then
-        return nil, nil, "Invalid repository info"
-    end
-    
-    return decoded.owner, decoded.name, nil
-end
-
--- Helper: Detect PR number for current branch
-local function detect_pr()
-    -- Get current branch
-    local branch_output, success = execute_command("git rev-parse --abbrev-ref HEAD")
-    if not success or not branch_output then
-        notify_error("Not in a git repository")
-        return nil
-    end
-    
-    local branch = vim.trim(branch_output)
-    
-    -- Check for PR using gh CLI
-    local pr_output, pr_success = execute_command("gh pr view --json number,headRefName")
-    if not pr_success or not pr_output then
-        notify_error("No PR found for branch: " .. branch)
-        return nil
-    end
-    
-    -- Parse JSON
-    local ok, pr_data = pcall(vim.json.decode, pr_output)
-    if not ok or not pr_data or not pr_data.number then
-        notify_error("Failed to parse PR data")
-        return nil
-    end
-    
-    return pr_data.number
-end
-
--- Transform GraphQL response to our ThreadData structure
-local function transform_graphql_to_threads(graphql_threads)
-    local threads_by_file = {}
-    
-    for _, gql_thread in ipairs(graphql_threads) do
-        -- Use line if available, fallback to originalLine for outdated comments
-        local line_num = gql_thread.line or gql_thread.originalLine
-        
-        -- Skip threads without a line number
-        if not line_num then
-            goto continue
+local function rerender_loaded_buffers()
+    for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
+        if vim.api.nvim_buf_is_valid(bufnr) and vim.api.nvim_buf_is_loaded(bufnr) then
+            show_comments_for_buffer(bufnr)
         end
-        
-        -- Build ThreadData structure
-        local thread = {
-            id = gql_thread.id,
-            file = gql_thread.path,
-            line = line_num,
-            resolved = gql_thread.isResolved or false,
-            outdated = gql_thread.isOutdated or false,
-            comments = {}
-        }
-        
-        -- Map comments
-        local gql_comments = gql_thread.comments and gql_thread.comments.nodes or {}
-        for _, gql_comment in ipairs(gql_comments) do
-            table.insert(thread.comments, {
-                id = tostring(gql_comment.databaseId or ""),
-                user = gql_comment.author and gql_comment.author.login or "unknown",
-                body = gql_comment.body or "",
-                created_at = gql_comment.createdAt or "",
-            })
-        end
-        
-        -- Initialize nested structure if needed
-        if not threads_by_file[thread.file] then
-            threads_by_file[thread.file] = {}
-        end
-        if not threads_by_file[thread.file][thread.line] then
-            threads_by_file[thread.file][thread.line] = {}
-        end
-        
-        -- Add thread
-        table.insert(threads_by_file[thread.file][thread.line], thread)
-        
-        ::continue::
     end
-    
-    return threads_by_file
-end
-
--- Fetch PR review threads using GitHub GraphQL API
-local function fetch_pr_comments_graphql(owner, repo, pr_number)
-    -- Build GraphQL query (single line to avoid escaping issues)
-    local query = string.format(
-        '{ repository(owner: "%s", name: "%s") { pullRequest(number: %d) { reviewThreads(first: 100) { nodes { id isResolved isOutdated line originalLine path comments(first: 50) { nodes { databaseId body author { login } createdAt } } } } } } }',
-        owner, repo, pr_number
-    )
-    
-    -- Execute GraphQL query
-    local cmd = string.format("gh api graphql -f query='%s'", query)
-    local output, success = execute_command(cmd)
-    
-    if not success or not output then
-        notify_error("Failed to fetch PR comments. Is 'gh' authenticated? Try: gh auth login")
-        return nil
-    end
-    
-    -- Parse JSON
-    local ok, result = pcall(vim.json.decode, output)
-    if not ok or not result then
-        notify_error("Failed to parse GitHub API response")
-        return nil
-    end
-    
-    -- Check for GraphQL errors
-    if result.errors then
-        local error_msg = result.errors[1] and result.errors[1].message or "Unknown GraphQL error"
-        notify_error("GitHub API error: " .. error_msg)
-        return nil
-    end
-    
-    -- Validate response structure
-    local pr_data = result.data and result.data.repository and result.data.repository.pullRequest
-    if not pr_data then
-        notify_error("Could not access PR data. Check repository and PR access.")
-        return nil
-    end
-    
-    -- Extract threads
-    local graphql_threads = pr_data.reviewThreads and pr_data.reviewThreads.nodes or {}
-    
-    -- Transform to our data structure
-    return transform_graphql_to_threads(graphql_threads)
 end
 
 -- ============================================================================
@@ -670,7 +522,7 @@ end
 local function load_comments()
     if config.use_fake_data then
         notify_info("Loaded fake PR comments", "✓")
-        state.threads = generate_fake_data()
+        state.threads = normalize_fake_threads(generate_fake_data())
         state.pr_number = 12345
         return true
     end
@@ -678,27 +530,26 @@ local function load_comments()
     -- Real GitHub API
     notify_info("Loading PR comments...", "")
     
-    -- Get repo info
-    local owner, repo, err = get_repo_info()
+    local repo_info, err = get_comments_api().get_repo_info()
     if err then
         notify_error(err)
         return false
     end
-    
-    -- Detect PR number
-    local pr_number = detect_pr()
+
+    local pr_number, pr_err = get_comments_api().get_current_pr_number()
     if not pr_number then
+        notify_error(pr_err or "No PR found for current branch")
         return false
     end
-    
-    -- Fetch via GraphQL
-    local threads = fetch_pr_comments_graphql(owner, repo, pr_number)
-    if not threads then
+
+    local threads, fetch_err = get_comments_api().fetch_review_threads(repo_info.owner, repo_info.name, pr_number)
+    if fetch_err then
+        notify_error("Failed to fetch PR comments: " .. fetch_err)
         return false
     end
-    
+
     -- Store in state
-    state.threads = threads
+    state.threads = get_comments_api().group_threads_by_path_line(threads)
     state.pr_number = pr_number
     return true
 end
@@ -828,12 +679,7 @@ local function toggle_resolved()
     state.show_resolved = not state.show_resolved
     reset_thread_cursor()
 
-    -- Refresh all visible buffers
-    for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
-        if vim.api.nvim_buf_is_valid(bufnr) and vim.api.nvim_buf_is_loaded(bufnr) then
-            show_comments_for_buffer(bufnr)
-        end
-    end
+    rerender_loaded_buffers()
 
     local status = state.show_resolved and "shown" or "hidden"
     notify_info("Resolved threads now " .. status, "✓")
@@ -851,12 +697,7 @@ local function toggle_outdated()
     state.show_outdated = not state.show_outdated
     reset_thread_cursor()
 
-    -- Refresh all visible buffers
-    for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
-        if vim.api.nvim_buf_is_valid(bufnr) and vim.api.nvim_buf_is_loaded(bufnr) then
-            show_comments_for_buffer(bufnr)
-        end
-    end
+    rerender_loaded_buffers()
 
     local status = state.show_outdated and "shown" or "hidden"
     notify_info("Outdated threads now " .. status, "✓")
@@ -898,26 +739,7 @@ local function get_threads_at_cursor()
 end
 
 local function post_thread_reply(thread_id, body)
-    local query = [[
-        mutation($threadId: ID!, $body: String!) {
-            addPullRequestReviewThreadReply(input: {
-                pullRequestReviewThreadId: $threadId
-                body: $body
-            }) {
-                comment { id }
-            }
-        }
-    ]]
-
-    local _, err = execute_graphql(query, {
-        threadId = thread_id,
-        body = body,
-    })
-
-    if err then
-        return false, err
-    end
-    return true, nil
+    return get_comments_api().add_thread_reply(thread_id, body)
 end
 
 local function reply_to_thread(thread)
@@ -931,7 +753,7 @@ local function reply_to_thread(thread)
         return
     end
 
-    local title = string.format("Reply on %s:%d", thread.file, thread.line)
+    local title = string.format("Reply on %s:%d", thread.path, thread.line)
     get_reply().reply({
         title = title,
         notify_title = "PR Comments",
@@ -961,9 +783,9 @@ local function reply_to_threads(threads)
     local options = {}
     for i, thread in ipairs(threads) do
         local first_comment = thread.comments and thread.comments[1] or nil
-        local preview = first_comment and truncate_text(first_comment.body, 50) or "thread"
+        local preview = first_comment and get_comments_render().truncate(first_comment.body, 50) or "thread"
         local status = thread.resolved and "resolved" or thread.outdated and "outdated" or "active"
-        options[i] = string.format("%d. (%s) @%s: %s", i, status, first_comment and first_comment.user or "unknown", preview)
+        options[i] = string.format("%d. (%s) @%s: %s", i, status, first_comment and first_comment.author or "unknown", preview)
     end
 
     Snacks.picker.select(options, { title = "Select thread to reply" }, function(_, idx)
@@ -1000,7 +822,7 @@ local function view_thread_at_cursor()
     local file_path = get_buffer_relative_path(bufnr) or ""
 
     get_comments_render().show_floating({
-        threads = normalize_threads_for_shared(threads),
+        threads = threads,
         file_path = file_path,
         line = line,
         side = "right",
@@ -1055,14 +877,11 @@ end
 
 -- Jump to a specific thread location
 local function jump_to_thread(item, direction)
-    -- Get repo root to construct absolute path
-    local handle = io.popen("git rev-parse --show-toplevel 2>&1")
-    if not handle then
+    local repo_root = get_repo_root()
+    if not repo_root then
         notify_error("Failed to get repository root")
         return false
     end
-    local repo_root = vim.trim(handle:read("*a"))
-    handle:close()
 
     local abs_path = repo_root .. "/" .. item.file
 
@@ -1091,7 +910,7 @@ local function jump_to_thread(item, direction)
 
     local status_icon = thread.resolved and "✓" or "❗"
     notify_info(
-        string.format("%s @%s: %s", status_icon, first_comment.user, preview),
+        string.format("%s @%s: %s", status_icon, first_comment.author, preview),
         direction == "next" and "→" or "←"
     )
 
