@@ -6,6 +6,7 @@ local pr_review = nil
 local api = nil
 local diff_mod = nil
 local comments_mod = nil
+local compose_mod = nil
 
 local function get_pr_review()
   if not pr_review then
@@ -35,44 +36,11 @@ local function get_comments()
   return comments_mod
 end
 
--- Open a scratch buffer for composing a comment
----@param opts {title: string, on_submit: fun(body: string), template?: string}
-local function open_comment_editor(opts)
-  local template = opts.template or ""
-
-  -- Use Snacks.scratch for markdown editing
-  local scratch = Snacks.scratch({
-    ft = "markdown",
-    name = opts.title,
-    template = template,
-    win = {
-      width = 0.6,
-      height = 15,
-      border = "rounded",
-      title = " " .. opts.title .. " ",
-      title_pos = "center",
-      footer = " <C-s> Submit | <Esc> Cancel ",
-      footer_pos = "center",
-      keys = {
-        submit = {
-          "<C-s>",
-          function(win)
-            local body = win:text()
-            if body and body:match("%S") then
-              win:close()
-              vim.schedule(function()
-                opts.on_submit(body)
-              end)
-            else
-              Snacks.notify.warn("Comment cannot be empty", { title = "PR Review" })
-            end
-          end,
-          desc = "Submit",
-          mode = { "n", "i" },
-        },
-      },
-    },
-  })
+local function get_compose()
+  if not compose_mod then
+    compose_mod = require("custom.pr_shared.reply")
+  end
+  return compose_mod
 end
 
 -- Smart comment: determines whether to add line comment or reply
@@ -110,18 +78,19 @@ function M.add_general_comment()
     return
   end
 
-  open_comment_editor({
+  get_compose().run({
     title = "Comment on PR #" .. pr.number,
-    on_submit = function(body)
-      Snacks.notify.info("Posting comment...", { title = "PR Review" })
-
-      local success, err = get_api().post_comment(pr, body)
-      if success then
-        Snacks.notify.info("Comment posted", { title = "PR Review" })
-        get_pr_review().refresh()
-      else
-        Snacks.notify.error("Failed to post comment: " .. (err or "unknown error"), { title = "PR Review" })
-      end
+    notify_title = "PR Review",
+    posting_message = "Posting comment...",
+    success_message = "Comment posted",
+    submit = function(body)
+      return get_api().post_comment(pr, body)
+    end,
+    map_error = function(err)
+      return "Failed to post comment: " .. (err or "unknown error")
+    end,
+    on_success = function()
+      get_pr_review().refresh()
     end,
   })
 end
@@ -151,11 +120,14 @@ function M.add_line_comment(visual)
     title = string.format("Comment on %s:%d", line_info.file, line_info.line)
   end
 
-  open_comment_editor({
+  get_compose().run({
     title = title,
-    on_submit = function(body)
-      Snacks.notify.info("Posting line comment...", { title = "PR Review" })
-
+    notify_title = "PR Review",
+    posting_message = "Posting line comment...",
+    success_message = function()
+      return state.pending_review and "Comment added to pending review" or "Comment posted"
+    end,
+    submit = function(body)
       local opts = {
         path = line_info.file,
         line = line_info.line,
@@ -166,23 +138,19 @@ function M.add_line_comment(visual)
 
       -- Check if we have a pending review (use GraphQL ID for GraphQL mutation)
       if state.pending_review then
-        local success, err = get_api().add_review_comment(pr, state.pending_review.id, opts)
-        if success then
-          Snacks.notify.info("Comment added to pending review", { title = "PR Review" })
-          get_pr_review().refresh()
-        else
-          Snacks.notify.error("Failed to add comment: " .. (err or "unknown error"), { title = "PR Review" })
-        end
+        return get_api().add_review_comment(pr, state.pending_review.id, opts)
       else
-        -- Post immediate comment
-        local success, err = get_api().post_line_comment(pr, opts)
-        if success then
-          Snacks.notify.info("Comment posted", { title = "PR Review" })
-          get_pr_review().refresh()
-        else
-          Snacks.notify.error("Failed to post comment: " .. (err or "unknown error"), { title = "PR Review" })
-        end
+        return get_api().post_line_comment(pr, opts)
       end
+    end,
+    map_error = function(err)
+      if state.pending_review then
+        return "Failed to add comment: " .. (err or "unknown error")
+      end
+      return "Failed to post comment: " .. (err or "unknown error")
+    end,
+    on_success = function()
+      get_pr_review().refresh()
     end,
   })
 end
@@ -256,28 +224,22 @@ function M.reply_to_comment(comment_id, thread_id)
     title = "Reply to comment (will be added to pending review)"
   end
 
-  open_comment_editor({
+  get_compose().run({
     title = title,
-    on_submit = function(body)
-      Snacks.notify.info("Posting reply...", { title = "PR Review" })
-
-      -- Use thread_id for GraphQL mutation if available (works with pending reviews)
-      local success, err = get_api().reply_to_comment(pr, comment_id, body, thread_id)
-      if success then
-        if has_pending then
-          Snacks.notify.info("Reply added to pending review", { title = "PR Review" })
-        else
-          Snacks.notify.info("Reply posted", { title = "PR Review" })
-        end
-        get_pr_review().refresh()
-      else
-        -- Check for pending review conflict
-        if err and err:find("pending review") then
-          Snacks.notify.error("Cannot reply: you have a pending review. Submit it first with <leader>rS", { title = "PR Review" })
-        else
-          Snacks.notify.error("Failed to post reply: " .. (err or "unknown error"), { title = "PR Review" })
-        end
+    notify_title = "PR Review",
+    posting_message = "Posting reply...",
+    success_message = has_pending and "Reply added to pending review" or "Reply posted",
+    submit = function(body)
+      return get_api().reply_to_comment(pr, comment_id, body, thread_id)
+    end,
+    map_error = function(err)
+      if err and err:find("pending review") then
+        return "Cannot reply: you have a pending review. Submit it first with <leader>rS"
       end
+      return "Failed to post reply: " .. (err or "unknown error")
+    end,
+    on_success = function()
+      get_pr_review().refresh()
     end,
   })
 end
@@ -364,20 +326,21 @@ function M.submit_review()
       local event = events[idx]
 
       -- Optionally add a review summary
-      open_comment_editor({
+      get_compose().run({
         title = "Review Summary (optional)",
+        notify_title = "PR Review",
         template = "",
-        on_submit = function(body)
-          Snacks.notify.info("Submitting review...", { title = "PR Review" })
-
-          -- Use database_id for REST API
-          local success, err = get_api().submit_review(pr, tostring(state.pending_review.database_id), event, body)
-          if success then
-            Snacks.notify.info("Review submitted: " .. choice, { title = "PR Review" })
-            get_pr_review().refresh()
-          else
-            Snacks.notify.error("Failed to submit review: " .. (err or "unknown error"), { title = "PR Review" })
-          end
+        allow_empty = true,
+        posting_message = "Submitting review...",
+        success_message = "Review submitted: " .. choice,
+        submit = function(body)
+          return get_api().submit_review(pr, tostring(state.pending_review.database_id), event, body)
+        end,
+        map_error = function(err)
+          return "Failed to submit review: " .. (err or "unknown error")
+        end,
+        on_success = function()
+          get_pr_review().refresh()
         end,
       })
     end

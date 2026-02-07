@@ -23,6 +23,23 @@ local state = nil
 local namespace_id = vim.api.nvim_create_namespace("pr_comments")
 local augroup_id = nil
 local current_thread_index = nil
+local reset_thread_cursor = nil
+local reply_mod = nil
+local comments_render_mod = nil
+
+local function get_reply()
+    if not reply_mod then
+        reply_mod = require("custom.pr_shared.reply")
+    end
+    return reply_mod
+end
+
+local function get_comments_render()
+    if not comments_render_mod then
+        comments_render_mod = require("custom.pr_shared.comments_render")
+    end
+    return comments_render_mod
+end
 
 -- Default configuration
 local default_config = {
@@ -316,50 +333,69 @@ local function get_buffer_relative_path(bufnr)
     return nil
 end
 
--- Format a single thread for display
-local function format_thread_display(thread)
-    local first_comment = thread.comments[1]
-    local reply_count = #thread.comments - 1
-
-    local max_length = 80
-    local text
-
-    if reply_count > 0 then
-        text = string.format("@%s: %s (+ %d %s)", first_comment.user, first_comment.body, reply_count, reply_count == 1 and "reply" or "replies")
-    else
-        text = string.format("@%s: %s", first_comment.user, first_comment.body)
-    end
-
-    -- Replace newlines with spaces
-    text = text:gsub("\n", " ")
-
-    -- Truncate if too long
-    if #text > max_length then
-        text = text:sub(1, max_length - 3) .. "..."
-    end
-
-    -- Add status icon (resolved takes precedence over outdated)
-    local icon
-    if thread.resolved then
-        icon = "✓ "
-    elseif thread.outdated then
-        icon = "⚠️ "
-    else
-        icon = "❗"
-    end
-    return icon .. text
+local function normalize_text(text)
+    text = (text or ""):gsub("\n", " "):gsub("%s+", " ")
+    return vim.trim(text)
 end
 
--- Get highlight group for thread
-local function get_thread_highlight(thread)
-    -- Resolved takes precedence over outdated
-    if thread.resolved then
-        return "DiagnosticHint" -- Dimmed for resolved
-    elseif thread.outdated then
-        return "Comment" -- Very dimmed for outdated
-    else
-        return "DiagnosticWarn" -- Yellow/orange for unresolved
+local function truncate_text(text, max_len)
+    return get_comments_render().truncate(normalize_text(text), max_len)
+end
+
+local function thread_is_visible(thread)
+    if not state.show_resolved and thread.resolved then
+        return false
     end
+
+    if not state.show_outdated and thread.outdated and not thread.resolved then
+        return false
+    end
+
+    return true
+end
+
+local function get_visible_threads_for_file(rel_path)
+    local file_threads = state.threads[rel_path]
+    if not file_threads then
+        return {}
+    end
+
+    local visible = {}
+    for line_num, threads in pairs(file_threads) do
+        local visible_threads = {}
+        for _, thread in ipairs(threads) do
+            if thread_is_visible(thread) then
+                table.insert(visible_threads, thread)
+            end
+        end
+
+        if #visible_threads > 0 then
+            visible[line_num] = visible_threads
+        end
+    end
+
+    return visible
+end
+
+local function normalize_threads_for_shared(threads)
+    local normalized = {}
+    for _, thread in ipairs(threads) do
+        local comments = {}
+        for _, comment in ipairs(thread.comments or {}) do
+            table.insert(comments, {
+                author = comment.user,
+                body = comment.body,
+                created_at = comment.created_at,
+            })
+        end
+        table.insert(normalized, {
+            id = thread.id,
+            is_resolved = thread.resolved,
+            is_outdated = thread.outdated,
+            comments = comments,
+        })
+    end
+    return normalized
 end
 
 -- Count threads by status
@@ -403,6 +439,7 @@ local function show_comments_for_buffer(bufnr)
 
     -- Clear existing comments first
     vim.api.nvim_buf_clear_namespace(bufnr, namespace_id, 0, -1)
+    vim.b[bufnr].pr_comments_extmarks = {}
 
     if not state.active then
         return
@@ -414,58 +451,36 @@ local function show_comments_for_buffer(bufnr)
         return
     end
 
-    -- Get threads for this file
-    local file_threads = state.threads[rel_path]
-    if not file_threads then
+    local file_threads = get_visible_threads_for_file(rel_path)
+    if vim.tbl_isempty(file_threads) then
         return
     end
 
-    -- Display threads as virtual text
+    local extmarks = {}
+
+    -- Display visible threads as virtual text
     for line_num, threads in pairs(file_threads) do
-        -- Filter based on show_resolved and show_outdated settings
-        local visible_threads = {}
-        for _, thread in ipairs(threads) do
-            local show_thread = true
-            
-            -- Filter resolved threads
-            if not state.show_resolved and thread.resolved then
-                show_thread = false
-            end
-            
-            -- Filter outdated threads (but keep if resolved, since resolved takes precedence)
-            if not state.show_outdated and thread.outdated and not thread.resolved then
-                show_thread = false
-            end
-            
-            if show_thread then
-                table.insert(visible_threads, thread)
-            end
-        end
+        local ok = get_comments_render().render_line_indicator({
+            buf = bufnr,
+            line = line_num,
+            threads = normalize_threads_for_shared(threads),
+            ns_id = namespace_id,
+            store_threads = false,
+        })
 
-        if #visible_threads > 0 then
-            -- For now, show only the first thread
-            local thread = visible_threads[1]
-            local display_text = format_thread_display(thread)
-            local highlight = get_thread_highlight(thread)
-
-            -- Set extmark (line numbers are 0-indexed in API)
-            local ok = pcall(vim.api.nvim_buf_set_extmark, bufnr, namespace_id, line_num - 1, 0, {
-                virt_text = { { display_text, highlight } },
-                virt_text_pos = "eol",
-                hl_mode = "combine",
-            })
-
-            if not ok then
-                -- Silently skip invalid line numbers (file may have changed)
-            end
+        if ok then
+            extmarks[line_num] = threads
         end
     end
+
+    vim.b[bufnr].pr_comments_extmarks = extmarks
 end
 
 -- Clear comments from buffer
 local function clear_comments(bufnr)
     bufnr = bufnr or vim.api.nvim_get_current_buf()
     vim.api.nvim_buf_clear_namespace(bufnr, namespace_id, 0, -1)
+    vim.b[bufnr].pr_comments_extmarks = nil
 end
 
 -- ============================================================================
@@ -481,6 +496,31 @@ local function execute_command(cmd)
     local result = handle:read("*a")
     local success = handle:close()
     return result, success
+end
+
+-- Helper: Execute GraphQL query via gh api
+local function execute_graphql(query, variables)
+    local input = {
+        query = query,
+        variables = variables or {},
+    }
+
+    local output = vim.fn.system("gh api graphql --input -", vim.json.encode(input))
+    if vim.v.shell_error ~= 0 then
+        return nil, output
+    end
+
+    local ok, result = pcall(vim.json.decode, output)
+    if not ok then
+        return nil, "Failed to parse GraphQL response"
+    end
+
+    if result.errors then
+        local msg = result.errors[1] and result.errors[1].message or "Unknown GraphQL error"
+        return nil, msg
+    end
+
+    return result.data, nil
 end
 
 -- Helper: Get repository owner and name
@@ -786,6 +826,7 @@ local function toggle_resolved()
     end
 
     state.show_resolved = not state.show_resolved
+    reset_thread_cursor()
 
     -- Refresh all visible buffers
     for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
@@ -808,6 +849,7 @@ local function toggle_outdated()
     end
 
     state.show_outdated = not state.show_outdated
+    reset_thread_cursor()
 
     -- Refresh all visible buffers
     for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
@@ -824,171 +866,6 @@ end
 -- FLOATING WINDOW - View Thread Details
 -- ============================================================================
 
--- Get floating window configuration
-local function get_thread_window_config()
-    local width = math.floor(vim.o.columns * 0.6)
-    local height = math.floor(vim.o.lines * 0.6)
-    local row = math.floor((vim.o.lines - height) / 2)
-    local col = math.floor((vim.o.columns - width) / 2)
-
-    return {
-        style = "minimal",
-        relative = "editor",
-        width = width,
-        height = height,
-        row = row,
-        col = col,
-        border = "rounded",
-    }
-end
-
--- Format timestamp for display
-local function format_timestamp(timestamp)
-    -- Input: "2026-02-04T23:16:37Z"
-    -- Output: "2026-02-04 23:16"
-    local date, time = timestamp:match("(%d%d%d%d%-%d%d%-%d%d)T(%d%d:%d%d)")
-    if date and time then
-        return date .. " " .. time
-    end
-    return timestamp
-end
-
--- Format a single thread for floating window display
-local function format_thread_for_window(thread)
-    local lines = {}
-    local highlights = {}
-
-    -- Header separator
-    table.insert(lines, "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
-    table.insert(highlights, { line = #lines - 1, hl = "Comment" })
-
-    -- Blank line
-    table.insert(lines, "")
-
-    -- Status (resolved takes precedence)
-    local status_text, status_hl
-    if thread.resolved then
-        status_text = "✓ Resolved"
-        status_hl = "DiagnosticOk"
-    elseif thread.outdated then
-        status_text = "⚠️  Outdated (code changed)"
-        status_hl = "Comment"
-    else
-        status_text = "❗ Unresolved"
-        status_hl = "DiagnosticWarn"
-    end
-    
-    local status_line = "Status: " .. status_text
-    table.insert(lines, status_line)
-    table.insert(highlights, { 
-        line = #lines - 1, 
-        col_start = 0, 
-        col_end = 7, 
-        hl = "Title" 
-    })
-    table.insert(highlights, { 
-        line = #lines - 1, 
-        col_start = 8, 
-        col_end = #status_line, 
-        hl = status_hl
-    })
-
-    -- File path
-    local file_line = "File: " .. thread.file
-    table.insert(lines, file_line)
-    table.insert(highlights, { 
-        line = #lines - 1, 
-        col_start = 0, 
-        col_end = 5, 
-        hl = "Title" 
-    })
-    table.insert(highlights, { 
-        line = #lines - 1, 
-        col_start = 6, 
-        col_end = #file_line, 
-        hl = "Directory" 
-    })
-
-    -- Line number
-    local line_line = "Line: " .. thread.line
-    table.insert(lines, line_line)
-    table.insert(highlights, { 
-        line = #lines - 1, 
-        col_start = 0, 
-        col_end = 5, 
-        hl = "Title" 
-    })
-    table.insert(highlights, { 
-        line = #lines - 1, 
-        col_start = 6, 
-        col_end = #line_line, 
-        hl = "Number" 
-    })
-
-    -- Blank line
-    table.insert(lines, "")
-
-    -- Comments
-    for i, comment in ipairs(thread.comments) do
-        -- Comment separator (lighter for replies)
-        if i > 1 then
-            table.insert(lines, "────────────────────────────────────────────────────────────────")
-            table.insert(highlights, { line = #lines - 1, hl = "Comment" })
-            table.insert(lines, "")
-        end
-
-        -- Comment header: icon + @user + timestamp
-        local icon = i == 1 and "💬" or "  ↳"
-        local header = icon .. " @" .. comment.user .. " • " .. format_timestamp(comment.created_at)
-        table.insert(lines, header)
-        
-        -- Highlight username
-        local user_start = #icon + 2
-        local user_end = user_start + #comment.user
-        table.insert(highlights, { 
-            line = #lines - 1, 
-            col_start = user_start, 
-            col_end = user_end, 
-            hl = "Function" 
-        })
-        
-        -- Highlight timestamp
-        local time_start = user_end + 3
-        table.insert(highlights, { 
-            line = #lines - 1, 
-            col_start = time_start, 
-            col_end = #header, 
-            hl = "Comment" 
-        })
-
-        -- Blank line before body
-        table.insert(lines, "")
-
-        -- Comment body (split by newlines)
-        local body_lines = vim.split(comment.body, "\n", { plain = true })
-        for _, body_line in ipairs(body_lines) do
-            table.insert(lines, body_line)
-        end
-
-        -- Blank line after body
-        table.insert(lines, "")
-    end
-
-    -- Footer separator
-    table.insert(lines, "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
-    table.insert(highlights, { line = #lines - 1, hl = "Comment" })
-
-    -- Blank line
-    table.insert(lines, "")
-
-    -- Instructions
-    local instructions = "Press 'q' or ESC to close"
-    table.insert(lines, instructions)
-    table.insert(highlights, { line = #lines - 1, hl = "Comment" })
-
-    return lines, highlights
-end
-
 -- Get thread(s) at cursor position
 local function get_threads_at_cursor()
     if not state.active then
@@ -1004,19 +881,108 @@ local function get_threads_at_cursor()
         return nil, "Not in a tracked file"
     end
 
-    -- Get threads for this file
-    local file_threads = state.threads[rel_path]
-    if not file_threads then
-        return nil, "No comment threads in this file"
+    -- Prefer rendered metadata (respects visibility filters)
+    local rendered_threads = vim.b[bufnr].pr_comments_extmarks
+    if rendered_threads and rendered_threads[cursor_line] and #rendered_threads[cursor_line] > 0 then
+        return rendered_threads[cursor_line], nil
     end
 
-    -- Get threads at cursor line
+    -- Fallback: derive from state for this file
+    local file_threads = get_visible_threads_for_file(rel_path)
     local threads_at_line = file_threads[cursor_line]
     if not threads_at_line or #threads_at_line == 0 then
-        return nil, "No comment thread on line " .. cursor_line
+        return nil, "No visible comment thread on line " .. cursor_line
     end
 
     return threads_at_line, nil
+end
+
+local function post_thread_reply(thread_id, body)
+    local query = [[
+        mutation($threadId: ID!, $body: String!) {
+            addPullRequestReviewThreadReply(input: {
+                pullRequestReviewThreadId: $threadId
+                body: $body
+            }) {
+                comment { id }
+            }
+        }
+    ]]
+
+    local _, err = execute_graphql(query, {
+        threadId = thread_id,
+        body = body,
+    })
+
+    if err then
+        return false, err
+    end
+    return true, nil
+end
+
+local function reply_to_thread(thread)
+    if config.use_fake_data then
+        notify_info("Reply disabled when use_fake_data=true")
+        return
+    end
+
+    if not thread or not thread.id then
+        notify_error("Could not find thread id to reply")
+        return
+    end
+
+    local title = string.format("Reply on %s:%d", thread.file, thread.line)
+    get_reply().reply({
+        title = title,
+        notify_title = "PR Comments",
+        posting_message = "Posting reply...",
+        success_message = "Reply posted",
+        submit = function(body)
+            return post_thread_reply(thread.id, body)
+        end,
+        map_error = function(err)
+            if err and err:find("pending review") then
+                return "Cannot reply: you have a pending review. Submit it from PR Review first"
+            end
+            return "Failed to post reply: " .. (err or "unknown error")
+        end,
+        on_success = function()
+            refresh_pr_comments()
+        end,
+    })
+end
+
+local function reply_to_threads(threads)
+    if #threads == 1 then
+        reply_to_thread(threads[1])
+        return
+    end
+
+    local options = {}
+    for i, thread in ipairs(threads) do
+        local first_comment = thread.comments and thread.comments[1] or nil
+        local preview = first_comment and truncate_text(first_comment.body, 50) or "thread"
+        local status = thread.resolved and "resolved" or thread.outdated and "outdated" or "active"
+        options[i] = string.format("%d. (%s) @%s: %s", i, status, first_comment and first_comment.user or "unknown", preview)
+    end
+
+    Snacks.picker.select(options, { title = "Select thread to reply" }, function(_, idx)
+        if idx and threads[idx] then
+            reply_to_thread(threads[idx])
+        end
+    end)
+end
+
+local function reply_thread_at_cursor()
+    ensure_setup()
+
+    local threads, err = get_threads_at_cursor()
+    if err then
+        notify_info(err)
+        return
+    end
+
+    reply_to_threads(threads)
 end
 
 -- Command: View thread at cursor in floating window
@@ -1029,60 +995,20 @@ local function view_thread_at_cursor()
         return
     end
 
-    -- For now, show only the first thread
-    local thread = threads[1]
+    local bufnr = vim.api.nvim_get_current_buf()
+    local line = vim.api.nvim_win_get_cursor(0)[1]
+    local file_path = get_buffer_relative_path(bufnr) or ""
 
-    -- Format thread content
-    local lines, highlights = format_thread_for_window(thread)
-
-    -- Create scratch buffer
-    local buf = vim.api.nvim_create_buf(false, true)
-    vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
-
-    -- Set buffer options
-    vim.api.nvim_buf_set_option(buf, "modifiable", false)
-    vim.api.nvim_buf_set_option(buf, "bufhidden", "wipe")
-    vim.api.nvim_buf_set_option(buf, "filetype", "pr-comment-thread")
-
-    -- Open floating window
-    local win_config = get_thread_window_config()
-    local win = vim.api.nvim_open_win(buf, true, win_config)
-
-    -- Set window options
-    vim.api.nvim_win_set_option(win, "wrap", true)
-    vim.api.nvim_win_set_option(win, "linebreak", true)
-
-    -- Apply highlights
-    local ns = vim.api.nvim_create_namespace("pr_comments_float")
-    for _, hl in ipairs(highlights) do
-        if hl.col_start and hl.col_end then
-            -- Extmark with highlight
-            vim.api.nvim_buf_add_highlight(buf, ns, hl.hl, hl.line, hl.col_start, hl.col_end)
-        else
-            -- Full line highlight
-            vim.api.nvim_buf_add_highlight(buf, ns, hl.hl, hl.line, 0, -1)
-        end
-    end
-
-    -- Set title
-    local title = " Comment Thread - Line " .. thread.line .. " "
-    if #threads > 1 then
-        title = " Comment Threads - Line " .. thread.line .. " (showing 1 of " .. #threads .. ") "
-    end
-    vim.api.nvim_win_set_config(win, vim.tbl_extend("force", win_config, {
-        title = title,
-        title_pos = "center",
-    }))
-
-    -- Keymaps to close window
-    local close_win = function()
-        if vim.api.nvim_win_is_valid(win) then
-            vim.api.nvim_win_close(win, true)
-        end
-    end
-
-    vim.keymap.set("n", "q", close_win, { buffer = buf, nowait = true })
-    vim.keymap.set("n", "<Esc>", close_win, { buffer = buf, nowait = true })
+    get_comments_render().show_floating({
+        threads = normalize_threads_for_shared(threads),
+        file_path = file_path,
+        line = line,
+        side = "right",
+        notify_title = "PR Comments",
+        on_reply = function()
+            reply_to_threads(threads)
+        end,
+    })
 end
 
 -- ============================================================================
@@ -1097,8 +1023,9 @@ local function get_all_threads_sorted()
 
     local all_threads = {}
     
-    -- Collect all threads with their location info
-    for filepath, lines in pairs(state.threads) do
+    -- Collect all visible threads with their location info
+    for filepath, _ in pairs(state.threads) do
+        local lines = get_visible_threads_for_file(filepath)
         for line_num, threads in pairs(lines) do
             for _, thread in ipairs(threads) do
                 table.insert(all_threads, {
@@ -1122,7 +1049,7 @@ local function get_all_threads_sorted()
 end
 
 -- Initialize/reset the thread cursor
-local function reset_thread_cursor()
+reset_thread_cursor = function()
     current_thread_index = nil
 end
 
@@ -1262,6 +1189,7 @@ M.setup = function(user_config)
     vim.api.nvim_create_user_command("PRCommentsToggleResolved", toggle_resolved, { nargs = 0 })
     vim.api.nvim_create_user_command("PRCommentsToggleOutdated", toggle_outdated, { nargs = 0 })
     vim.api.nvim_create_user_command("PRCommentsView", view_thread_at_cursor, { nargs = 0 })
+    vim.api.nvim_create_user_command("PRCommentsReply", reply_thread_at_cursor, { nargs = 0 })
     vim.api.nvim_create_user_command("PRCommentsNext", jump_to_next_thread, { nargs = 0 })
     vim.api.nvim_create_user_command("PRCommentsPrev", jump_to_prev_thread, { nargs = 0 })
     
@@ -1274,6 +1202,7 @@ M.setup = function(user_config)
         toggle_resolved = toggle_resolved,
         toggle_outdated = toggle_outdated,
         view = view_thread_at_cursor,
+        reply = reply_thread_at_cursor,
         next = jump_to_next_thread,
         prev = jump_to_prev_thread,
     }
