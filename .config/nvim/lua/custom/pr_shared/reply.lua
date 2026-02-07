@@ -14,38 +14,50 @@ local M = {}
 
 ---@param opts PRSharedReply.Opts
 function M.open_editor(opts)
-  Snacks.scratch({
+  local submitted = false
+
+  local function submit(win)
+    if submitted then
+      return
+    end
+
+    local body = win:text() or ""
+    if not opts.allow_empty and not body:match("%S") then
+      Snacks.notify.warn(opts.empty_message or "Comment cannot be empty", { title = opts.notify_title or "PR" })
+      return
+    end
+
+    submitted = true
+    win:close()
+    vim.schedule(function()
+      opts.on_submit(body)
+    end)
+  end
+
+  local scratch = Snacks.scratch({
     ft = "markdown",
     name = opts.title,
     template = opts.template or "",
+    autowrite = false,
     win = {
       width = 0.6,
       height = 15,
       border = "rounded",
       title = " " .. opts.title .. " ",
       title_pos = "center",
-      footer = " <C-s> Submit | <Esc> Cancel ",
+      footer = " :w Submit | <Esc> Cancel ",
       footer_pos = "center",
-      keys = {
-        submit = {
-          "<C-s>",
-          function(win)
-            local body = win:text() or ""
-            if opts.allow_empty or body:match("%S") then
-              win:close()
-              vim.schedule(function()
-                opts.on_submit(body)
-              end)
-            else
-              Snacks.notify.warn(opts.empty_message or "Comment cannot be empty", { title = opts.notify_title or "PR" })
-            end
-          end,
-          desc = "Submit",
-          mode = { "n", "i" },
-        },
-      },
     },
   })
+
+  if scratch and scratch.buf then
+    vim.api.nvim_create_autocmd("BufWriteCmd", {
+      buffer = scratch.buf,
+      callback = function()
+        submit(scratch)
+      end,
+    })
+  end
 end
 
 ---@param opts PRSharedReply.Opts
