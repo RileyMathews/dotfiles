@@ -268,11 +268,5 @@ hyprlog() {
 COMPUTER_NAME=$(cat /etc/hostname)
 
 if [[ "$TERM" == "linux" ]] && [[ -z "$DISPLAY" ]] && [[ "$(tty)" == "/dev/tty1" ]]; then
-    # picard is my s76 machine with dual GPUs
-    # need to ensure compositor is launched on nvidia GPU
-    if [[ "$COMPUTER_NAME" == "picard" ]]; then
-        nvidia-offload start-hyprland
-    else
-        start-hyprland
-    fi
+    start-hyprland
 fi
