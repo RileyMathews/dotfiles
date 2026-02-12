@@ -162,6 +162,8 @@ alias oc='opencode'
 alias ocp='opencode --agent plan'
 alias och='opencode --agent haskell-ghciwatch-dev --prompt "This project has some compile errors. Please help me fix them."'
 
+alias ndr='nix-direnv-reload'
+
 ######################################
 # Language Managers                  #
 ######################################
