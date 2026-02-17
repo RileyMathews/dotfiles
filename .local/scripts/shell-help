@@ -2,4 +2,4 @@
 
 OS_STRING=$(uname -a)
 
-opencode run "I am on [$OS_STRING]. How do I do this in a shell... $1"
+opencode run --model openai/gpt-5.1-codex-mini "I am on [$OS_STRING]. How do I do this in a shell... $1"
