@@ -34,29 +34,8 @@ COMMON_PACKAGES=(
 )
 
 NO_FOLDING_PACKAGES=(
-  shell
-  scripts
-  alacritty
-  ghostty
-  hyprland
-  waybar
-  dunst
-  rofi
-  qutebrowser
-  sx
-  sxhkd
-  picom
-  qtile
   librewolf
   opencode
-  openpeon
-  television
-  worktrunk
-  nix
-  shared-ui
-  x11
-  personal-data
-  wireplumber
 )
 
 stow_package() {
