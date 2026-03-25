@@ -29,7 +29,7 @@ status is-interactive; and begin
   end
 
   function git_main_branch
-      if git branch --list main >/dev/null
+      if git show-ref --verify --quiet refs/heads/main
           echo main
       else
           echo master
