@@ -6,6 +6,6 @@ font-family = Noto Color Emoji
 font-size = 12
 gtk-titlebar = false
 keybind = ctrl+o=unbind
-theme = stylix
+theme = Catppuccin Mocha
 window-decoration = server
 
