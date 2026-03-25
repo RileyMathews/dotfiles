@@ -56,5 +56,8 @@ status is-interactive; and begin
   wt config shell init fish | source
   tv init fish | source
   starship init fish | source
+
+  bind ctrl-y 'accept-autosuggestion'
+  bind ctrl-s 'tmux-sessionizer (tv start-code)'
 end
 
