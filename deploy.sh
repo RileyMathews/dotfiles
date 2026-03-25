@@ -4,7 +4,6 @@ set -euo pipefail
 
 HOST=$(hostname)
 STOW_ARGS=("$@")
-COMMON_DIR=common
 
 COMMON_PACKAGES=(
   shell
@@ -71,7 +70,7 @@ stow_package() {
     fi
   done
 
-  stow --dir="$COMMON_DIR" "${STOW_ARGS[@]}" "${flags[@]}" "$package"
+  stow --dir="common" "${STOW_ARGS[@]}" "${flags[@]}" "$package"
 }
 
 for package in "${COMMON_PACKAGES[@]}"; do
