@@ -1,0 +1,11 @@
+background-opacity = 1.000000
+command = fish
+confirm-close-surface = false
+font-family = Hack Nerd Font
+font-family = Noto Color Emoji
+font-size = 12
+gtk-titlebar = false
+keybind = ctrl+o=unbind
+theme = stylix
+window-decoration = server
+

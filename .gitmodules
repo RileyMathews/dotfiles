@@ -1,3 +1,0 @@
-[submodule "snacks.nvim"]
-	path = snacks.nvim
-	url = git@github.com:RileyMathews/snacks.nvim.git
