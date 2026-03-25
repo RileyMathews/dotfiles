@@ -28,6 +28,14 @@ status is-interactive; and begin
       make ghciwatch | tee .devel-logs/output.txt
   end
 
+  function git_main_branch
+      if git branch --list main >/dev/null
+          echo main
+      else
+          echo master
+      end
+  end
+
   set -l agenix_dir "$XDG_RUNTIME_DIR/agenix"
 
   if test -r "$agenix_dir/github-token-file"
