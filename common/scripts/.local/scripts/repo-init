@@ -1,6 +1,4 @@
-#!/usr/bin/env nix-shell
-#! nix-shell -i python
-#! nix-shell -p python3 python3Packages.requests
+#!/usr/bin/python
 
 """
 Run from a local git repo directory. Creates the repo on Forgejo and GitHub,
