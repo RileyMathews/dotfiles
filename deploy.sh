@@ -37,6 +37,7 @@ NO_FOLDING_PACKAGES=(
   librewolf
   opencode
   hyprland
+  shell
 )
 
 stow_package() {
