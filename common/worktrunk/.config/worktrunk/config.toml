@@ -24,7 +24,7 @@
 # # Default — sibling directory
 # # Creates: ~/code/myproject.feature-auth
 # # worktree-path = "{{ repo_path }}/../{{ repo }}.{{ branch | sanitize }}"
-worktree-path = "/home/riley/worktrees/{{ repo }}.{{ branch | sanitize }}"
+worktree-path = "/home/riley/worktrees/{{ repo }}__{{ branch | sanitize }}"
 #
 # # Inside the repository
 # # Creates: ~/code/myproject/.worktrees/feature-auth
@@ -219,4 +219,4 @@ copy = "wt step copy-ignored"
 
 [post-remove]
 tmux = "tmux kill-session -t $(basename {{ worktree_path }}) || true"
-zellij = "zellij kill-session {{ repo }}.{{ branch }}"
+zellij = "zellij kill-session {{ repo }}__{{ branch }}"

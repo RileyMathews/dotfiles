@@ -20,7 +20,7 @@ status is-interactive; and begin
   alias vim '/run/current-system/sw/bin/nvim'
 
   function gcb -a branch_name -d 'make a new branch with worktrunk and zellij'
-      wt switch -c $branch_name -x 'zellij -s {{ worktree_name }}'
+      wt switch -c $branch_name -x 'tmux-sessionizer {{ worktree_path }}'
   end
 
   function gw -d 'run ghciwatch with additional fields for my local workflow'
