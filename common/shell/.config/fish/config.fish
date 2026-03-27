@@ -63,5 +63,12 @@ status is-interactive; and begin
   source ~/.config/fish/local.fish
 
   fish_add_path $HOME/.local/scripts
+
+  # Decrypt and source secret env vars
+  set -l SECRETS_FILE "$HOME/.config/fish/secrets.fish"
+
+  if test -f "$SECRETS_FILE"
+    age --decrypt -i "$HOME/.ssh/id_ed25519" "$SECRETS_FILE" | source
+  end
 end
 
