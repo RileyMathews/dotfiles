@@ -8,4 +8,4 @@ gtk-titlebar = false
 keybind = ctrl+o=unbind
 theme = Catppuccin Mocha
 window-decoration = server
-
+window-inherit-working-directory = false
