@@ -61,5 +61,7 @@ status is-interactive; and begin
   bind ctrl-s 'tmux-sessionizer (tv start-code)'
 
   source ~/.config/fish/local.fish
+
+  fish_add_path $HOME/.local/scripts
 end
 
