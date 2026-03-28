@@ -56,6 +56,7 @@ status is-interactive; and begin
   wt config shell init fish | source
   tv init fish | source
   starship init fish | source
+  fzf --fish | source
 
   bind ctrl-y 'accept-autosuggestion'
   bind ctrl-s 'tmux-sessionizer (tv start-code)'
@@ -70,5 +71,7 @@ status is-interactive; and begin
   if test -f "$SECRETS_FILE"
     age --decrypt -i "$HOME/.ssh/id_ed25519" "$SECRETS_FILE" | source
   end
+
+  set -x EDITOR nvim
 end
 
