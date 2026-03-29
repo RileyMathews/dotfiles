@@ -9,3 +9,4 @@ keybind = ctrl+o=unbind
 theme = Catppuccin Mocha
 window-decoration = server
 window-inherit-working-directory = false
+keybind = ctrl+enter=unbind
