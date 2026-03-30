@@ -31,5 +31,11 @@
       "command": ["forgejo-mcp", "--url", "https://git.rileymathews.com"],
       "enabled": true
     }
+  },
+  "permission": {
+    "bash": {
+      "make format": "deny",
+      "*": "allow"
+    }
   }
 }
