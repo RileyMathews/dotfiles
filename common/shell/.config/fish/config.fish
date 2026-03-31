@@ -59,7 +59,7 @@ status is-interactive; and begin
   fzf --fish | source
 
   bind ctrl-y 'accept-autosuggestion'
-  bind ctrl-s 'findcode'
+  bind ctrl-s 'findcode; commandline -f repaint'
 
   source ~/.config/fish/local.fish
 
