@@ -51,6 +51,16 @@ status is-interactive; and begin
       set -gx PERSONAL_OPENAI_TOKEN (string trim (cat "$agenix_dir/openai-personal-api-token-file"))
   end
 
+  function pr_review -a directory -a pr_number
+    echo "args:"
+    echo $directory
+    echo $pr_number
+
+    cd $directory
+
+    tmux new-session -d -s "review_$pr_number"
+  end
+
   zoxide init fish | source
   direnv hook fish | source
   wt config shell init fish | source
