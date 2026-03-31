@@ -39,6 +39,7 @@ wt config shell init fish | source
 tv init fish | source
 starship init fish | source
 fzf --fish | source
+mise activate fish | source
 
 bind ctrl-y 'accept-autosuggestion'
 bind ctrl-s 'findcode; commandline -f repaint'
