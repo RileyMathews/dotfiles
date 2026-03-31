@@ -57,8 +57,19 @@ status is-interactive; and begin
     echo $pr_number
 
     cd $directory
+    git checkout (git_main_branch)
+    git fetch
+    git pull
 
-    tmux new-session -d -s "review_$pr_number"
+    gh pr checkout $pr_number
+
+    set -l session_name "review_$pr_number"
+
+    tmux new-session -d -s $session_name
+    tmux new-window -t $session_name
+    tmux send-keys -t $session_name:1 "nvim '+lua require(\"ghlite\").open_pr($pr_number)'" C-m
+    tmux send-keys -t $session_name:2 "opencode" C-m
+    tmux attach -t $session_name
   end
 
   zoxide init fish | source
