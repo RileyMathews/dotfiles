@@ -59,7 +59,7 @@ status is-interactive; and begin
   fzf --fish | source
 
   bind ctrl-y 'accept-autosuggestion'
-  bind ctrl-s 'tmux-sessionizer (findcode)'
+  bind ctrl-s 'findcode'
 
   source ~/.config/fish/local.fish
 

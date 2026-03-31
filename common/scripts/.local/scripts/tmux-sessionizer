@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 directory=$1
+echo $directory
 
 if [[ -z $directory ]]; then
     exit 0
