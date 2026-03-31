@@ -10,6 +10,7 @@ COMMON_PACKAGES=(
   scripts
   tmux
   alacritty
+  sesh
   ghostty
   hyprland
   waybar
