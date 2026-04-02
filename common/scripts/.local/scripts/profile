@@ -1,0 +1,50 @@
+#! /usr/bin/env fish
+
+function usage
+    echo "Usage: profile <status|switch> [args]"
+    echo ""
+    echo "Commands:"
+    echo "  status"
+    echo "  switch <profile-name>"
+end
+
+function profile_status
+    if test -e ~/.local/share/profile/current
+        echo (cat ~/.local/share/profile/current)
+    else
+        echo "profile file not found"
+    end
+end
+
+function profile_switch
+    set -l profile_name $argv[1]
+
+    if test -z "$profile_name"
+        echo "Usage: profile switch <profile-name>"
+        exit 1
+    end
+
+    # TODO: implement switch behavior
+end
+
+set -l command $argv[1]
+
+if test -z "$command"
+    usage
+    exit 1
+end
+
+set -e argv[1]
+
+switch $command
+    case status
+        profile_status $argv
+    case switch
+        profile_switch $argv
+    case help -h --help
+        usage
+    case '*'
+        echo "Unknown subcommand: $command"
+        usage
+        exit 1
+end
