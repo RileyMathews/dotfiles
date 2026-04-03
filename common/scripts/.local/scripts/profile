@@ -94,6 +94,8 @@ switch $command
         profile_status $argv
     case switch
         profile_switch $argv
+    case active
+        cat $PROFILE_FILE
     case help -h --help
         usage
     case '*'
