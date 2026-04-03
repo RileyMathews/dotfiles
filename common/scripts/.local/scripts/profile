@@ -28,7 +28,7 @@ function set_personal_profile
     echo $profile_name > $PROFILE_FILE
 
     handlr set x-scheme-handler/https librewolf.desktop
-    ln --symbolic $OPENCODE_AUTH_PROFILES_DIR/personal.json $OPENCODE_AUTH_PATH
+    ln --symbolic --force $OPENCODE_AUTH_PROFILES_DIR/personal.json $OPENCODE_AUTH_PATH
 
     profile_status
     exit 0
@@ -38,6 +38,7 @@ function set_work_profile
     echo $profile_name > $PROFILE_FILE
 
     handlr set x-scheme-handler/https google-chrome.desktop
+    ln --symbolic --force $OPENCODE_AUTH_PROFILES_DIR/work.json $OPENCODE_AUTH_PATH
 
     profile_status
     exit 0
