@@ -42,8 +42,6 @@ mise activate fish | source
 bind ctrl-y 'accept-autosuggestion'
 bind ctrl-s 'findcode; commandline -f repaint'
 
-source ~/.config/fish/local.fish
-
 fish_add_path $HOME/.local/scripts
 fish_add_path ~/.cargo/bin
 
@@ -55,3 +53,4 @@ age --decrypt -i "$HOME/.ssh/id_ed25519" "$SECRETS_FILE" | source
 end
 
 set -x EDITOR nvim
+set -x BROWSER xdg-fork
