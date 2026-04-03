@@ -1,5 +1,7 @@
 #! /usr/bin/env fish
 
+set PROFILE_FILE ~/.local/share/profile/current
+
 function usage
     echo "Usage: profile <status|switch> [args]"
     echo ""
@@ -8,10 +10,30 @@ function usage
     echo "  switch <profile-name>"
 end
 
+function set_personal_profile
+    echo $profile_name > $PROFILE_FILE
+
+    handlr set x-scheme-handler/https librewolf.desktop
+
+    profile_status
+    exit 0
+end
+
+function set_work_profile
+    echo $profile_name > $PROFILE_FILE
+
+    handlr set x-scheme-handler/https google-chrome.desktop
+
+    profile_status
+    exit 0
+end
+
 function profile_status
-    if test -e ~/.local/share/profile/current
-        echo (cat ~/.local/share/profile/current)
+    if test -e "$PROFILE_FILE"
+        cat $PROFILE_FILE
+        handlr list
     else
+        echo $PROFILE_FILE
         echo "profile file not found"
     end
 end
@@ -23,8 +45,21 @@ function profile_switch
         echo "Usage: profile switch <profile-name>"
         exit 1
     end
+    
+    if not test -e "$PROFILE_FILE"
+        mkdir -p (dirname $PROFILE_FILE)
+        touch $PROFILE_FILE
+    end
 
-    # TODO: implement switch behavior
+    switch $profile_name
+        case "personal"
+            set_personal_profile
+        case "work"
+            set_work_profile
+        case "*"
+            echo "profile $profile_name not recognized"
+            exit 1
+    end
 end
 
 set -l command $argv[1]
