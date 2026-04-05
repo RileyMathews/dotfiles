@@ -13,6 +13,7 @@ COMMON_PACKAGES=(
   sesh
   ghostty
   hyprland
+  lazygit
   waybar
   dunst
   rofi
