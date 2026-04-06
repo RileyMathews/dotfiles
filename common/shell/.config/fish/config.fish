@@ -38,6 +38,8 @@ tv init fish | source
 starship init fish | source
 fzf --fish | source
 mise activate fish | source
+fnm env --use-on-cd --shell fish | source
+rbenv init - --no-rehash fish | source
 
 bind ctrl-y 'accept-autosuggestion'
 bind ctrl-s 'findcode; commandline -f repaint'
@@ -55,5 +57,3 @@ end
 set -x EDITOR nvim
 set -x BROWSER xdg-fork
 
-# Added by `rbenv init` on Mon Apr  6 12:32:55 AM CDT 2026
-status --is-interactive; and rbenv init - --no-rehash fish | source
