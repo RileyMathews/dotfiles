@@ -54,3 +54,6 @@ end
 
 set -x EDITOR nvim
 set -x BROWSER xdg-fork
+
+# Added by `rbenv init` on Mon Apr  6 12:32:55 AM CDT 2026
+status --is-interactive; and rbenv init - --no-rehash fish | source
