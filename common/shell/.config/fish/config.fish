@@ -56,4 +56,4 @@ end
 
 set -x EDITOR nvim
 set -x BROWSER xdg-fork
-
+set -x FORGEJO_URL "https://git.rileymathews.com"
