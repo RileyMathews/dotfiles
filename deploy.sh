@@ -38,7 +38,6 @@ COMMON_PACKAGES=(
 NO_FOLDING_PACKAGES=(
   librewolf
   hyprland
-  shell
 )
 
 stow_package() {
