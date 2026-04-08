@@ -35,9 +35,7 @@ COMMON_PACKAGES=(
   wireplumber
 )
 
-NO_FOLDING_PACKAGES=(
-  librewolf
-)
+NO_FOLDING_PACKAGES=()
 
 stow_package() {
   local package=$1
