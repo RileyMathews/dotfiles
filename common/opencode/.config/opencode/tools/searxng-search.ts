@@ -1,11 +1,4 @@
-import path from "node:path"
-
-const pluginEntry = path.join(
-  process.env.HOME ?? "/home/riley",
-  ".config/opencode/node_modules/@opencode-ai/plugin/dist/index.js"
-)
-
-const { tool } = await import(`file://${pluginEntry}`)
+import { tool } from "@opencode-ai/plugin"
 
 interface SearchResult {
   title: string
