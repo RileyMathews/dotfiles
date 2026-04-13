@@ -1,0 +1,66 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Usage:
+#   age-edit /path/to/file.age
+#
+# Optional env vars:
+#   AGE_IDENTITY=/home/user/.ssh/id_ed25519
+#   EDITOR=nvim
+
+if [[ $# -ne 1 ]]; then
+  echo "Usage: $0 /path/to/file.age" >&2
+  exit 1
+fi
+
+encrypted_file="$1"
+identity_file="${AGE_IDENTITY:-$HOME/.ssh/id_ed25519}"
+editor="${EDITOR:-nvim}"
+
+if [[ ! -f "$encrypted_file" ]]; then
+  echo "Encrypted file not found: $encrypted_file" >&2
+  exit 1
+fi
+
+if [[ ! -f "$identity_file" ]]; then
+  echo "SSH identity file not found: $identity_file" >&2
+  exit 1
+fi
+
+if ! command -v age >/dev/null 2>&1; then
+  echo "age is not installed" >&2
+  exit 1
+fi
+
+if ! command -v ssh-keygen >/dev/null 2>&1; then
+  echo "ssh-keygen is not installed" >&2
+  exit 1
+fi
+
+if ! command -v "$editor" >/dev/null 2>&1; then
+  echo "Editor not found: $editor" >&2
+  exit 1
+fi
+
+umask 077
+
+tmp_plain="$(mktemp)"
+tmp_enc="$(mktemp)"
+
+cleanup() {
+  rm -f "$tmp_plain" "$tmp_enc"
+}
+trap cleanup EXIT
+
+# Derive the SSH public key from the private key for re-encryption.
+recipient="$(ssh-keygen -y -f "$identity_file")"
+
+# Decrypt to a temp file.
+age -d -i "$identity_file" -o "$tmp_plain" "$encrypted_file"
+
+# Open in neovim (or $EDITOR if set).
+"$editor" "$tmp_plain"
+
+# Re-encrypt to a temp file, then atomically replace the original.
+age -r "$recipient" -o "$tmp_enc" "$tmp_plain"
+mv "$tmp_enc" "$encrypted_file"

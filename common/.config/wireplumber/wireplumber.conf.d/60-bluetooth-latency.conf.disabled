@@ -1,0 +1,16 @@
+monitor.bluez.rules = [
+  {
+    matches = [
+      {
+        node.name = "~bluez_output.*"
+      }
+    ]
+    actions = {
+      update-props = {
+        api.alsa.period-size = 2048
+        api.alsa.headroom = 8192
+        node.pause-on-idle = false
+      }
+    }
+  }
+]

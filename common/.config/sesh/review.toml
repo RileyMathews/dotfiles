@@ -1,0 +1,14 @@
+[default_session]
+startup_command = "eza"
+
+[[wildcard]]
+pattern = "/home/riley/code/*"
+windows = ["neovim", "review"]
+
+[[window]]
+name = "neovim"
+startup_script = "nvim"
+
+[[window]]
+name = "review"
+startup_script = "opencode"

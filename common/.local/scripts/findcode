@@ -1,0 +1,8 @@
+#! /usr/bin/env bash
+
+directories="$HOME/code $HOME/.config $HOME/worktrees"
+
+sesh connect $(find $directories -mindepth 1 -maxdepth 1 -type d 2>/dev/null \
+    | fzf --preview 'eza --color=always --icons --oneline --all {}' \
+    --height=40% --reverse --style=full)
+

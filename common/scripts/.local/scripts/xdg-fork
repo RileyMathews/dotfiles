@@ -1,2 +1,0 @@
-#! /usr/bin/env sh
-setsid -f xdg-open "$@" >/dev/null 2>&1

@@ -1,0 +1,71 @@
+super + b
+    qutebrowser
+
+super + shift + b
+    brave --profile-directory="Profile 1" --class="$(uuidgen)"
+
+super + t
+    alacritty
+
+super + g
+    ghostty
+
+super + shift + p
+    powermenu
+
+super + x
+    betterlockscreen -l blur
+
+super + space
+    rofi -show drun
+
+XF86AudioLowerVolume
+    volume down 
+
+XF86AudioRaiseVolume
+    volume up
+
+XF86AudioMute
+    volume mute
+
+XF86MonBrightnessUp
+    backlight up
+
+XF86MonBrightnessDown
+    backlight down
+
+XF86AudioNext
+    playerctl next
+
+XF86AudioPrev
+    playerctl previous
+
+XF86AudioPlay
+    playerctl play-pause
+
+super + ctrl + k
+    playerctl play-pause
+
+super + ctrl + j
+    playerctl position 10-
+
+super + ctrl + l
+    playerctl position 10+
+
+Print
+    flameshot gui
+
+shift + Print
+    flameshot full
+
+super + s
+    screenlayout
+
+super + shift + s
+    laptop-only.sh
+
+super + shift + x
+    auto.sh
+
+super + shift + d
+    xrandr > ~/.xrandr.txt

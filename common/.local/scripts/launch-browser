@@ -1,0 +1,5 @@
+#! /usr/bin/env fish
+set app (xdg-mime query default x-scheme-handler/https | string replace -r '\.desktop$' '')
+if test -n "$app"
+    setsid -f gtk-launch "$app" >/dev/null 2&>1
+end
