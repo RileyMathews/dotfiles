@@ -30,6 +30,14 @@
       "type": "local",
       "command": ["forgejo-mcp", "--url", "https://git.rileymathews.com"],
       "enabled": true
+    },
+    "linear": {
+      "type": "remote",
+      "url": "https://mcp.linear.app/sse"
+    },
+    "notion": {
+      "type": "remote",
+      "url": "https://mcp.notion.com/mcp"
     }
   },
   "permission": {
