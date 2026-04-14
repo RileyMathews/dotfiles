@@ -8,6 +8,12 @@ function pr_review -a directory -a pr_number
         return 1
     end
 
+    set -l base_branch (gh pr view $pr_number --json baseRefName --jq .baseRefName)
+    if test $status -ne 0
+        cd $cwd
+        return 1
+    end
+
     wt switch --no-cd pr:$pr_number
     if test $status -ne 0
         cd $cwd
@@ -24,6 +30,11 @@ function pr_review -a directory -a pr_number
 
     if test -z "$worktree_path"
         echo "Could not resolve worktree path for PR $pr_number ($branch_name)"
+        return 1
+    end
+
+    git -C $worktree_path fetch origin $base_branch
+    if test $status -ne 0
         return 1
     end
 
