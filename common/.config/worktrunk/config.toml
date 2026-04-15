@@ -130,7 +130,7 @@ worktree-path = "/home/riley/worktrees/{{ repo }}__{{ branch | sanitize }}"
 #
 # <!-- DEFAULT_TEMPLATE_START -->
 [commit.generation]
-command = "opencode run -m anthropic/claude-haiku-4.5 --variant fast"
+command = "opencode run -m openai/gpt-5.1-codex-mini --variant fast"
 # template = """
 # Write a commit message for the staged changes below.
 #
