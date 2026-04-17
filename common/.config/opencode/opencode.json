@@ -38,6 +38,16 @@
     "notion": {
       "type": "remote",
       "url": "https://mcp.notion.com/mcp"
+    },
+    "honeycomb": {
+      "type": "remote",
+      "url": "https://mcp.honeycomb.io/mcp",
+      "oauth": {}
+    },
+    "sentry": {
+      "type": "remote",
+      "url": "https://mcp.sentry.dev/mcp",
+      "oauth": {}
     }
   },
   "permission": {
