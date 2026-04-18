@@ -49,6 +49,7 @@ bind ctrl-s 'findcode; commandline -f repaint'
 
 fish_add_path $HOME/.local/scripts
 fish_add_path ~/.cargo/bin
+fish_add_path ~/.local/bin
 
 # Decrypt and source secret env vars
 set -l SECRETS_FILE "$HOME/.config/fish/secrets.fish"
