@@ -1,0 +1,91 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+scrollback_lines="${TMUX_PANE_URLS_LINES:-3000}"
+
+die() {
+  printf '%s\n' "$1" >&2
+  exit 1
+}
+
+require_command() {
+  command -v "$1" >/dev/null 2>&1 || die "Missing required command: $1"
+}
+
+trim_url() {
+  local url="$1"
+
+  while [[ -n "$url" ]]; do
+    case "${url: -1}" in
+      '.'|','|';'|':'|')'|']'|'}'|'>')
+        url="${url%?}"
+        ;;
+      *)
+        break
+        ;;
+    esac
+  done
+
+  printf '%s\n' "$url"
+}
+
+extract_urls() {
+  grep -oE "([[:alpha:]][[:alnum:]+.-]*://[^[:space:]<>\"']+|www\.[^[:space:]<>\"']+)" | while IFS= read -r raw_url; do
+    trimmed_url="$(trim_url "$raw_url")"
+
+    if [[ -n "$trimmed_url" ]]; then
+      printf '%s\n' "$trimmed_url"
+    fi
+  done | sort -u
+}
+
+open_url() {
+  local url="$1"
+
+  if [[ "$url" == www.* ]]; then
+    url="https://$url"
+  fi
+
+  setsid -f xdg-open "$url" >/dev/null 2>&1
+}
+
+main() {
+  [[ -n "${TMUX:-}" ]] || die "Not running inside tmux"
+
+  require_command tmux
+  require_command fzf-tmux
+  require_command xdg-open
+  require_command wl-copy
+
+  local urls
+  urls="$(tmux capture-pane -p -S "-$scrollback_lines" | extract_urls)"
+
+  [[ -n "$urls" ]] || die "No URLs found in current tmux pane"
+
+  local selection key chosen
+  selection="$(printf '%s\n' "$urls" | fzf-tmux -p 80%,60% \
+    --prompt='URL> ' \
+    --header='Enter: open | Ctrl-Y: copy' \
+    --layout=reverse \
+    --border \
+    --expect=ctrl-y)"
+
+  [[ -n "$selection" ]] || exit 0
+
+  key="$(printf '%s\n' "$selection" | sed -n '1p')"
+  chosen="$(printf '%s\n' "$selection" | sed -n '2p')"
+
+  [[ -n "$chosen" ]] || exit 0
+
+  if [[ "$key" == "ctrl-y" ]]; then
+    printf '%s' "$chosen" | wl-copy
+    tmux display-message "Copied URL to clipboard"
+    exit 0
+  fi
+
+  open_url "$chosen"
+  tmux display-message "Opened URL"
+}
+
+main "$@"
