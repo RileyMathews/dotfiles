@@ -4,7 +4,6 @@
   "instructions": ["CLAUDE.local.md"],
   "disabled_providers": [
     "github-models",
-    "github-copilot",
     "github-copilot-enterprise",
     "amazon-bedrock"
   ],
