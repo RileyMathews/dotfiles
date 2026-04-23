@@ -1,6 +1,3 @@
-# Planning work
-When planning work. Make liberal use of the 'research' subagent when more information might be needed on how to do a particular task.
-
 # Haskell
 When working in haskell projects always prefer to use the ghciwatch magic comment method for testing.
 
