@@ -25,6 +25,7 @@ format = "[$branch]($style)"
 style = "bright-black"
 
 [git_status]
+use_git_executable = true
 style = "cyan"
 format = "([$all_status$ahead_behind]($style))"
 conflicted = "="
