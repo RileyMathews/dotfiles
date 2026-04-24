@@ -52,6 +52,8 @@ fish_add_path ~/.cargo/bin
 fish_add_path ~/.local/bin
 fish_add_path ~/Android/Sdk/emulator
 fish_add_path ~/Android/Sdk/platform-tools
+fish_add_path ~/Android/Sdk/cmdline-tools/latest/bin
+fish_add_path ~/.bun/bin
 
 # Decrypt and source secret env vars
 set -l SECRETS_FILE "$HOME/.config/fish/secrets.fish"
