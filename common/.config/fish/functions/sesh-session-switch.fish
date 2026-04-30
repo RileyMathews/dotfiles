@@ -1,0 +1,26 @@
+function sesh-session-switch --description 'Switch tmux sessions with sesh and fzf'
+    set -l fzf_command fzf
+
+    if set -q TMUX
+        set fzf_command fzf-tmux -p 80%,70%
+    end
+
+    set -l session (sesh list --icons | $fzf_command \
+        --no-sort --ansi --border-label ' sesh ' --prompt '⚡  ' \
+        --header '  ^a all ^t tmux ^g configs ^x zoxide ^d tmux kill ^f find' \
+        --bind 'tab:down,btab:up' \
+        --bind 'ctrl-a:change-prompt(⚡  )+reload(sesh list --icons)' \
+        --bind 'ctrl-t:change-prompt(🪟  )+reload(sesh list -t --icons)' \
+        --bind 'ctrl-g:change-prompt(⚙️  )+reload(sesh list -c --icons)' \
+        --bind 'ctrl-x:change-prompt(📁  )+reload(sesh list -z --icons)' \
+        --bind 'ctrl-f:change-prompt(🔎  )+reload(fd -H -d 2 -t d -E .Trash . ~)' \
+        --bind 'ctrl-d:execute(tmux kill-session -t {2..})+change-prompt(⚡  )+reload(sesh list --icons)' \
+        --preview-window 'right:55%' \
+        --preview 'sesh preview {}')
+
+    if test -z "$session"
+        return 0
+    end
+
+    sesh connect "$session"
+end

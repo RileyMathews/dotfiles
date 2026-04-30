@@ -45,7 +45,7 @@ fnm env --use-on-cd --shell fish | source
 rbenv init - --no-rehash fish | source
 
 bind ctrl-y 'accept-autosuggestion'
-bind ctrl-s 'findcode; commandline -f repaint'
+bind ctrl-s 'sesh-session-switch; commandline -f repaint'
 
 fish_add_path $HOME/.local/scripts
 fish_add_path ~/.cargo/bin
