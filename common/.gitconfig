@@ -3,3 +3,5 @@
 	name = Riley Mathews
 [pull]
 	rebase = false
+[init]
+	defaultBranch = main
