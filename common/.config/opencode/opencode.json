@@ -5,7 +5,9 @@
   "disabled_providers": [
     "github-models",
     "github-copilot-enterprise",
-    "amazon-bedrock"
+    "amazon-bedrock",
+    "github-copilot",
+    "opencode"
   ],
   "lsp": {
     "haskell-language-server": {
