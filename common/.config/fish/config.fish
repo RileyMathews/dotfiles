@@ -1,4 +1,34 @@
-set -U fish_greeting ""
+set -g fish_greeting ""
+
+set -l os (uname)
+
+set -l clean_path
+for path in $PATH
+  if test -d "$path"
+    set -a clean_path "$path"
+  end
+end
+set -gx PATH $clean_path
+set -e __MISE_ORIG_PATH
+set -e RBENV_ORIG_PATH
+
+switch $os
+case Linux
+  set -gx ANDROID_HOME "$HOME/Android/Sdk"
+
+  fish_add_path --path \
+    "$HOME/.local/scripts" \
+    "$HOME/.cargo/bin" \
+    "$HOME/.local/bin" \
+    "$HOME/.bun/bin" \
+    "$ANDROID_HOME/emulator" \
+    "$ANDROID_HOME/platform-tools" \
+    "$ANDROID_HOME/cmdline-tools/latest/bin"
+case Darwin
+  fish_add_path --path \
+    "$HOME/.local/scripts" \
+    "$HOME/.local/bin"
+end
 
 alias gst 'git status'
 alias gaa 'git add .'
@@ -34,26 +64,18 @@ if test -r "$agenix_dir/openai-personal-api-token-file"
   set -gx PERSONAL_OPENAI_TOKEN (string trim (cat "$agenix_dir/openai-personal-api-token-file"))
 end
 
-zoxide init fish | source
-direnv hook fish | source
-wt config shell init fish | source
-tv init fish | source
-starship init fish | source
-fzf --fish | source
-mise activate fish | source
-fnm env --use-on-cd --shell fish | source
-rbenv init - --no-rehash fish | source
+command -q zoxide; and zoxide init fish | source
+command -q direnv; and direnv hook fish | source
+command -q wt; and wt config shell init fish | source
+command -q tv; and tv init fish | source
+command -q starship; and starship init fish | source
+command -q fzf; and fzf --fish | source
+command -q mise; and mise activate fish | source
+command -q fnm; and fnm env --use-on-cd --shell fish | source
+command -q rbenv; and rbenv init - --no-rehash fish | source
 
 bind ctrl-y 'accept-autosuggestion'
 bind ctrl-s 'sesh-session-switch; commandline -f repaint'
-
-fish_add_path $HOME/.local/scripts
-fish_add_path ~/.cargo/bin
-fish_add_path ~/.local/bin
-fish_add_path ~/Android/Sdk/emulator
-fish_add_path ~/Android/Sdk/platform-tools
-fish_add_path ~/Android/Sdk/cmdline-tools/latest/bin
-fish_add_path ~/.bun/bin
 
 # Decrypt and source secret env vars
 set -l SECRETS_FILE "$HOME/.config/fish/secrets.fish"
@@ -65,4 +87,3 @@ end
 set -x EDITOR nvim
 set -x BROWSER xdg-fork
 set -x FORGEJO_URL "https://git.rileymathews.com"
-set -x ANDROID_HOME "/home/riley/Android/Sdk"

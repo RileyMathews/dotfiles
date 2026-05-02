@@ -2,7 +2,6 @@
 # VERSION: 3.0
 SETUVAR __fish_initialized:4300
 SETUVAR fish_greeting:
-SETUVAR fish_user_paths:/home/riley/\x2ebun/bin\x1e/home/riley/Android/Sdk/cmdline\x2dtools/latest/bin\x1e/home/riley/Android/Sdk/platform\x2dtools\x1e/home/riley/Android/Sdk/emulator\x1e/home/riley/\x2elocal/bin\x1e/home/riley/\x2ecargo/bin\x1e/home/riley/\x2elocal/scripts
 SETUVAR pure_begin_prompt_with_current_directory:true
 SETUVAR pure_check_for_new_release:false
 SETUVAR pure_color_at_sign:pure_color_mute
