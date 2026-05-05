@@ -1,6 +1,5 @@
 background-opacity = 1.000000
-env = PATH=/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
-command = /usr/bin/env fish
+command = shell:PATH="$PATH:/opt/homebrew/bin:/usr/local/bin" exec fish
 confirm-close-surface = false
 font-family = "FiraCode Nerd Font"
 font-family = Noto Color Emoji
