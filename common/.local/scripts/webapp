@@ -5,35 +5,8 @@
 DESKTOP_DIR="$HOME/.local/share/applications"
 ICON_DIR="$HOME/.local/share/icons/webapp-icons"
 
-resolve_browser_bin() {
-	case "$1" in
-		brave)
-			for bin in brave brave-browser; do
-				if command -v "$bin" >/dev/null 2>&1; then
-					echo "$bin"
-					return 0
-				fi
-			done
-			;;
-		chrome)
-			for bin in google-chrome-stable google-chrome chrome; do
-				if command -v "$bin" >/dev/null 2>&1; then
-					echo "$bin"
-					return 0
-				fi
-			done
-			;;
-	esac
-
-	return 1
-}
-
-browser_icon_name() {
-	case "$1" in
-		chrome) echo "google-chrome" ;;
-		*) echo "brave-browser" ;;
-	esac
-}
+BROWSER_BIN="helium-browser"
+BROWSER_ICON_NAME="helium-browser"
 
 # Function to detect file type by magic bytes
 detect_file_type() {
@@ -68,14 +41,12 @@ show_help() {
 		  help                     Show this help message
 
 		Install options:
-		  -b, --browser <name>     Browser to use (brave|chrome)
 		  -y, --yes                Overwrite existing desktop file
 
 		Examples:
 		  webapp install https://mail.google.com
 		  webapp install https://mail.google.com "Gmail"
-		  webapp install https://calendar.google.com "Calendar" --browser chrome
-		  webapp install https://chat.openai.com "ChatGPT" -b brave -y
+		  webapp install https://chat.openai.com "ChatGPT" -y
 		  webapp uninstall
 	EOF
 }
@@ -91,24 +62,12 @@ install_webapp() {
 	shift
 
 	APP_NAME=""
-	BROWSER=""
 	OVERWRITE="false"
 
 	while [ $# -gt 0 ]; do
 		case "$1" in
 			-y|--yes)
 				OVERWRITE="true"
-				;;
-			-b|--browser)
-				shift
-				if [ -z "$1" ]; then
-					echo "Error: --browser requires a value (brave|chrome)"
-					exit 1
-				fi
-				BROWSER="$1"
-				;;
-			--browser=*)
-				BROWSER="${1#*=}"
 				;;
 			*)
 				if [ -z "$APP_NAME" ]; then
@@ -123,25 +82,8 @@ install_webapp() {
 		shift
 	done
 
-	if [ -z "$BROWSER" ]; then
-		printf "Choose browser [brave/chrome] (default: brave): "
-		read -r BROWSER
-		[ -z "$BROWSER" ] && BROWSER="brave"
-	fi
-
-	BROWSER=$(printf "%s" "$BROWSER" | tr '[:upper:]' '[:lower:]')
-	case "$BROWSER" in
-		brave|chrome) ;;
-		*)
-			echo "Error: Unsupported browser '$BROWSER' (use brave or chrome)"
-			exit 1
-			;;
-	esac
-
-	BROWSER_BIN=$(resolve_browser_bin "$BROWSER")
-	if [ -z "$BROWSER_BIN" ]; then
-		echo "Error: Could not find a $BROWSER executable in PATH"
-		echo "Install it, or choose the other browser with --browser"
+	if ! command -v "$BROWSER_BIN" >/dev/null 2>&1; then
+		echo "Error: Could not find $BROWSER_BIN in PATH"
 		exit 1
 	fi
 
@@ -181,7 +123,7 @@ install_webapp() {
 	# Fetch icon
 	echo "Fetching icon for $DOMAIN..."
 	ICON_PATH="$ICON_DIR/webapp-${FILENAME}.png"
-	ICON_NAME=$(browser_icon_name "$BROWSER")
+	ICON_NAME="$BROWSER_ICON_NAME"
 
 	# Try to fetch favicon using Google's favicon service as fallback
 	if command -v curl >/dev/null 2>&1; then
@@ -211,7 +153,7 @@ install_webapp() {
 		fi
 
 		# If that didn't work, try Google's favicon service
-		if [ "$ICON_NAME" = "brave-browser" ]; then
+		if [ "$ICON_NAME" = "$BROWSER_ICON_NAME" ]; then
 			if curl -sS -L --max-time 10 "https://www.google.com/s2/favicons?domain=${DOMAIN}&sz=256" -o "$ICON_PATH" 2>/dev/null; then
 				if [ -f "$ICON_PATH" ] && [ -s "$ICON_PATH" ]; then
 					FILE_TYPE=$(detect_file_type "$ICON_PATH")
