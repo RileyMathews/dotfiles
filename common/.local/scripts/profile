@@ -24,10 +24,28 @@ function preflight
     end
 end
 
+function set_browser_handlers
+    set -l browser $argv[1]
+
+    for mime in \
+        application/x-extension-htm \
+        application/x-extension-html \
+        application/x-extension-shtml \
+        application/x-extension-xht \
+        application/x-extension-xhtml \
+        application/xhtml+xml \
+        text/html \
+        x-scheme-handler/chrome \
+        x-scheme-handler/http \
+        x-scheme-handler/https
+        handlr set $mime $browser
+    end
+end
+
 function set_personal_profile
     echo $profile_name > $PROFILE_FILE
 
-    handlr set x-scheme-handler/https librewolf.desktop
+    set_browser_handlers helium.desktop
     ln --symbolic --force $OPENCODE_AUTH_PROFILES_DIR/personal.json $OPENCODE_AUTH_PATH
 
     profile_status
@@ -37,7 +55,7 @@ end
 function set_work_profile
     echo $profile_name > $PROFILE_FILE
 
-    handlr set x-scheme-handler/https google-chrome.desktop
+    set_browser_handlers google-chrome.desktop
     ln --symbolic --force $OPENCODE_AUTH_PROFILES_DIR/work.json $OPENCODE_AUTH_PATH
 
     profile_status
