@@ -53,8 +53,8 @@ bindkey '^y' autosuggest-accept
 bindkey '^p' history-search-backward
 bindkey '^n' history-search-forward
 
-# Ctrl+F to run tmux-sessionizer
-bindkey -s '^f' '~/.local/scripts/tmux-sessionizer\n'
+# Ctrl+F to pick a directory and switch tmux sessions
+bindkey -s '^f' 'fish -lc find-code\n'
 
 bindkey -v
 
@@ -267,4 +267,3 @@ COMPUTER_NAME=$(cat /etc/hostname)
 if [[ "$TERM" == "linux" ]] && [[ -z "$DISPLAY" ]] && [[ "$(tty)" == "/dev/tty1" ]]; then
     start-hyprland
 fi
-

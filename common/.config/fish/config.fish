@@ -75,7 +75,7 @@ command -q fnm; and fnm env --use-on-cd --shell fish | source
 command -q rbenv; and rbenv init - --no-rehash fish | source
 
 bind ctrl-y 'accept-autosuggestion'
-bind ctrl-s 'sesh-session-switch; commandline -f repaint'
+bind ctrl-s 'find-code; commandline -f repaint'
 
 # Decrypt and source secret env vars
 set -l SECRETS_FILE "$HOME/.config/fish/secrets.fish"
