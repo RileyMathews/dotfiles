@@ -1,14 +1,14 @@
 /**
  * nvim-diagnostics for OpenCode
  *
- * Exposes a single tool, `nvim_diagnostics_set`, that ships diagnostic
+ * Exposes a single tool, `nvim_diagnostics_set`, that ships inline
  * annotations to the user's running Neovim instance over its tmux-scoped
  * unix socket. Useful for code-exploration workflows like
  *
  *   "trace the path of a request through the codebase when state.foo is
  *    true, and send the findings to neovim for me to inspect"
  *
- * Each call REPLACES the previous set of opencode diagnostics, so the
+ * Each call REPLACES the previous set of opencode annotations, so the
  * model should batch all related findings into a single invocation.
  *
  * Pre-requisites:
@@ -30,17 +30,17 @@ import { tool } from "@opencode-ai/plugin"
 const SEVERITIES = ["error", "warn", "info", "hint"] as const
 
 const DESCRIPTION = [
-	"Send diagnostic annotations to the user's running Neovim instance for inline inspection.",
+	"Send single-line annotations to the user's running Neovim instance for inline inspection.",
 	"",
-	"Each call REPLACES all previously-sent opencode diagnostics, so batch every diagnostic for",
+	"Each call REPLACES all previously-sent opencode annotations, so batch every annotation for",
 	"the current task into a single invocation. Files do not need to be open in Neovim ahead of",
-	"time — the annotations will appear automatically when the user navigates to the file.",
+	"time — the shadow text will appear automatically when the user navigates to the file.",
 	"",
 	"Use this when the user asks you to surface findings from code exploration (e.g. tracing a",
 	"request path, marking up the lines involved in some behavior, explaining what a chunk of",
-	"code does in context). The user will read the messages inline in Neovim's diagnostic UI.",
+	"code does in context). The user will read the messages as shadow text in Neovim.",
 	"",
-	"Each diagnostic targets a 1-indexed line in a file. Provide a clear, concise `message`",
+	"Each annotation targets one 1-indexed line in a file. Provide a clear, concise `message`",
 	"explaining what that line is doing or why it matters. Prefer severity 'info' or 'hint'",
 	"for explanatory annotations; reserve 'warn' / 'error' for issues you want the user to",
 	"act on.",
@@ -67,34 +67,18 @@ export const NvimDiagnosticsPlugin: Plugin = async () => {
 									.number()
 									.int()
 									.min(1)
-									.describe("1-indexed line number where the diagnostic begins."),
-								end_line: tool.schema
-									.number()
-									.int()
-									.min(1)
-									.optional()
-									.describe(
-										"1-indexed end line for multi-line diagnostics. Defaults to `line`.",
-									),
+									.describe("1-indexed line number for the annotation."),
 								col: tool.schema
 									.number()
 									.int()
 									.min(1)
 									.optional()
 									.describe("1-indexed start column. Defaults to 1."),
-								end_col: tool.schema
-									.number()
-									.int()
-									.min(1)
-									.optional()
-									.describe(
-										"1-indexed end column. Defaults to the end of `end_line`.",
-									),
 								message: tool.schema
 									.string()
 									.min(1)
 									.describe(
-										"The annotation the user will see in Neovim's diagnostic UI. Be concise and explanatory.",
+										"The shadow-text annotation the user will see in Neovim. Be concise and explanatory.",
 									),
 								severity: tool.schema
 									.enum(SEVERITIES)
@@ -106,13 +90,13 @@ export const NvimDiagnosticsPlugin: Plugin = async () => {
 									.string()
 									.optional()
 									.describe(
-										"Optional source label shown in the diagnostic float. Defaults to 'opencode'.",
+										"Optional source label shown before the shadow text. Defaults to 'opencode'.",
 									),
 							}),
 						)
 						.min(1)
 						.describe(
-							"Batch of diagnostics. This call REPLACES the previous opencode diagnostic set in Neovim.",
+							"Batch of single-line annotations. This call REPLACES the previous opencode annotation set in Neovim.",
 						),
 				},
 				async execute(args, ctx) {
@@ -151,7 +135,14 @@ export const NvimDiagnosticsPlugin: Plugin = async () => {
 							missing.push(d.file)
 							continue
 						}
-						resolved.push({ ...d, file: abs })
+						resolved.push({
+							file: abs,
+							line: d.line,
+							col: d.col,
+							message: d.message,
+							severity: d.severity,
+							source: d.source,
+						})
 					}
 					if (missing.length > 0) {
 						return `File(s) not found on disk: ${missing.join(", ")}`
@@ -197,13 +188,13 @@ export const NvimDiagnosticsPlugin: Plugin = async () => {
 						).size
 						const n = resolved.length
 						ctx.metadata({
-							title: `Sent ${n} diagnostic${n === 1 ? "" : "s"} to neovim`,
+							title: `Sent ${n} annotation${n === 1 ? "" : "s"} to neovim`,
 							metadata: {
 								files: filesAffected,
 								socket,
 							},
 						})
-						return `Replaced opencode diagnostics in Neovim with ${n} entr${
+						return `Replaced opencode annotations in Neovim with ${n} entr${
 							n === 1 ? "y" : "ies"
 						} across ${filesAffected} file${filesAffected === 1 ? "" : "s"}.`
 					} finally {
