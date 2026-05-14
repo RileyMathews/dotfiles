@@ -54,7 +54,7 @@
   },
   "permission": {
     "bash": {
-      "make format": "deny",
+      "make *": "ask",
       "*": "allow"
     },
     "external_directory": {
