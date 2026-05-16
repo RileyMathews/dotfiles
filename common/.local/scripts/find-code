@@ -52,7 +52,7 @@ selection=$(
         fi
 
         tmux_paths["$session_path"]=1
-        printf 'tmux%s[tmux] %s%s%s%s%s\n' "$tab" "$session_name" "$tab" "$session_path" "$tab" "$session_name"
+        printf 'tmux%s\033[34m\033[39m %s%s%s%s%s\n' "$tab" "$session_name" "$tab" "$session_path" "$tab" "$session_name"
       done < <(tmux list-sessions -F "#{session_name}${tab}#{session_path}" 2>/dev/null || true)
     fi
 
@@ -61,13 +61,13 @@ selection=$(
         continue
       fi
 
-      printf 'dir%s[dir] %s%s%s%s\n' "$tab" "$directory" "$tab" "$directory" "$tab"
+      printf 'dir%s\033[36m\033[39m %s%s%s%s\n' "$tab" "$directory" "$tab" "$directory" "$tab"
     done < <(list_directories)
   } | "${fzf_command[@]}" \
     --no-sort --ansi \
     --delimiter "$tab" --with-nth 2 \
-    --border-label ' find-code ' --prompt '> ' \
-    --header '  [tmux] session  [dir] directory  enter switch  tab/btab move' \
+    --border-label ' find-code ' --prompt '⚡  ' \
+    --header '   tmux   directory  enter switch  tab/btab move' \
     --bind 'tab:down,btab:up' \
     --preview-window 'right:55%' \
     --preview "$preview_command"
