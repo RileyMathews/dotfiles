@@ -111,14 +111,7 @@ export XDG_DATA_DIRS="$XDG_DATA_DIRS:/usr/share:/usr/local/share:/var/lib/flatpa
 export ANDROID_HOME="$HOME/Android/Sdk"
 export PATH="$PATH:$HOME/.local/scripts:$HOME/.cargo/bin:$HOME/.local/bin:$HOME/.bun/bin:$ANDROID_HOME/emulator:$ANDROID_HOME/platform-tools:$ANDROID_HOME/cmdline-tools/latest/bin:$HOME/.local/python-scripts:$HOME/.screenlayout"
 
-SOPS_SECRETS_FILE="$HOME/.config/zsh/secrets.env"
-if [[ -r "$SOPS_SECRETS_FILE" ]]; then
-    [[ -o allexport ]] && _sops_allexport_was_set=1 || _sops_allexport_was_set=0
-    setopt allexport
-    source <(SOPS_AGE_SSH_PRIVATE_KEY_FILE="$HOME/.ssh/id_ed25519" sops --decrypt --input-type dotenv --output-type dotenv "$SOPS_SECRETS_FILE")
-    (( _sops_allexport_was_set )) || unsetopt allexport
-fi
-unset SOPS_SECRETS_FILE _sops_allexport_was_set
+source "$HOME/.config/zsh/sops-secrets.zsh"
 
 #####################################
 # Aliases                           #
@@ -214,8 +207,6 @@ if type pyenv > /dev/null; then
     }
 fi
 
-if command -v rbenv > /dev/null; then eval "$(rbenv init - --no-rehash zsh)"; fi
-
 [ -f "/home/rileymathews/.ghcup/env" ] && . "/home/rileymathews/.ghcup/env" # ghcup-env
 ######################################
 # Shell utilities                    #
@@ -224,7 +215,8 @@ eval "$(zoxide init zsh)"
 eval "$(direnv hook zsh)"
 eval "$(wt config shell init zsh)"
 eval "$(tv init zsh)"
-eval "$(mise activate zsh)"
+typeset -U path
+path=("$HOME/.local/share/mise/shims" $path)
 
 export FZF_DEFAULT_OPTS=" \
 --color=bg+:#313244,bg:#1e1e2e,spinner:#f5e0dc,hl:#f38ba8 \
