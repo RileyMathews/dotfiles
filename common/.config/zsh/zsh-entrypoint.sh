@@ -49,14 +49,15 @@ compinit -C
 
 zinit cdreplay -q
 
+bindkey -v
 bindkey '^y' autosuggest-accept
 bindkey '^p' history-search-backward
 bindkey '^n' history-search-forward
+# Disable terminal flow control so Ctrl+S can be used as a zsh keybinding.
+stty -ixon 2>/dev/null || true
 
-# Ctrl+F to pick a directory and switch tmux sessions
-bindkey -s '^f' 'fish -lc find-code\n'
-
-bindkey -v
+# Ctrl+S to pick a directory and switch tmux sessions
+bindkey -s '^s' 'find-code\n'
 
 # Change cursor shape for different vi modes (non-blinking).
 function zle-keymap-select () {
@@ -102,9 +103,22 @@ setopt hist_find_no_dups
 # Environment Variables             #
 #####################################
 export EDITOR="nvim"
-export PATH="$PATH:$HOME/.local/bin:$HOME/.local/scripts:$HOME/.local/python-scripts:$HOME/.screenlayout"
+export BROWSER="xdg-fork"
+export FORGEJO_URL="https://git.rileymathews.com"
 export KEYTIMEOUT=1
 export XDG_DATA_DIRS="$XDG_DATA_DIRS:/usr/share:/usr/local/share:/var/lib/flatpak/exports/share:/home/riley/.local/share/flatpak/exports/share"
+
+export ANDROID_HOME="$HOME/Android/Sdk"
+export PATH="$PATH:$HOME/.local/scripts:$HOME/.cargo/bin:$HOME/.local/bin:$HOME/.bun/bin:$ANDROID_HOME/emulator:$ANDROID_HOME/platform-tools:$ANDROID_HOME/cmdline-tools/latest/bin:$HOME/.local/python-scripts:$HOME/.screenlayout"
+
+SOPS_SECRETS_FILE="$HOME/.config/zsh/secrets.env"
+if [[ -r "$SOPS_SECRETS_FILE" ]]; then
+    [[ -o allexport ]] && _sops_allexport_was_set=1 || _sops_allexport_was_set=0
+    setopt allexport
+    source <(SOPS_AGE_SSH_PRIVATE_KEY_FILE="$HOME/.ssh/id_ed25519" sops --decrypt --input-type dotenv --output-type dotenv "$SOPS_SECRETS_FILE")
+    (( _sops_allexport_was_set )) || unsetopt allexport
+fi
+unset SOPS_SECRETS_FILE _sops_allexport_was_set
 
 #####################################
 # Aliases                           #
@@ -200,13 +214,17 @@ if type pyenv > /dev/null; then
     }
 fi
 
-if command -v rbenv > /dev/null; then eval "$(rbenv init - zsh)"; fi
+if command -v rbenv > /dev/null; then eval "$(rbenv init - --no-rehash zsh)"; fi
 
 [ -f "/home/rileymathews/.ghcup/env" ] && . "/home/rileymathews/.ghcup/env" # ghcup-env
 ######################################
 # Shell utilities                    #
 ######################################
+eval "$(zoxide init zsh)"
 eval "$(direnv hook zsh)"
+eval "$(wt config shell init zsh)"
+eval "$(tv init zsh)"
+eval "$(mise activate zsh)"
 
 export FZF_DEFAULT_OPTS=" \
 --color=bg+:#313244,bg:#1e1e2e,spinner:#f5e0dc,hl:#f38ba8 \
@@ -216,14 +234,6 @@ export FZF_DEFAULT_OPTS=" \
 ######################################
 # Functions                          #
 ######################################
-git_main_branch() {
-    if git branch --list | grep -q "main"; then
-        echo "main"
-    else
-        echo "master"
-    fi
-}
-
 gacp() {
     git add .
     git status
@@ -261,8 +271,6 @@ hyprlog() {
     echo "copying the last hyprland log to home dir as hyprland.log"
     cp /run/user/1000/hypr/$(command ls -t /run/user/1000/hypr/ | head -n 1)/hyprland.log ~/hyprland.log
 }
-
-COMPUTER_NAME=$(cat /etc/hostname)
 
 if [[ "$TERM" == "linux" ]] && [[ -z "$DISPLAY" ]] && [[ "$(tty)" == "/dev/tty1" ]]; then
     start-hyprland

@@ -1,0 +1,3 @@
+creation_rules:
+  - path_regex: common/\.config/zsh/secrets\.env$
+    age: ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFgBrMhlYyFQuzLE2dEIJ/vEEN769EiPrpKYVzBKERoe rileymathews80@gmail.com

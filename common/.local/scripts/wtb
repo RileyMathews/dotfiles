@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+branch_name=${1:-}
+base_ref=${2:-}
+
+if [[ -z "$branch_name" ]]; then
+  printf 'usage: wtb <branch-name> [base-ref]\n' >&2
+  exit 2
+fi
+
+base_args=()
+if [[ -n "$base_ref" ]]; then
+  base_args=(--base "$base_ref")
+fi
+
+wt switch --no-cd -c "$branch_name" "${base_args[@]}" -x 'tmux-sessionizer {{ worktree_path }}'

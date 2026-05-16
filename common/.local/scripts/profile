@@ -1,124 +1,135 @@
-#! /usr/bin/env fish
+#!/usr/bin/env bash
+set -euo pipefail
 
-set PROFILE_FILE ~/.local/share/profile/current
-set OPENCODE_AUTH_PATH ~/.local/share/opencode/auth.json
-set OPENCODE_AUTH_PROFILES_DIR ~/.local/share/opencode/profiles
+PROFILE_FILE="$HOME/.local/share/profile/current"
+OPENCODE_AUTH_PATH="$HOME/.local/share/opencode/auth.json"
+OPENCODE_AUTH_PROFILES_DIR="$HOME/.local/share/opencode/profiles"
 
-function usage
-    echo "Usage: profile <status|switch> [args]"
-    echo ""
-    echo "Commands:"
-    echo "  status"
-    echo "  switch <profile-name>"
-end
+usage() {
+  printf 'Usage: profile <status|switch> [args]\n'
+  printf '\n'
+  printf 'Commands:\n'
+  printf '  status\n'
+  printf '  switch <profile-name>\n'
+}
 
-# ensures everything is setup properly
-function preflight
-    if not test  -d "$OPENCODE_AUTH_PROFILES_DIR"
-        mkdir -p $OPENCODE_AUTH_PROFILES_DIR
-    end
+preflight() {
+  if [[ ! -d "$OPENCODE_AUTH_PROFILES_DIR" ]]; then
+    mkdir -p "$OPENCODE_AUTH_PROFILES_DIR"
+  fi
 
-    if test -e "$OPENCODE_AUTH_PATH" && not test -L "$OPENCODE_AUTH_PATH"
-        echo "opencode auth.json is not a symlink. Move your current auth.json into the correct subdir before running this command"
-        exit 1
-    end
-end
+  if [[ -e "$OPENCODE_AUTH_PATH" && ! -L "$OPENCODE_AUTH_PATH" ]]; then
+    printf 'opencode auth.json is not a symlink. Move your current auth.json into the correct subdir before running this command\n' >&2
+    exit 1
+  fi
+}
 
-function set_browser_handlers
-    set -l browser $argv[1]
+set_browser_handlers() {
+  local browser=$1
+  local mime
 
-    for mime in \
-        application/x-extension-htm \
-        application/x-extension-html \
-        application/x-extension-shtml \
-        application/x-extension-xht \
-        application/x-extension-xhtml \
-        application/xhtml+xml \
-        text/html \
-        x-scheme-handler/chrome \
-        x-scheme-handler/http \
-        x-scheme-handler/https
-        handlr set $mime $browser
-    end
-end
+  for mime in \
+    application/x-extension-htm \
+    application/x-extension-html \
+    application/x-extension-shtml \
+    application/x-extension-xht \
+    application/x-extension-xhtml \
+    application/xhtml+xml \
+    text/html \
+    x-scheme-handler/chrome \
+    x-scheme-handler/http \
+    x-scheme-handler/https; do
+    handlr set "$mime" "$browser"
+  done
+}
 
-function set_personal_profile
-    echo $profile_name > $PROFILE_FILE
+set_personal_profile() {
+  local profile_name=$1
 
-    set_browser_handlers helium.desktop
-    ln --symbolic --force $OPENCODE_AUTH_PROFILES_DIR/personal.json $OPENCODE_AUTH_PATH
+  printf '%s\n' "$profile_name" >"$PROFILE_FILE"
+  set_browser_handlers helium.desktop
+  ln --symbolic --force "$OPENCODE_AUTH_PROFILES_DIR/personal.json" "$OPENCODE_AUTH_PATH"
 
-    profile_status
-    exit 0
-end
+  profile_status
+  exit 0
+}
 
-function set_work_profile
-    echo $profile_name > $PROFILE_FILE
+set_work_profile() {
+  local profile_name=$1
 
-    set_browser_handlers google-chrome.desktop
-    ln --symbolic --force $OPENCODE_AUTH_PROFILES_DIR/work.json $OPENCODE_AUTH_PATH
+  printf '%s\n' "$profile_name" >"$PROFILE_FILE"
+  set_browser_handlers google-chrome.desktop
+  ln --symbolic --force "$OPENCODE_AUTH_PROFILES_DIR/work.json" "$OPENCODE_AUTH_PATH"
 
-    profile_status
-    exit 0
-end
+  profile_status
+  exit 0
+}
 
-function profile_status
-    if test -e "$PROFILE_FILE"
-        cat $PROFILE_FILE
-        handlr list
-        ls -al $OPENCODE_AUTH_PATH
-    else
-        echo $PROFILE_FILE
-        echo "profile file not found"
-    end
-end
+profile_status() {
+  if [[ -e "$PROFILE_FILE" ]]; then
+    cat "$PROFILE_FILE"
+    handlr list
+    ls -al "$OPENCODE_AUTH_PATH"
+  else
+    printf '%s\n' "$PROFILE_FILE"
+    printf 'profile file not found\n'
+  fi
+}
 
-function profile_switch
-    set -l profile_name $argv[1]
+profile_switch() {
+  local profile_name=${1:-}
 
-    if test -z "$profile_name"
-        echo "Usage: profile switch <profile-name>"
-        exit 1
-    end
-    
-    if not test -e "$PROFILE_FILE"
-        mkdir -p (dirname $PROFILE_FILE)
-        touch $PROFILE_FILE
-    end
+  if [[ -z "$profile_name" ]]; then
+    printf 'Usage: profile switch <profile-name>\n' >&2
+    exit 1
+  fi
 
-    switch $profile_name
-        case "personal"
-            set_personal_profile
-        case "work"
-            set_work_profile
-        case "*"
-            echo "profile $profile_name not recognized"
-            exit 1
-    end
-end
+  if [[ ! -e "$PROFILE_FILE" ]]; then
+    mkdir -p "$(dirname "$PROFILE_FILE")"
+    touch "$PROFILE_FILE"
+  fi
+
+  case "$profile_name" in
+    personal)
+      set_personal_profile "$profile_name"
+      ;;
+    work)
+      set_work_profile "$profile_name"
+      ;;
+    *)
+      printf 'profile %s not recognized\n' "$profile_name" >&2
+      exit 1
+      ;;
+  esac
+}
 
 preflight
 
-set -l command $argv[1]
+command_name=${1:-}
 
-if test -z "$command"
+if [[ -z "$command_name" ]]; then
+  usage
+  exit 1
+fi
+
+shift
+
+case "$command_name" in
+  status)
+    profile_status "$@"
+    ;;
+  switch)
+    profile_switch "$@"
+    ;;
+  active)
+    cat "$PROFILE_FILE"
+    ;;
+  help|-h|--help)
+    usage
+    ;;
+  *)
+    printf 'Unknown subcommand: %s\n' "$command_name" >&2
     usage
     exit 1
-end
-
-set -e argv[1]
-
-switch $command
-    case status
-        profile_status $argv
-    case switch
-        profile_switch $argv
-    case active
-        cat $PROFILE_FILE
-    case help -h --help
-        usage
-    case '*'
-        echo "Unknown subcommand: $command"
-        usage
-        exit 1
-end
+    ;;
+esac
