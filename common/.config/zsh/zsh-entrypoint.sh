@@ -33,10 +33,7 @@ fi
 # docs claim this needs to be loaded before the actual plugin
 source $HOME/.config/zsh/zsh-syntax-highligting-theme.sh
 
-zinit light zsh-users/zsh-syntax-highlighting
 zinit light zsh-users/zsh-completions
-zinit light zsh-users/zsh-autosuggestions
-zinit light Aloxaf/fzf-tab
 
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
 zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
@@ -49,8 +46,18 @@ compinit -C
 
 zinit cdreplay -q
 
+# Defer interactive niceties until after the first prompt. fzf-tab must load
+# after compinit and before other widget-wrapping plugins.
+zinit ice wait"0" lucid
+zinit light Aloxaf/fzf-tab
+
+zinit ice wait"0" lucid atload"bindkey '^y' autosuggest-accept"
+zinit light zsh-users/zsh-autosuggestions
+
+zinit ice wait"0" lucid
+zinit light zsh-users/zsh-syntax-highlighting
+
 bindkey -v
-bindkey '^y' autosuggest-accept
 bindkey '^p' history-search-backward
 bindkey '^n' history-search-forward
 # Disable terminal flow control so Ctrl+S can be used as a zsh keybinding.
@@ -267,3 +274,24 @@ hyprlog() {
 if [[ "$TERM" == "linux" ]] && [[ -z "$DISPLAY" ]] && [[ "$(tty)" == "/dev/tty1" ]]; then
     start-hyprland
 fi
+
+######################################
+# Forge shell integration            #
+######################################
+# Keep Forge setup in this tracked entrypoint instead of the generated .zshrc block.
+if [[ ! " ${plugins[@]} " =~ " zsh-autosuggestions " ]]; then
+    plugins+=(zsh-autosuggestions)
+fi
+if [[ ! " ${plugins[@]} " =~ " zsh-syntax-highlighting " ]]; then
+    plugins+=(zsh-syntax-highlighting)
+fi
+
+if [[ -z "$_FORGE_PLUGIN_LOADED" ]]; then
+    source <(forge zsh plugin)
+fi
+
+if [[ -z "$_FORGE_THEME_LOADED" ]]; then
+    source <(forge zsh theme)
+fi
+
+export FORGE_EDITOR="nvim"
