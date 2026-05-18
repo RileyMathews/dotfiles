@@ -1,22 +1,3 @@
-autoload -U colors && colors
-autoload -Uz vcs_info
-autoload -U add-zsh-hook
-zstyle ':vcs_info:*' enable git      # <- this turns the Git backend on
-zstyle ':vcs_info:*' check-for-changes true
-zstyle ':vcs_info:*' unstagedstr '*'
-zstyle ':vcs_info:*' stagedstr '+'
-zstyle ':vcs_info:git:*' formats ' %F{blue}(%b%u%c)' # branch only
-add-zsh-hook precmd vcs_info             # run before every prompt
-setopt PROMPT_SUBST
-
-PS1='%B%{$fg[green]%}%~%b${vcs_info_msg_0_}%{$fg[green]%} > %{$reset_color%}'
-if [[ -n "$SSH_CONNECTION" ]]; then
-  # If SSH_CONNECTION is set, we are on a remote server
-  REMOTE_ICON=" 󰑔 " # You can change this to any icon you prefer, e.g., "🖥️ " or "\ue0b0 "
-    PS1='%B%{$fg[green]%}󰑔 %~%b${vcs_info_msg_0_}%{$fg[green]%} > %{$reset_color%}'
-fi
-
-
 ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
 TPM_PATH="${HOME}/.tmux/plugins/tpm"
 
@@ -33,7 +14,10 @@ fi
 # docs claim this needs to be loaded before the actual plugin
 source $HOME/.config/zsh/zsh-syntax-highligting-theme.sh
 
+zinit light zsh-users/zsh-syntax-highlighting
 zinit light zsh-users/zsh-completions
+zinit light zsh-users/zsh-autosuggestions
+zinit light Aloxaf/fzf-tab
 
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
 zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
@@ -46,18 +30,8 @@ compinit -C
 
 zinit cdreplay -q
 
-# Defer interactive niceties until after the first prompt. fzf-tab must load
-# after compinit and before other widget-wrapping plugins.
-zinit ice wait"0" lucid
-zinit light Aloxaf/fzf-tab
-
-zinit ice wait"0" lucid atload"bindkey '^y' autosuggest-accept"
-zinit light zsh-users/zsh-autosuggestions
-
-zinit ice wait"0" lucid
-zinit light zsh-users/zsh-syntax-highlighting
-
 bindkey -v
+bindkey '^y' autosuggest-accept
 bindkey '^p' history-search-backward
 bindkey '^n' history-search-forward
 # Disable terminal flow control so Ctrl+S can be used as a zsh keybinding.
@@ -265,32 +239,34 @@ done
 #
 # eval "$(starship init zsh)"
 
-hyprlog() {
-    echo "copying the last hyprland log to home dir as hyprland.log"
-    cp /run/user/1000/hypr/$(command ls -t /run/user/1000/hypr/ | head -n 1)/hyprland.log ~/hyprland.log
-}
-
-if [[ "$TERM" == "linux" ]] && [[ -z "$DISPLAY" ]] && [[ "$(tty)" == "/dev/tty1" ]]; then
-    start-hyprland
-fi
-
-######################################
-# Forge shell integration            #
-######################################
+# hyprlog() {
+#     echo "copying the last hyprland log to home dir as hyprland.log"
+#     cp /run/user/1000/hypr/$(command ls -t /run/user/1000/hypr/ | head -n 1)/hyprland.log ~/hyprland.log
+# }
+#
+# if [[ "$TERM" == "linux" ]] && [[ -z "$DISPLAY" ]] && [[ "$(tty)" == "/dev/tty1" ]]; then
+#     start-hyprland
+# fi
+#
+# ######################################
+# # Forge shell integration            #
+# ######################################
 # Keep Forge setup in this tracked entrypoint instead of the generated .zshrc block.
-if [[ ! " ${plugins[@]} " =~ " zsh-autosuggestions " ]]; then
-    plugins+=(zsh-autosuggestions)
-fi
-if [[ ! " ${plugins[@]} " =~ " zsh-syntax-highlighting " ]]; then
-    plugins+=(zsh-syntax-highlighting)
-fi
+# if [[ ! " ${plugins[@]} " =~ " zsh-autosuggestions " ]]; then
+#     plugins+=(zsh-autosuggestions)
+# fi
+# if [[ ! " ${plugins[@]} " =~ " zsh-syntax-highlighting " ]]; then
+#     plugins+=(zsh-syntax-highlighting)
+# fi
 
-if [[ -z "$_FORGE_PLUGIN_LOADED" ]]; then
-    source <(forge zsh plugin)
-fi
+# if [[ -z "$_FORGE_PLUGIN_LOADED" ]]; then
+#     source <(forge zsh plugin)
+# fi
 
-if [[ -z "$_FORGE_THEME_LOADED" ]]; then
-    source <(forge zsh theme)
-fi
+# if [[ -z "$_FORGE_THEME_LOADED" ]]; then
+#     source <(forge zsh theme)
+# fi
 
-export FORGE_EDITOR="nvim"
+# export FORGE_EDITOR="nvim"
+
+eval "$(starship init zsh)"
