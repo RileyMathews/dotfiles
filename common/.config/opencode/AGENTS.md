@@ -1,9 +1,6 @@
-# Haskell
-When working in haskell projects always prefer to use the ghciwatch magic comment method for testing.
-
-NEVER use global commands that will recompile and run tests en mass. Always assume ghciwatch is running
-and available and that you can use the magic comment for tests.
-
-If using the magic comment method for testing seems to fail for any reason
-do not fallback to other commands. Stop and ask the user to fix the environment.
-
+# Agent Instructions
+## Running servers
+Never run blocking servers directly via the shell tool. I almost always run opencode inside a tmux session so feel free to query the local
+tmux environment and spawn new windows for running long running things like servers and managing their lifecycle that way.
+Things like `bundle exec rails s`. `python manage.py runserver` `ghciwatch` etc... should all be run this way. Never run them
+via the direct shell tool as that would block your chat session.

@@ -1,5 +1,9 @@
-#! /usr/bin/env fish
-set app (xdg-mime query default x-scheme-handler/https | string replace -r '\.desktop$' '')
-if test -n "$app"
-    setsid -f gtk-launch "$app" >/dev/null 2&>1
-end
+#!/usr/bin/env bash
+set -euo pipefail
+
+app=$(xdg-mime query default x-scheme-handler/https 2>/dev/null || true)
+app=${app%.desktop}
+
+if [[ -n "$app" ]]; then
+  setsid -f gtk-launch "$app" >/dev/null 2>&1
+fi

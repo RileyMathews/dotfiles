@@ -130,7 +130,7 @@ worktree-path = "/home/riley/worktrees/{{ repo }}__{{ branch | sanitize }}"
 #
 # <!-- DEFAULT_TEMPLATE_START -->
 [commit.generation]
-command = "opencode run -m openai/gpt-5.1-codex-mini --variant fast"
+command = "opencode run -m openai/gpt-5.4-mini-fast --variant fast"
 # template = """
 # Write a commit message for the staged changes below.
 #
@@ -205,8 +205,12 @@ command = "opencode run -m openai/gpt-5.1-codex-mini --variant fast"
 # """
 # <!-- DEFAULT_SQUASH_TEMPLATE_END -->
 
+[step.copy-ignored]
+exclude = ["CLAUDE.local.md", ".envrc.local"]
+
 [post-start]
 copy = "wt step copy-ignored"
+link-local = "for file in CLAUDE.local.md .envrc.local; do [ -e {{ primary_worktree_path }}/$file ] && [ ! -e $file ] && ln -s {{ primary_worktree_path }}/$file $file; done"
 
 # [post-create]
 # tmux = """
