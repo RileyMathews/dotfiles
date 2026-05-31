@@ -13,22 +13,10 @@ function usage
 end
 
 # ensures everything is setup properly
-function preflight
-    if not test  -d "$OPENCODE_AUTH_PROFILES_DIR"
-        mkdir -p $OPENCODE_AUTH_PROFILES_DIR
-    end
-
-    if test -e "$OPENCODE_AUTH_PATH" && not test -L "$OPENCODE_AUTH_PATH"
-        echo "opencode auth.json is not a symlink. Move your current auth.json into the correct subdir before running this command"
-        exit 1
-    end
-end
-
 function set_personal_profile
     echo $profile_name > $PROFILE_FILE
 
     handlr set x-scheme-handler/https librewolf.desktop
-    ln --symbolic --force $OPENCODE_AUTH_PROFILES_DIR/personal.json $OPENCODE_AUTH_PATH
 
     profile_status
     exit 0
@@ -38,7 +26,6 @@ function set_work_profile
     echo $profile_name > $PROFILE_FILE
 
     handlr set x-scheme-handler/https google-chrome.desktop
-    ln --symbolic --force $OPENCODE_AUTH_PROFILES_DIR/work.json $OPENCODE_AUTH_PATH
 
     profile_status
     exit 0
