@@ -1,9 +1,0 @@
-#!/usr/bin/env bash
-set -euo pipefail
-
-app=$(xdg-mime query default x-scheme-handler/https 2>/dev/null || true)
-app=${app%.desktop}
-
-if [[ -n "$app" ]]; then
-  setsid -f gtk-launch "$app" >/dev/null 2>&1
-fi

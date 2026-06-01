@@ -1,8 +1,0 @@
-#!/usr/bin/env bash
-set -euo pipefail
-
-if git show-ref --verify --quiet refs/heads/main; then
-  printf 'main\n'
-else
-  printf 'master\n'
-fi

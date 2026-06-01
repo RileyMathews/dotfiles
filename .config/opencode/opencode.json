@@ -1,0 +1,76 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "snapshot": false, 
+  "default_agent": "build",
+  "instructions": ["CLAUDE.local.md"],
+  "disabled_providers": [
+    "github-models",
+    "github-copilot-enterprise",
+    "amazon-bedrock",
+    "github-copilot",
+    "opencode"
+  ],
+  "lsp": {
+    "haskell-language-server": {
+      "command": [],
+      "extensions": [
+        ".hs"
+      ]
+    },
+    "tsgo": {
+      "command": [],
+      "extensions": [
+        ".ts",
+        ".tsx",
+        ".js",
+        ".jsx"
+      ]
+    }
+  },
+  "mcp": {
+    "forgejo": {
+      "type": "local",
+      "command": ["forgejo-mcp", "--url", "https://git.rileymathews.com"],
+      "enabled": true
+    },
+    "blender": {
+      "type": "local",
+      "command": ["uv", "--directory", "/home/riley/code/blender_mcp/mcp", "run", "blender-mcp"],
+      "enabled": true
+    },
+    "linear": {
+      "type": "remote",
+      "url": "https://mcp.linear.app/sse"
+    },
+    "notion": {
+      "type": "remote",
+      "url": "https://mcp.notion.com/mcp"
+    },
+    "honeycomb": {
+      "type": "remote",
+      "url": "https://mcp.honeycomb.io/mcp",
+      "oauth": {}
+    },
+    "sentry": {
+      "type": "remote",
+      "url": "https://mcp.sentry.dev/mcp",
+      "oauth": {}
+    }
+  },
+  "permission": {
+    "bash": {
+      "make *": "ask",
+      "*": "allow"
+    },
+    "external_directory": {
+      "~/code/**": "allow",
+      "~/.config/**": "allow",
+      "~/.local/**": "allow",
+      "~/.cache/**": "allow",
+      "~/.cargo/**": "allow",
+      "~/.bun/**": "allow",
+      "~/Documents/**": "allow",
+      "~/Downloads/**": "allow"
+    }
+  }
+}

@@ -1,0 +1,11 @@
+installs.ini
+profiles.ini
+
+Profile Groups/
+firefox-mpris/
+Crash Reports/
+
+*.default/
+*.default-default/
+*.default-release/
+*.default-esr/
