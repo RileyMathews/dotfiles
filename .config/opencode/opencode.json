@@ -7,8 +7,7 @@
     "github-models",
     "github-copilot-enterprise",
     "amazon-bedrock",
-    "github-copilot",
-    "opencode"
+    "github-copilot"
   ],
   "lsp": {
     "haskell-language-server": {
