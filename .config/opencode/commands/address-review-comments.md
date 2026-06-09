@@ -1,13 +1,12 @@
 ---
-description: Go through the codebase and address comments I have left as reviews of your changes
+description: Grep for specific comments I have left and address them.
 ---
+I have left code comments in the codebase beginning with 'OPENCODE' that I want you to address.
 
-I have left code comments in the codebase reviewing your changes and/or suggesting other things we may want changed.
+Grep for 'OPENCODE' and address each comment.
 
-The comments all begin with a tag that says what kind of comment they are.
+Some comments will be things I want you to add to the codebase or refactor. Make the relavent code changes for these.
 
-REVC -- comment will have a change I want done to the code.
-REVQ -- comment will have a question I have about what you did, no need to change code for these I just want my question addressed in your response.
+As you address each comment you should delete the comments from the code.
 
-Go through the code and either make the change or come up with an answer to the question. Remove each of my comments as you address it.
-The answers to any questions I have can be grouped together in your final response.
+Some may just be questions I have about the code. Don't change this code just answer the question in your response when you are done working.
