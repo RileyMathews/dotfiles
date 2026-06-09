@@ -324,3 +324,12 @@ hl.window_rule({
     move = { 50, 50 },
     size = { 500, 500 },
 })
+
+hl.window_rule({
+    name = "blender-file-view",
+    match = {
+        initial_class = "^(blender)$",
+        initial_title = "^(File Browser)$",
+    },
+    float = false,
+})
