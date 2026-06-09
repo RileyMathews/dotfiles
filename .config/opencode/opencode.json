@@ -71,8 +71,5 @@
       "~/Documents/**": "allow",
       "~/Downloads/**": "allow"
     }
-  },
-  "plugin": [
-    "superpowers@git+https://github.com/obra/superpowers.git"
-  ]
+  }
 }
