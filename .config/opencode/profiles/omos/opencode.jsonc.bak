@@ -1,0 +1,19 @@
+{
+  "plugin": [
+    "oh-my-opencode-slim"
+  ],
+  "agent": {
+    "build": {
+      "disable": true
+    },
+    "explore": {
+      "disable": true
+    },
+    "general": {
+      "disable": true
+    },
+    "plan": {
+      "disable": true
+    }
+  }
+}

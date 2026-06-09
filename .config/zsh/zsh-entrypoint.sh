@@ -247,26 +247,3 @@ done
 # if [[ "$TERM" == "linux" ]] && [[ -z "$DISPLAY" ]] && [[ "$(tty)" == "/dev/tty1" ]]; then
 #     start-hyprland
 # fi
-#
-# ######################################
-# # Forge shell integration            #
-# ######################################
-# Keep Forge setup in this tracked entrypoint instead of the generated .zshrc block.
-# if [[ ! " ${plugins[@]} " =~ " zsh-autosuggestions " ]]; then
-#     plugins+=(zsh-autosuggestions)
-# fi
-# if [[ ! " ${plugins[@]} " =~ " zsh-syntax-highlighting " ]]; then
-#     plugins+=(zsh-syntax-highlighting)
-# fi
-
-# if [[ -z "$_FORGE_PLUGIN_LOADED" ]]; then
-#     source <(forge zsh plugin)
-# fi
-
-# if [[ -z "$_FORGE_THEME_LOADED" ]]; then
-#     source <(forge zsh theme)
-# fi
-
-# export FORGE_EDITOR="nvim"
-
-eval "$(starship init zsh)"
