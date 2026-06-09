@@ -152,7 +152,7 @@ alias ndr='nix-direnv-reload'
 ######################################
 # Language Managers                  #
 ######################################
-export PATH="$PATH:$HOME/.cargo/bin"
+export PATH="$PATH:$HOME/.cargo/bin:$HOME/.local/share/pnpm/bin"
 
 [ -f "$HOME/.ghcup/env" ] && source "$HOME/.ghcup/env" # ghcup-env
 export PATH="$HOME/.cabal/bin:$HOME/.ghcup/bin:$PATH"
