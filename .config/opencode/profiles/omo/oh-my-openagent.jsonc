@@ -107,5 +107,10 @@
 		"main_pane_min_width": 120,
 		"agent_pane_min_width": 40,
 		"isolation": "inline"
+	},
+	"team_mode": {
+		"enabled": true,
+		"max_parallel_members": 4,
+		"tmux_visualization": true
 	}
 }
