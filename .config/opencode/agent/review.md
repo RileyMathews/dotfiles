@@ -20,8 +20,7 @@ description: >-
   attempt, automatically offer to clarify any confusing aspects of the guidance
   previously given.
 mode: primary
-tools:
-  bash: true
+permissions:
   write: false
   edit: false
 ---
