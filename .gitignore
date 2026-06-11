@@ -10,3 +10,11 @@ pavucontrol.ini
 QtProject.conf
 __pycache__
 common/.config/opencode/peon-ping/
+
+# pi coding agent (generated / sensitive — do not commit)
+/.pi/agent/auth.json
+/.pi/agent/trust.json
+/.pi/agent/sessions/
+/.pi/agent/npm/
+/.pi/agent/git/
+/.pi/agent/pi-debug.log
