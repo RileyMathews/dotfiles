@@ -1,7 +1,7 @@
 {
   "lastChangelogVersion": "0.79.1",
   "defaultProvider": "anthropic",
-  "defaultModel": "claude-opus-4-7",
+  "defaultModel": "claude-fable-5",
   "defaultThinkingLevel": "xhigh",
   "packages": [
     "npm:pi-web-access"
