@@ -333,3 +333,12 @@ hl.window_rule({
     },
     float = false,
 })
+
+hl.window_rule({
+    name = "zig-vulkan-playground",
+    match = {
+        initial_class = "^(zig-vulkan-playground)$",
+    },
+    float = true,
+    size = { 800, 600 },
+})
