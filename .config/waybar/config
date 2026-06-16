@@ -23,7 +23,6 @@
         "memory",
         "temperature",
         "backlight",
-        "battery",
         "clock",
     ],
     "hyprland/window": {
@@ -79,28 +78,6 @@
         // "device": "acpi_video1",
         "format": "{icon} {percent}%",
         "format-icons": ["", "", "", "", "", "", "", "", ""]
-    },
-    "battery": {
-      "format": "{icon} {capacity}%",
-      "format-discharging": "{icon} {capacity}% {time}",
-      "format-charging":    "{icon} {capacity}% {time}",
-      "format-plugged":     "",
-        "format-icons": {
-          "charging": [
-            "󰢜", "󰂆", "󰂇", "󰂈", "󰢝", "󰂉", "󰢞", "󰂊", "󰂋", "󰂅"
-          ],
-          "default": [
-            "󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"
-          ]
-        },
-      "format-full": "Charged ",
-      "tooltip-format-discharging": "{power:>1.0f}W↓ {capacity}%",
-      "tooltip-format-charging": "{power:>1.0f}W↑ {capacity}%",
-      "interval": 5,
-      "states": {
-        "warning": 20,
-        "critical": 10
-      }
     },
     "network": {
         // "interface": "wlp2*", // (Optional) To force the use of this interface
