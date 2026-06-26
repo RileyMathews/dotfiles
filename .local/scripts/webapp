@@ -5,8 +5,8 @@
 DESKTOP_DIR="$HOME/.local/share/applications"
 ICON_DIR="$HOME/.local/share/icons/webapp-icons"
 
-BROWSER_BIN="helium-browser"
-BROWSER_ICON_NAME="helium-browser"
+BROWSER_BIN="brave-origin"
+BROWSER_ICON_NAME="brave-origin"
 
 # Function to detect file type by magic bytes
 detect_file_type() {
