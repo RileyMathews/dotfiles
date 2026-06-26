@@ -5,3 +5,7 @@
 	rebase = false
 [init]
 	defaultBranch = main
+[core]
+	sshCommand = ~/.local/scripts/ssh-yubikey-notify
+[ssh]
+	variant = ssh

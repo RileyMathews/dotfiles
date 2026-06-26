@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ssh_dest=""
+args=("$@")
+
+for ((i = 0; i < ${#args[@]}; i++)); do
+  arg="${args[i]}"
+
+  case "$arg" in
+    --)
+      ssh_dest="${args[i + 1]:-}"
+      break
+      ;;
+    -[BbcDEeFIiJLlmOoPpQRSWw]|-[BbcDEeFIiJLlmOoPpQRSWw]?*)
+      [[ "$arg" == ?? ]] && ((i += 1))
+      ;;
+    -*)
+      ;;
+    *)
+      ssh_dest="$arg"
+      break
+      ;;
+  esac
+done
+
+if [[ -z "$ssh_dest" ]] || ! /usr/bin/ssh -O check "$ssh_dest" >/dev/null 2>&1; then
+  notify-send \
+    --app-name="git ssh" \
+    --urgency=critical \
+    --expire-time=10000 \
+    "Touch your YubiKey" \
+    "Git is waiting for SSH authentication."
+
+  printf '\aTouch your YubiKey for Git SSH authentication.\n' >&2
+fi
+
+exec /usr/bin/ssh "$@"
