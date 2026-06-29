@@ -206,11 +206,11 @@ command = "opencode run -m openai/gpt-5.4-mini-fast --variant fast"
 # <!-- DEFAULT_SQUASH_TEMPLATE_END -->
 
 [step.copy-ignored]
-exclude = ["CLAUDE.local.md", ".envrc.local"]
+exclude = ["CLAUDE.local.md", ".envrc.local", ".pc"]
 
 [post-start]
 copy = "wt step copy-ignored"
-link-local = "for file in CLAUDE.local.md .envrc.local; do [ -e {{ primary_worktree_path }}/$file ] && [ ! -e $file ] && ln -s {{ primary_worktree_path }}/$file $file; done"
+link-local = "for file in CLAUDE.local.md .envrc.local .pc; do [ -e {{ primary_worktree_path }}/$file ] && [ ! -e $file ] && ln -s {{ primary_worktree_path }}/$file $file; done"
 
 # [post-create]
 # tmux = """
