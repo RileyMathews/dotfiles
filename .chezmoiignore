@@ -1,0 +1,15 @@
+# Repository files, not home-directory targets.
+.git
+.gitignore
+.sops.yaml
+.stow-local-ignore
+age-edit
+deploy.sh
+main.py
+
+# Generated or sensitive opencode state.
+dot_config/opencode/node_modules
+dot_config/opencode/package.json
+dot_config/opencode/package-lock.json
+dot_config/opencode/bun.lock
+dot_config/opencode/local-config.json

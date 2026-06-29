@@ -144,7 +144,7 @@ alias tss='sudo tailscale switch'
 
 alias ghd="gh-dash"
 
-alias oc='OPENCODE_CONFIG="$HOME/.config/opencode/local-config.json" opencode'
+alias oc='opencode'
 alias ocp='opencode --agent plan'
 alias och='opencode --agent haskell-dev --prompt "This project has some compile errors. Please help me fix them."'
 

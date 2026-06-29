@@ -18,3 +18,10 @@ common/.config/opencode/peon-ping/
 /.pi/agent/npm/
 /.pi/agent/git/
 /.pi/agent/pi-debug.log
+
+# opencode generated/local files left in the old stow-style tree
+/.config/opencode/local-config.json
+/.config/opencode/node_modules/
+/.config/opencode/package.json
+/.config/opencode/package-lock.json
+/.config/opencode/bun.lock

@@ -2,4 +2,6 @@
 
 set -euo pipefail
 
-stow "$@" --target="$HOME" .
+script_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
+
+chezmoi --source "$script_dir" apply "$@"
