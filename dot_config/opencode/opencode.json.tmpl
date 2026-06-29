@@ -7,7 +7,10 @@
     "github-models",
     "github-copilot-enterprise",
     "amazon-bedrock",
-    "github-copilot"
+    "github-copilot",
+    {{- if eq .machine "picard" }}
+    "opencode"
+    {{- end }}
   ],
   "lsp": {
     "haskell-language-server": {
