@@ -5,7 +5,9 @@
 	rebase = false
 [init]
 	defaultBranch = main
+{{- if eq .machine "picard" }}
 [core]
 	sshCommand = ~/.local/scripts/ssh-yubikey-notify
+{{- end }}
 [ssh]
 	variant = ssh
