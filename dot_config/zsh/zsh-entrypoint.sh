@@ -89,6 +89,10 @@ export FORGEJO_URL="https://git.rileymathews.com"
 export KEYTIMEOUT=1
 export XDG_DATA_DIRS="$XDG_DATA_DIRS:/usr/share:/usr/local/share:/var/lib/flatpak/exports/share:/home/riley/.local/share/flatpak/exports/share"
 
+if [ "$(hostname)" != "picard" ]; then
+    export OPENCODE_ENABLE_EXA=1
+fi
+
 export ANDROID_HOME="$HOME/Android/Sdk"
 export PATH="$PATH:$HOME/.local/scripts:$HOME/.cargo/bin:$HOME/.local/bin:$HOME/.bun/bin:$ANDROID_HOME/emulator:$ANDROID_HOME/platform-tools:$ANDROID_HOME/cmdline-tools/latest/bin:$HOME/.local/python-scripts:$HOME/.screenlayout"
 
