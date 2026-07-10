@@ -1,5 +1,1 @@
-node_modules
-package.json
-package-lock.json
-bun.lock
-.gitignorepein-pin/state.json
+local-config.json
