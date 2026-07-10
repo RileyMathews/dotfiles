@@ -86,9 +86,24 @@ package cache are shared with normal OpenCode sessions, but bare `opencode` and
 `oc` do not load the plugin. OMO may create project-local `.omo/` workflow state
 while this profile is active.
 
+Team Mode is enabled with up to eight members and three running concurrently.
+Member sessions appear in tmux panes and share tasks and messages through the
+`team_*` tools. OMO team state is stored under `~/.omo/` and `team_delete` closes
+the panes and removes the active runtime state.
+
+Only the `omo` profile starts OpenCode with a server port. `ocp omo` selects a
+free loopback port automatically and passes it through both `OPENCODE_PORT` and
+`--port` so tmux members can attach to the correct isolated instance. To request
+a stable port, use either form:
+
 ```sh
 ocp omo
+OPENCODE_PORT=4096 ocp omo
+ocp omo --port 4096
 ```
+
+An explicitly requested port fails immediately if it is invalid, conflicts with
+the other explicit form, or is already in use.
 
 Upstream installation documentation:
 <https://github.com/code-yeongyu/oh-my-openagent/blob/master/docs/guide/installation.md>

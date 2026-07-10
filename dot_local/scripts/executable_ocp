@@ -3,6 +3,169 @@ set -euo pipefail
 
 profile_root="${XDG_CONFIG_HOME:-$HOME/.config}/opencode/profiles"
 
+validate_port() {
+  local port=$1
+
+  if [[ ! "$port" =~ ^[0-9]+$ ]]; then
+    printf 'ocp: invalid port: %s\n' "$port" >&2
+    exit 2
+  fi
+
+  port=$((10#$port))
+  if ((port < 1 || port > 65535)); then
+    printf 'ocp: port must be between 1 and 65535: %s\n' "$port" >&2
+    exit 2
+  fi
+
+  printf '%s\n' "$port"
+}
+
+port_is_available() {
+  python3 - "$1" <<'PY'
+import socket
+import sys
+
+with socket.socket() as sock:
+    try:
+        sock.bind(("127.0.0.1", int(sys.argv[1])))
+    except OSError:
+        raise SystemExit(1)
+PY
+}
+
+find_available_port() {
+  python3 <<'PY'
+import socket
+
+with socket.socket() as sock:
+    sock.bind(("127.0.0.1", 0))
+    print(sock.getsockname()[1])
+PY
+}
+
+run_omo() {
+  local env_port=${OPENCODE_PORT:-}
+  local arg_port=
+  local arg_port_seen=0
+  local port
+  local index=0
+  local command_kind=tui
+  local command_index=-1
+  local -a args=("$@")
+  local -a forwarded=()
+  local -a launch_args=()
+
+  while ((index < ${#args[@]})); do
+    case "${args[index]}" in
+      --)
+        forwarded+=("${args[@]:index}")
+        break
+        ;;
+      --port|--port=*)
+        if ((arg_port_seen)); then
+          printf 'ocp: --port may only be specified once\n' >&2
+          exit 2
+        fi
+
+        arg_port_seen=1
+        if [[ "${args[index]}" == "--port" ]]; then
+          if ((index + 1 >= ${#args[@]})); then
+            printf 'ocp: --port requires a value\n' >&2
+            exit 2
+          fi
+          arg_port=${args[index + 1]}
+          ((index += 1))
+        else
+          arg_port=${args[index]#--port=}
+        fi
+        ;;
+      *)
+        forwarded+=("${args[index]}")
+        ;;
+    esac
+
+    ((index += 1))
+  done
+
+  for ((index = 0; index < ${#forwarded[@]}; index += 1)); do
+    case "${forwarded[index]}" in
+      --)
+        break
+        ;;
+      -h|--help|-v|--version)
+        command_kind=utility
+        break
+        ;;
+      --log-level|--hostname|--mdns-domain|--cors|-m|--model|-s|--session|--prompt|--agent|--replay-limit)
+        ((index += 1))
+        ;;
+      --log-level=*|--hostname=*|--mdns-domain=*|--cors=*|--model=*|--session=*|--prompt=*|--agent=*|--replay-limit=*)
+        ;;
+      -*)
+        ;;
+      run|serve|web)
+        command_kind=server
+        command_index=$index
+        break
+        ;;
+      completion|acp|mcp|attach|debug|providers|auth|agent|upgrade|uninstall|models|stats|export|import|github|pr|session|plugin|db)
+        command_kind=utility
+        break
+        ;;
+      *)
+        break
+        ;;
+    esac
+  done
+
+  if [[ "$command_kind" == "utility" ]]; then
+    if ((arg_port_seen)); then
+      printf 'ocp: --port is only supported for the OMO TUI, run, serve, or web\n' >&2
+      exit 2
+    fi
+    exec env -u OPENCODE_PORT OPENCODE_CONFIG_DIR="$profile_dir" opencode "${forwarded[@]}"
+  fi
+
+  if ((arg_port_seen)); then
+    arg_port=$(validate_port "$arg_port")
+  fi
+  if [[ -n "$env_port" ]]; then
+    env_port=$(validate_port "$env_port")
+  fi
+  if ((arg_port_seen)) && [[ -n "$env_port" && "$arg_port" != "$env_port" ]]; then
+    printf 'ocp: --port (%s) conflicts with OPENCODE_PORT (%s)\n' "$arg_port" "$env_port" >&2
+    exit 2
+  fi
+
+  if ((arg_port_seen)); then
+    port=$arg_port
+  else
+    port=$env_port
+  fi
+
+  if [[ -n "$port" ]]; then
+    if ! port_is_available "$port"; then
+      printf 'ocp: port is already in use on 127.0.0.1: %s\n' "$port" >&2
+      exit 1
+    fi
+  else
+    port=$(find_available_port)
+  fi
+
+  if [[ "$command_kind" == "server" ]]; then
+    launch_args=(
+      "${forwarded[@]:0:command_index + 1}"
+      --port "$port"
+      "${forwarded[@]:command_index + 1}"
+    )
+  else
+    launch_args=(--port "$port" "${forwarded[@]}")
+  fi
+
+  OPENCODE_CONFIG_DIR="$profile_dir" OPENCODE_PORT="$port" \
+    exec opencode "${launch_args[@]}"
+}
+
 usage() {
   printf 'Usage: ocp <profile> [opencode args...]\n'
   printf '\n'
@@ -42,4 +205,9 @@ if [[ ! -r "$profile_dir/opencode.jsonc" && ! -r "$profile_dir/opencode.json" ]]
 fi
 
 shift
+
+if [[ "$profile" == "omo" ]]; then
+  run_omo "$@"
+fi
+
 OPENCODE_CONFIG_DIR="$profile_dir" exec opencode "$@"
