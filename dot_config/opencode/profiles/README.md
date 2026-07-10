@@ -70,10 +70,15 @@ Upstream installation documentation:
 ## Oh My OpenAgent
 
 The `omo` profile loads Oh My OpenAgent only when launched with `ocp omo`. Its
-separate `oh-my-openagent.jsonc` uses OpenAI models from a ChatGPT subscription,
-blocks Anthropic fallback routes, and disables the Claude-tuned Metis planning
-consultant. Sisyphus remains enabled because current releases provide a
-dedicated GPT-5.5 prompt; Hephaestus, Oracle, and Momus are GPT-native.
+separate `oh-my-openagent.jsonc` is rendered for the current machine:
+
+- `picard` uses Anthropic for Claude-tuned orchestration and planning agents,
+  with OpenAI retained for GPT-native specialists and fallback routes.
+- Other machines use OpenAI exclusively, block Anthropic fallback routes, and
+  disable the Claude-tuned Metis planning consultant.
+
+Sisyphus remains enabled on OpenAI-only machines because current releases
+provide a dedicated GPT-5.5 prompt. Hephaestus, Oracle, and Momus are GPT-native.
 
 Anonymous telemetry is disabled. The upstream auto-update hook remains enabled
 and may update the package in OpenCode's shared cache. Authentication and the
