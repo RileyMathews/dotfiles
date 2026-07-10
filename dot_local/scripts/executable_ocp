@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+profile_root="${XDG_CONFIG_HOME:-$HOME/.config}/opencode/profiles"
+
+usage() {
+  printf 'Usage: ocp <profile> [opencode args...]\n'
+  printf '\n'
+  printf 'Runs OpenCode with an additive profile from:\n'
+  printf '  %s/<profile>\n' "$profile_root"
+}
+
+profile=${1:-}
+
+case "$profile" in
+  help|-h|--help)
+    usage
+    exit 0
+    ;;
+  '')
+    usage >&2
+    exit 2
+    ;;
+esac
+
+if [[ ! "$profile" =~ ^[A-Za-z0-9][A-Za-z0-9._-]*$ || "$profile" == "." || "$profile" == ".." ]]; then
+  printf 'ocp: invalid profile name: %s\n' "$profile" >&2
+  exit 2
+fi
+
+profile_dir="$profile_root/$profile"
+
+if [[ ! -d "$profile_dir" ]]; then
+  printf 'ocp: profile not found: %s\n' "$profile" >&2
+  printf 'ocp: expected directory: %s\n' "$profile_dir" >&2
+  exit 1
+fi
+
+if [[ ! -r "$profile_dir/opencode.jsonc" && ! -r "$profile_dir/opencode.json" ]]; then
+  printf 'ocp: profile has no readable opencode.jsonc or opencode.json: %s\n' "$profile_dir" >&2
+  exit 1
+fi
+
+shift
+OPENCODE_CONFIG_DIR="$profile_dir" exec opencode "$@"
