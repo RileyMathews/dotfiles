@@ -66,3 +66,24 @@ ocp superpowers run "Tell me about your superpowers"
 
 Upstream installation documentation:
 <https://github.com/obra/superpowers/blob/main/.opencode/INSTALL.md>
+
+## Oh My OpenAgent
+
+The `omo` profile loads Oh My OpenAgent only when launched with `ocp omo`. Its
+separate `oh-my-openagent.jsonc` uses OpenAI models from a ChatGPT subscription,
+blocks Anthropic fallback routes, and disables the Claude-tuned Metis planning
+consultant. Sisyphus remains enabled because current releases provide a
+dedicated GPT-5.5 prompt; Hephaestus, Oracle, and Momus are GPT-native.
+
+Anonymous telemetry is disabled. The upstream auto-update hook remains enabled
+and may update the package in OpenCode's shared cache. Authentication and the
+package cache are shared with normal OpenCode sessions, but bare `opencode` and
+`oc` do not load the plugin. OMO may create project-local `.omo/` workflow state
+while this profile is active.
+
+```sh
+ocp omo
+```
+
+Upstream installation documentation:
+<https://github.com/code-yeongyu/oh-my-openagent/blob/master/docs/guide/installation.md>
