@@ -7,4 +7,17 @@ age-edit
 deploy.sh
 main.py
 
-dot_config/opencode/local-config.json
+# Generated or machine-local opencode state.
+.config/opencode/local-config.json
+.config/opencode/node_modules
+.config/opencode/package.json
+.config/opencode/package-lock.json
+.config/opencode/bun.lock
+
+# Generated or sensitive Pi agent state.
+.pi/agent/auth.json
+.pi/agent/trust.json
+.pi/agent/sessions
+.pi/agent/npm
+.pi/agent/git
+.pi/agent/pi-debug.log
