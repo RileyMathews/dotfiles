@@ -1,0 +1,7 @@
+#!/bin/sh
+
+exec /usr/bin/codex \
+    --config 'approval_policy="never"' \
+    --config 'sandbox_mode="danger-full-access"' \
+    --config 'web_search="live"' \
+    "$@"

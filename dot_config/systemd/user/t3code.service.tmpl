@@ -1,0 +1,20 @@
+[Unit]
+Description=T3 Code headless server
+Documentation=https://github.com/pingdotgg/t3code/blob/main/REMOTE.md
+PartOf=graphical-session.target
+After=graphical-session.target
+
+[Service]
+Type=simple
+WorkingDirectory={{ .chezmoi.homeDir }}
+Environment=HOME={{ .chezmoi.homeDir }}
+# Use a T3-specific Codex shim so app-server loads the managed yolo profile.
+Environment=PATH={{ .chezmoi.homeDir }}/.local/lib/t3code/bin:{{ .chezmoi.homeDir }}/.local/bin:{{ .chezmoi.homeDir }}/.local/share/pnpm:{{ .chezmoi.homeDir }}/.local/share/mise/shims:/usr/local/bin:/usr/bin
+ExecStart={{ .chezmoi.homeDir }}/.local/bin/t3 serve --host 100.127.166.125 --port 3773 --base-dir {{ .chezmoi.homeDir }}/.t3 {{ .chezmoi.homeDir }}
+Restart=on-failure
+RestartSec=5s
+TimeoutStopSec=30s
+UMask=0077
+
+[Install]
+WantedBy=graphical-session.target

@@ -1,0 +1,6 @@
+# Equivalent to starting Codex with --yolo.
+approval_policy = "never"
+sandbox_mode = "danger-full-access"
+
+# Make the native web search tool available with live results by default.
+web_search = "live"

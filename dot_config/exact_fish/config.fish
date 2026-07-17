@@ -42,6 +42,7 @@ alias gcm 'git checkout (git_main_branch)'
 alias l 'ls -al'
 alias tss 'sudo tailscale switch'
 alias oc 'opencode'
+alias codex 'command codex --profile yolo'
 
 alias mpr 'python manage.py runserver'
 alias mpmm 'python manage.py makemigrations'

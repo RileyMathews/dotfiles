@@ -21,3 +21,9 @@ main.py
 .pi/agent/npm
 .pi/agent/git
 .pi/agent/pi-debug.log
+
+# The T3 Code server runs only on ds9.
+{{ if ne .chezmoi.hostname "ds9" }}
+.config/systemd/user/t3code.service
+.local/lib/t3code
+{{ end }}
