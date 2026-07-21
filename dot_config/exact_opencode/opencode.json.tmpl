@@ -102,19 +102,15 @@
     {{- end }}
   },
   "permission": {
+    "read": "allow",
+    "edit": {
+      "*": "deny",
+      "~/**": "allow"
+    },
     "bash": {
       "make *": "ask",
       "*": "allow"
     },
-    "external_directory": {
-      "~/code/**": "allow",
-      "~/.config/**": "allow",
-      "~/.local/**": "allow",
-      "~/.cache/**": "allow",
-      "~/.cargo/**": "allow",
-      "~/.bun/**": "allow",
-      "~/Documents/**": "allow",
-      "~/Downloads/**": "allow"
-    }
+    "external_directory": "allow"
   }
 }
