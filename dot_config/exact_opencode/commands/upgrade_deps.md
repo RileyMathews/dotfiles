@@ -11,9 +11,11 @@ Then see if there is a way via native package tooling to search for
 the most recent version of any dependencies we may have. Then bump
 those dependencies to the latest version.
 
-Only do this for actual direct dependencies. Do not worry about
-sub dependencies that we haven't explicitly defined as a project
-dependency.
+Only focus on updating direct dependencies to their latest version.
+Do a pass that attempts to update transitive dependencies as well
+if that isn't already automatic in whatever package manager we are
+using. But don't focus on updating every sub dependency to its
+most fresh version.
 
 When you are done upgrading run any testing/verfication sutie
 you can find for the project.
