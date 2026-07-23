@@ -1,0 +1,12 @@
+{{- /* chezmoi:modify-template */ -}}
+{{- $packages := list "npm:pi-web-access" -}}
+{{- if .chezmoi.stdin -}}
+{{- $settings := .chezmoi.stdin | fromJson -}}
+{{- if deepEqual (get $settings "packages") $packages -}}
+{{ .chezmoi.stdin }}
+{{- else -}}
+{{- $settings | setValueAtPath "packages" $packages | toPrettyJson }}
+{{- end -}}
+{{- else -}}
+{{- dict | setValueAtPath "packages" $packages | toPrettyJson }}
+{{- end -}}
