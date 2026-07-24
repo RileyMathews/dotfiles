@@ -2,8 +2,7 @@ import { randomUUID } from "node:crypto";
 import { access, mkdir, readFile, readdir, rm, writeFile } from "node:fs/promises";
 import net from "node:net";
 import { tmpdir } from "node:os";
-import { dirname, join } from "node:path";
-import { fileURLToPath } from "node:url";
+import { join } from "node:path";
 import { StringEnum } from "@earendil-works/pi-ai";
 import {
 	DEFAULT_MAX_BYTES,
@@ -17,7 +16,6 @@ import { Type } from "typebox";
 const quote = (value: string) => `'${value.replaceAll("'", `'"'"'`)}'`;
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 const stateRoot = join(tmpdir(), `pi-tmux-subagents-${typeof process.getuid === "function" ? process.getuid() : "user"}`);
-const childExtension = join(dirname(fileURLToPath(import.meta.url)), "tmux-subagent-child.ts");
 
 type ChildStatus = {
 	state: "starting" | "waiting" | "running" | "stopped" | "error";
@@ -198,7 +196,7 @@ export default function (pi: ExtensionAPI) {
 				await writeFile(promptFile, params.task, { mode: 0o600 });
 				await writeFile(
 					runnerFile,
-					`#!/usr/bin/env bash\nset -euo pipefail\nexport PI_TMUX_SUBAGENT_DIR=${quote(jobDir)}\nexec pi --no-extensions --no-session --approve --extension ${quote(childExtension)} ${quote(`@${promptFile}`)}\n`,
+					`#!/usr/bin/env bash\nset -euo pipefail\nexport PI_TMUX_SUBAGENT_DIR=${quote(jobDir)}\nexec pi --no-session --approve --exclude-tools tmux_subagent ${quote(`@${promptFile}`)}\n`,
 					{ mode: 0o700 },
 				);
 
