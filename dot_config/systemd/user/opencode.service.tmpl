@@ -1,0 +1,19 @@
+[Unit]
+Description=OpenCode headless server
+Documentation=https://opencode.ai/docs/web/
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory={{ .chezmoi.homeDir }}
+Environment=HOME={{ .chezmoi.homeDir }}
+Environment=PATH={{ .chezmoi.homeDir }}/.local/bin:{{ .chezmoi.homeDir }}/.local/share/pnpm:{{ .chezmoi.homeDir }}/.local/share/mise/shims:/usr/local/bin:/usr/bin
+ExecStart=/bin/sh -c 'exec /usr/bin/opencode serve --hostname "$(/usr/bin/tailscale ip -4)" --port 4096'
+Restart=on-failure
+RestartSec=5s
+TimeoutStopSec=30s
+UMask=0077
+
+[Install]
+WantedBy=default.target

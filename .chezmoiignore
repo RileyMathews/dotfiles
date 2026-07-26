@@ -22,8 +22,9 @@ main.py
 .pi/agent/git
 .pi/agent/pi-debug.log
 
-# The T3 Code server runs only on ds9.
-{{ if ne .chezmoi.hostname "ds9" }}
+# Headless coding services run only on designated hosts.
+{{ if not (or (eq .chezmoi.hostname "ds9") (eq .chezmoi.hostname "scotty")) }}
+.config/systemd/user/opencode.service
 .config/systemd/user/t3code.service
 .local/lib/t3code
 {{ end }}
