@@ -96,7 +96,12 @@ fi
 export ANDROID_HOME="$HOME/Android/Sdk"
 export PATH="$PATH:$HOME/.local/scripts:$HOME/.cargo/bin:$HOME/.local/bin:$HOME/.bun/bin:$ANDROID_HOME/emulator:$ANDROID_HOME/platform-tools:$ANDROID_HOME/cmdline-tools/latest/bin:$HOME/.local/python-scripts:$HOME/.screenlayout"
 
-source "$HOME/.config/zsh/sops-secrets.zsh"
+# This file is decrypted by Chezmoi during deployment.
+if [[ -r "$HOME/.config/zsh/secrets.zsh" ]]; then
+    set -a
+    source "$HOME/.config/zsh/secrets.zsh"
+    set +a
+fi
 
 #####################################
 # Aliases                           #

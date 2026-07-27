@@ -1,0 +1,8 @@
+encryption = "age"
+
+[age]
+identity = "~/.ssh/id_ed25519"
+recipient = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFgBrMhlYyFQuzLE2dEIJ/vEEN769EiPrpKYVzBKERoe rileymathews80@gmail.com"
+
+[data]
+machine = "ds9"
