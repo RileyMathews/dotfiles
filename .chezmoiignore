@@ -22,6 +22,7 @@ main.py
 
 # Headless coding services run only on designated hosts.
 {{ if not (eq .chezmoi.hostname "scotty") }}
+.config/systemd/user/cli-secrets.env
 .config/systemd/user/opencode.service
 .config/systemd/user/t3code.service
 .local/lib/t3code

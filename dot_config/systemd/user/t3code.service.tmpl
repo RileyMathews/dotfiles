@@ -9,6 +9,7 @@ Type=simple
 WorkingDirectory={{ .chezmoi.homeDir }}
 Environment=HOME={{ .chezmoi.homeDir }}
 Environment=ELECTRON_RUN_AS_NODE=1
+EnvironmentFile=%h/.config/systemd/user/cli-secrets.env
 # Use a T3-specific Codex shim so app-server loads the managed yolo profile.
 Environment=PATH={{ .chezmoi.homeDir }}/.local/lib/t3code/bin:{{ .chezmoi.homeDir }}/.local/bin:{{ .chezmoi.homeDir }}/.local/share/pnpm:{{ .chezmoi.homeDir }}/.local/share/mise/shims:/usr/local/bin:/usr/bin
 ExecStart=/bin/sh -c 'exec /opt/t3code-bin/t3code /opt/t3code-bin/resources/app.asar/apps/server/dist/bin.mjs serve --host "$(/usr/bin/tailscale ip -4)" --port 3773 --base-dir {{ .chezmoi.homeDir }}/.t3 {{ .chezmoi.homeDir }}'
