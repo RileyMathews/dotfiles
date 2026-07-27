@@ -21,7 +21,7 @@ main.py
 .pi/agent/pi-debug.log
 
 # Headless coding services run only on designated hosts.
-{{ if not (or (eq .chezmoi.hostname "ds9") (eq .chezmoi.hostname "scotty")) }}
+{{ if not (eq .chezmoi.hostname "scotty") }}
 .config/systemd/user/opencode.service
 .config/systemd/user/t3code.service
 .local/lib/t3code
