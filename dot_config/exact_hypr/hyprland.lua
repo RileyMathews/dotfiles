@@ -255,6 +255,7 @@ hl.bind(mainMod .. " + SHIFT + F", hl.dsp.window.float({ action = "toggle" }))
 hl.bind(mainMod .. " + D", hl.dsp.exec_cmd(menu))
 hl.bind(mainMod .. " + SPACE", hl.dsp.exec_cmd("wlr-which-key"))
 hl.bind(mainMod .. " + W", hl.dsp.exec_cmd("web-bookmarks"))
+hl.bind(mainMod .. " + SHIFT + O", hl.dsp.exec_cmd("toggle-embedded-display"))
 hl.bind(mainMod .. " + P", hl.dsp.window.pseudo())
 hl.bind(mainMod .. " + F", hl.dsp.window.fullscreen({ mode = "fullscreen", action = "toggle" }))
 

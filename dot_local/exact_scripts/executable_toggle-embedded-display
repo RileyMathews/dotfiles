@@ -1,0 +1,5 @@
+#!/bin/sh
+
+hyprctl monitors | awk '/^Monitor eDP-/ { print $2 }' | while IFS= read -r output; do
+    hyprctl dispatch "hl.dsp.dpms({ action = 'toggle', monitor = '$output' })"
+done
