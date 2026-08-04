@@ -88,6 +88,8 @@ export BROWSER="xdg-fork"
 export FORGEJO_URL="https://git.rileymathews.com"
 export KEYTIMEOUT=1
 export XDG_DATA_DIRS="$XDG_DATA_DIRS:/usr/share:/usr/local/share:/var/lib/flatpak/exports/share:/home/riley/.local/share/flatpak/exports/share"
+export PROTON_ENABLE_WAYLAND=1
+export PROTON_DXVK_LOWLATENCY=1
 
 if [ "$(hostname)" != "picard" ]; then
     export OPENCODE_ENABLE_EXA=1
