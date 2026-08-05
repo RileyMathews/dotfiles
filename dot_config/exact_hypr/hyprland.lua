@@ -346,3 +346,11 @@ hl.window_rule({
     float = true,
     size = { 800, 600 },
 })
+
+hl.window_rule({
+    name = "wicked-engine-blender-preview",
+    match = {
+        initial_title = "^(Wicked Engine Blender Preview)$",
+    },
+    float = true,
+})
