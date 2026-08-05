@@ -21,9 +21,13 @@ main.py
 .pi/agent/pi-debug.log
 
 # Headless coding services run only on designated hosts.
+# t3code is scotty-only.
 {{ if not (eq .chezmoi.hostname "scotty") }}
-.config/systemd/user/cli-secrets.env
-.config/systemd/user/opencode.service
 .config/systemd/user/t3code.service
 .local/lib/t3code
+{{ end }}
+# opencode (and the shared cli-secrets.env it requires) run on scotty and ds9.
+{{ if and (not (eq .chezmoi.hostname "scotty")) (not (eq .chezmoi.hostname "ds9")) }}
+.config/systemd/user/cli-secrets.env
+.config/systemd/user/opencode.service
 {{ end }}
