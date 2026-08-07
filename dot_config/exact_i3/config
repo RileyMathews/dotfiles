@@ -1,0 +1,128 @@
+# i3 configuration matching ~/.config/hypr/hyprland.lua where X11 permits.
+
+set $mod Mod4
+set $terminal alacritty
+set $menu rofi -monitor -1 -show drun
+
+# Match Hyprland's border-only Catppuccin Mocha decoration.
+font pango:Hack Nerd Font 10
+default_border pixel 1
+default_floating_border pixel 1
+hide_edge_borders none
+gaps inner 0
+gaps outer 4
+client.focused          #74c7ec #1e1e2e #cdd6f4 #74c7ec #74c7ec
+client.focused_inactive #585b70 #1e1e2e #cdd6f4 #585b70 #585b70
+client.unfocused        #585b70 #1e1e2e #a6adc8 #585b70 #585b70
+client.urgent           #f38ba8 #1e1e2e #cdd6f4 #f38ba8 #f38ba8
+
+# i3 has no scrolling layout; automatic split orientation is its closest tiling model.
+default_orientation auto
+focus_follows_mouse yes
+mouse_warping none
+focus_on_window_activation focus
+workspace_layout default
+
+# sxrc restores the autorandr profile, wallpaper, compositor, dunst, and playerctld.
+exec --no-startup-id tmux start-server
+
+bindsym $mod+t exec ghostty
+bindsym $mod+Shift+t exec $terminal
+bindsym $mod+b exec ~/.local/scripts/launch-browser
+bindsym $mod+q kill
+bindsym $mod+Shift+q exec i3-nagbar -t warning -m 'Exit i3?' -B 'Yes, exit i3' 'i3-msg exit'
+bindsym $mod+Shift+f floating toggle
+bindsym $mod+d exec $menu
+bindsym $mod+space exec wlr-which-key
+bindsym $mod+w exec web-bookmarks
+bindsym $mod+Shift+o exec toggle-embedded-display
+bindsym $mod+p layout toggle split
+bindsym $mod+f fullscreen toggle
+
+# Focus movement.
+bindsym $mod+Left focus left
+bindsym $mod+Right focus right
+bindsym $mod+Up focus up
+bindsym $mod+Down focus down
+bindsym $mod+h focus left
+bindsym $mod+j focus down
+bindsym $mod+k focus up
+bindsym $mod+l focus right
+bindsym $mod+Tab focus next
+
+# Window placement and resizing.
+bindsym $mod+Shift+h move left
+bindsym $mod+Shift+j move down
+bindsym $mod+Shift+k move up
+bindsym $mod+Shift+l move right
+bindsym $mod+Shift+Left resize shrink width 50 px or 50 ppt
+bindsym $mod+Shift+Right resize grow width 50 px or 50 ppt
+bindsym $mod+Shift+Up resize shrink height 50 px or 50 ppt
+bindsym $mod+Shift+Down resize grow height 50 px or 50 ppt
+bindsym $mod+Mod1+h exec --no-startup-id i3-move-and-focus prev
+bindsym $mod+Mod1+l exec --no-startup-id i3-move-and-focus next
+bindsym $mod+n focus output next
+bindsym $mod+button1 move
+bindsym $mod+button3 resize
+
+# Workspaces 1 through 10.
+bindsym $mod+1 workspace number 1
+bindsym $mod+2 workspace number 2
+bindsym $mod+3 workspace number 3
+bindsym $mod+4 workspace number 4
+bindsym $mod+5 workspace number 5
+bindsym $mod+6 workspace number 6
+bindsym $mod+7 workspace number 7
+bindsym $mod+8 workspace number 8
+bindsym $mod+9 workspace number 9
+bindsym $mod+0 workspace number 10
+bindsym $mod+Shift+1 move container to workspace number 1
+bindsym $mod+Shift+2 move container to workspace number 2
+bindsym $mod+Shift+3 move container to workspace number 3
+bindsym $mod+Shift+4 move container to workspace number 4
+bindsym $mod+Shift+5 move container to workspace number 5
+bindsym $mod+Shift+6 move container to workspace number 6
+bindsym $mod+Shift+7 move container to workspace number 7
+bindsym $mod+Shift+8 move container to workspace number 8
+bindsym $mod+Shift+9 move container to workspace number 9
+bindsym $mod+Shift+0 move container to workspace number 10
+bindsym $mod+button4 workspace next
+bindsym $mod+button5 workspace prev
+
+# Media and hardware keys.
+bindsym Print exec --no-startup-id sh -c 'mkdir -p "$HOME/Pictures/Screenshots" && import -window root "$HOME/Pictures/Screenshots/screenshot_$(date +%Y-%m-%d_%H-%M-%S).png"'
+bindsym XF86AudioRaiseVolume exec --no-startup-id volume up
+bindsym XF86AudioLowerVolume exec --no-startup-id volume down
+bindsym XF86AudioMute exec --no-startup-id volume mute
+bindsym XF86MonBrightnessUp exec --no-startup-id backlight up
+bindsym XF86MonBrightnessDown exec --no-startup-id backlight down
+bindsym XF86AudioNext exec --no-startup-id playerctl next
+bindsym XF86AudioPrev exec --no-startup-id playerctl previous
+bindsym XF86AudioPlay exec --no-startup-id playerctl play-pause
+bindsym Shift+XF86AudioPrev exec --no-startup-id playerctl position 10-
+bindsym Shift+XF86AudioNext exec --no-startup-id playerctl position 10+
+bindsym $mod+Control+k exec --no-startup-id playerctl play-pause
+bindsym $mod+Control+j exec --no-startup-id playerctl position 10-
+bindsym $mod+Control+l exec --no-startup-id playerctl position 10+
+bindsym $mod+Mod1+k exec --no-startup-id playerctl --player=kdeconnect play-pause
+bindsym $mod+Mod1+j exec --no-startup-id playerctl --player=kdeconnect position 10-
+
+# Hyprland window rules expressed with X11 WM_CLASS and title matching.
+for_window [class="^thunderbird$" title="^Calendar Reminders$"] floating enable, resize set 500 500, move position 50 px 50 px
+for_window [class="^zig-vulkan-playground$"] floating enable, resize set 800 600
+for_window [title="^Wicked Engine Blender Preview$"] floating enable
+
+bar {
+    position top
+    padding 0 4px
+    font pango:Hack Nerd Font 10
+    colors {
+        background #11111b
+        statusline #cdd6f4
+        separator #585b70
+        focused_workspace #74c7ec #1e1e2e #cdd6f4
+        active_workspace #585b70 #1e1e2e #cdd6f4
+        inactive_workspace #11111b #11111b #a6adc8
+        urgent_workspace #f38ba8 #1e1e2e #cdd6f4
+    }
+}

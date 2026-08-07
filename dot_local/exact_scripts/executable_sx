@@ -16,13 +16,11 @@ cleanup() {
     xauth remove :"$tty"
 }
 
-# detect if --nvidia is in any argument
-for arg in "$@"; do
-    if [ "$arg" = "--nvidia" ]; then
-        echo "nvidia flag detected, setting XORGCONFIG env var to use nvidia as primary GPU"
-        export XORGCONFIG="nvididia-primary.conf"
-    fi
-done
+use_nvidia=false
+if [ "${1:-}" = "--nvidia" ]; then
+    use_nvidia=true
+    shift
+fi
 
 stty=$(stty -g)
 tty=$(tty)
@@ -31,6 +29,11 @@ tty=${tty#/dev/tty}
 cfgdir=${XDG_CONFIG_HOME:-$HOME/.config}/sx
 datadir=${XDG_DATA_HOME:-$HOME/.local/share}/sx
 mkdir -p -- "$cfgdir" "$datadir"
+
+if [ "$use_nvidia" = true ]; then
+    echo "starting Xorg with NVIDIA as the primary GPU"
+    export XORGCONFIG="$cfgdir/nvidia-primary.conf"
+fi
 
 export XAUTHORITY="${XAUTHORITY:-$datadir/xauthority}"
 touch -- "$XAUTHORITY"

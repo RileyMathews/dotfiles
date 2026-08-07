@@ -1,0 +1,69 @@
+#!/bin/sh
+
+# X11 counterpart to ~/.config/hypr/hyprland.lua monitor definitions.
+# XRandR cannot configure Hyprland-only HDR, VRR, or color-management options.
+
+is_connected() {
+    xrandr --query | grep -q "^$1 connected"
+}
+
+configure() {
+    output=$1
+    shift
+
+    if is_connected "$output"; then
+        xrandr --output "$output" "$@"
+    fi
+}
+
+ensure_mode() {
+    output=$1
+    mode=$2
+    shift 2
+
+    if ! xrandr --query | grep -q "^  $mode "; then
+        xrandr --newmode "$mode" "$@"
+    fi
+
+    if is_connected "$output"; then
+        xrandr --addmode "$output" "$mode" 2>/dev/null || true
+    fi
+}
+
+# In an NVIDIA-primary session, render on NVIDIA while driving the Intel-wired panel.
+if xrandr --listproviders | grep -q 'name:NVIDIA-0' && xrandr --listproviders | grep -q 'name:modesetting'; then
+    xrandr --setprovideroutputsource modesetting NVIDIA-0
+fi
+
+case "$(hostname)" in
+    ds9)
+        configure DP-1 --primary --mode 3840x2160 --rate 144 --pos 0x0 --rotate normal
+        configure HDMI-A-1 --mode 3440x1440 --rate 60 --pos -3440x0 --rotate normal
+        ;;
+    picard)
+        # Connector IDs differ between hybrid and NVIDIA-primary Xorg sessions.
+        configure DP-1-5 --primary --mode 3840x2160 --rate 144 --pos 0x0 --rotate normal
+        configure DP-0 --primary --mode 3840x2160 --rate 144 --pos 0x0 --rotate normal
+        configure DP-1 --primary --mode 3840x2160 --rate 144 --pos 0x0 --rotate normal
+        configure DP-5 --primary --mode 3840x2160 --rate 144 --pos 0x0 --rotate normal
+        configure HDMI-1-0 --mode 3440x1440 --rate 60 --pos -3440x0 --rotate normal
+        configure HDMI-0 --mode 3440x1440 --rate 60 --pos -3440x0 --rotate normal
+
+        # The panel does not advertise 1440p/144, so register its CVT timing explicitly.
+        ensure_mode eDP-2 2560x1440_144.00 808.75 2560 2792 3072 3584 1440 1443 1448 1568 -hsync +vsync
+        ensure_mode eDP-1 2560x1440_144.00 808.75 2560 2792 3072 3584 1440 1443 1448 1568 -hsync +vsync
+        ensure_mode eDP-1-1 2560x1440_144.00 808.75 2560 2792 3072 3584 1440 1443 1448 1568 -hsync +vsync
+        configure eDP-2 --mode 2560x1440_144.00 --pos 3840x0 --rotate normal --scale 1x1
+        configure eDP-1 --mode 2560x1440_144.00 --pos 3840x0 --rotate normal --scale 1x1
+        configure eDP-1-1 --mode 2560x1440_144.00 --pos 3840x0 --rotate normal --scale 1x1
+        ;;
+    scotty)
+        configure DP-1 --primary --mode 3840x2160 --rate 60 --pos 0x0 --rotate normal
+        configure DP-4 --mode 3440x1440 --rate 60 --pos -3440x0 --rotate normal
+        configure eDP-2 --mode 2560x1600 --rate 60 --scale 0.75188x0.75188 --pos 3840x0 --rotate normal
+        ;;
+    *)
+        # Enable newly attached outputs at their preferred modes on unknown hosts.
+        xrandr --auto
+        ;;
+esac
