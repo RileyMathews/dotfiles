@@ -1,0 +1,4 @@
+#!/bin/sh
+
+export AQ_DRM_DEVICES="${NVIDIA_GPU:?NVIDIA_GPU must be set}:${INTEL_GPU:?INTEL_GPU must be set}"
+exec start-hyprland "$@"

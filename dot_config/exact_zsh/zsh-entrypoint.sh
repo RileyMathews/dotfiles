@@ -93,6 +93,9 @@ export PROTON_DXVK_LOWLATENCY=1
 
 if [ "$(hostname)" != "picard" ]; then
     export OPENCODE_ENABLE_EXA=1
+else
+    export INTEL_GPU="/dev/dri/intel-igpu"
+    export NVIDIA_GPU="/dev/dri/nvidia-dgpu"
 fi
 
 export ANDROID_HOME="$HOME/Android/Sdk"

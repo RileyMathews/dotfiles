@@ -1,8 +1,11 @@
 encryption = "age"
 
 [age]
-identity = "~/.ssh/id_ed25519"
-recipient = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFgBrMhlYyFQuzLE2dEIJ/vEEN769EiPrpKYVzBKERoe rileymathews80@gmail.com"
+identity = "~/.config/chezmoi/age-work.key"
+recipients = [
+    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFgBrMhlYyFQuzLE2dEIJ/vEEN769EiPrpKYVzBKERoe rileymathews80@gmail.com",
+    "age1463xuz4p2tqw88l9j7e4y72hush77az3l7ks8x55tuv4kymm7y9sy3np6x",
+]
 
 [data]
 machine = "ds9"
