@@ -10,7 +10,7 @@ default_border pixel 1
 default_floating_border pixel 1
 hide_edge_borders none
 gaps inner 0
-gaps outer 0
+gaps outer 4
 client.focused          #74c7ec #1e1e2e #cdd6f4 #74c7ec #74c7ec
 client.focused_inactive #585b70 #1e1e2e #cdd6f4 #585b70 #585b70
 client.unfocused        #585b70 #1e1e2e #a6adc8 #585b70 #585b70
@@ -114,6 +114,7 @@ for_window [title="^Wicked Engine Blender Preview$"] floating enable
 
 bar {
     position top
+    padding 0 4px
     font pango:Hack Nerd Font 10
     colors {
         background #11111b
