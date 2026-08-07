@@ -1,7 +1,19 @@
-#!/bin/bash
-# move-and-follow.sh
+#!/bin/sh
 
-current_ws=$(i3-msg -t get_workspaces | jq -r '.[] | select(.focused).name')
-i3-msg "move workspace to output right"
-i3-msg "workspace $current_ws"
+direction=${1:-next}
+current_output=$(i3-msg -t get_workspaces | jq -r '.[] | select(.focused).output')
 
+target_output=$(i3-msg -t get_outputs | jq -r --arg current "$current_output" --arg direction "$direction" '
+    [.[] | select(.active) | { name, x: .rect.x, y: .rect.y }]
+    | sort_by(.x, .y)
+    | map(.name) as $outputs
+    | ($outputs | index($current)) as $index
+    | ($outputs | length) as $length
+    | if $direction == "prev" then
+        $outputs[(($index - 1 + $length) % $length)]
+      else
+        $outputs[(($index + 1) % $length)]
+      end
+')
+
+[ -n "$target_output" ] && i3-msg "move workspace to output $target_output"

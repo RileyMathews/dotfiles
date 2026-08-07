@@ -9,7 +9,7 @@ exec xiccd &
 exec playerctld daemon &
 exec picom -b &
 exec nitrogen --restore &
-exec autorandr --change &
+xrandr-setup
 
 if [ "$#" -eq 0 ]; then
     exec i3
