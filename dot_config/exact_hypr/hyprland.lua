@@ -166,6 +166,7 @@ hl.config({
         force_zero_scaling = true,
     },
 
+
     general = {
         gaps_in = 0,
         gaps_out = { top = 0, right = 4, bottom = 0, left = 4 },
@@ -198,6 +199,8 @@ hl.config({
 
     render = {
         cm_auto_hdr = 1,
+        new_render_scheduling = true,
+        direct_scanout = 2,
     },
 
     animations = {
