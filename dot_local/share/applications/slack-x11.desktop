@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=Slack (X11)
+StartupWMClass=Slack
+Comment=Slack Desktop using X11
+Exec=/usr/bin/slack --disable-gpu-compositing --ozone-platform=x11 -s %U
+Icon=slack
+Type=Application
+StartupNotify=true
+Categories=GNOME;GTK;Network;InstantMessaging;
