@@ -199,8 +199,8 @@ hl.config({
 
     render = {
         cm_auto_hdr = 1,
-        new_render_scheduling = true,
-        direct_scanout = 2,
+        -- new_render_scheduling = true,
+        -- direct_scanout = 2,
     },
 
     animations = {
