@@ -4,6 +4,7 @@
 .stow-local-ignore
 deploy.sh
 main.py
+AGENTS.md
 
 # Generated or machine-local opencode state.
 .config/opencode/local-config.json
