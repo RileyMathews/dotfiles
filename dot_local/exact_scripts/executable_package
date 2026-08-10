@@ -1,0 +1,200 @@
+#!/usr/bin/env bash
+
+# Present globally installed packages from several package managers as one list.
+# Output is tab-separated: manager, package, version (when available).
+
+set -uo pipefail
+export LC_ALL=C
+
+usage() {
+    cat <<'EOF'
+Usage:
+  package -Q
+  package -Qs <name>
+
+-Q lists installed packages as tab-separated manager, package, and version
+fields. -Qs fuzzy-matches <name> against the package field.
+EOF
+}
+
+emit() {
+    local manager=$1 name=$2 version=${3:-}
+    [[ -n $name ]] && printf '%s\t%s\t%s\n' "$manager" "$name" "$version"
+}
+
+# Parse the final name@version token from npm-style tree output.
+list_js_tree() {
+    local manager=$1
+    awk -v manager="$manager" '
+        {
+            spec = $0
+            sub(/^.*[[:space:]]/, "", spec)
+            if (match(spec, /@[^@]*$/) && RSTART > 1) {
+                name = substr(spec, 1, RSTART - 1)
+                version = substr(spec, RSTART + 1)
+                printf "%s\t%s\t%s\n", manager, name, version
+            }
+        }
+    '
+}
+
+list_pacman() {
+    command -v pacman >/dev/null 2>&1 || return 0
+    pacman -Q 2>/dev/null | awk '{ printf "pacman\t%s\t%s\n", $1, $2 }'
+}
+
+list_npm() {
+    command -v npm >/dev/null 2>&1 || return 0
+    npm list --global --depth=0 2>/dev/null | list_js_tree npm
+}
+
+list_pnpm() {
+    command -v pnpm >/dev/null 2>&1 || return 0
+    pnpm list --global --depth=0 2>/dev/null | list_js_tree pnpm
+}
+
+list_bun() {
+    command -v bun >/dev/null 2>&1 || return 0
+    bun pm ls --global 2>/dev/null | list_js_tree bun
+}
+
+list_cargo() {
+    command -v cargo >/dev/null 2>&1 || return 0
+
+    local output='' toolchain=''
+    output=$(cargo install --list 2>/dev/null) || {
+        if command -v rustup >/dev/null 2>&1; then
+            toolchain=$(rustup toolchain list 2>/dev/null | awk 'NR == 1 { print $1 }')
+            [[ -n $toolchain ]] && output=$(rustup run "$toolchain" cargo install --list 2>/dev/null) || true
+        fi
+    }
+
+    awk '/^[^[:space:]]+ v[^[:space:]]+:$/ {
+        version=$2; sub(/^v/, "", version); sub(/:$/, "", version)
+        printf "cargo\t%s\t%s\n", $1, version
+    }' <<< "$output"
+}
+
+list_rustup() {
+    command -v rustup >/dev/null 2>&1 || return 0
+    rustup toolchain list 2>/dev/null | awk 'NF { printf "rustup\t%s\t\n", $1 }'
+}
+
+list_go() {
+    command -v go >/dev/null 2>&1 || return 0
+
+    local bin_dir binary module version
+    bin_dir=$(go env GOBIN 2>/dev/null)
+    [[ -n $bin_dir ]] || bin_dir="$(go env GOPATH 2>/dev/null)/bin"
+    [[ -d $bin_dir ]] || return 0
+
+    while IFS= read -r -d '' binary; do
+        module=
+        version=
+        while IFS=$'\t' read -r field value extra; do
+            if [[ $field == mod ]]; then
+                module=$value
+                version=$extra
+                break
+            fi
+        done < <(go version -m "$binary" 2>/dev/null)
+        [[ -n $module ]] && emit go "$module" "$version"
+    done < <(find "$bin_dir" -maxdepth 1 -type f -executable -print0 2>/dev/null)
+}
+
+list_nix() {
+    command -v nix >/dev/null 2>&1 || return 0
+    nix profile list 2>/dev/null | awk -F': *' '$1 == "Name" { printf "nix\t%s\t\n", $2 }'
+}
+
+list_mise() {
+    command -v mise >/dev/null 2>&1 || return 0
+    mise list 2>/dev/null | awk 'NF >= 2 && $2 != "missing" { printf "mise\t%s\t%s\n", $1, $2 }'
+}
+
+# These are conditional so the script starts including them if they are
+# installed later without producing errors on machines that do not use them.
+list_flatpak() {
+    command -v flatpak >/dev/null 2>&1 || return 0
+    flatpak list --columns=application,version 2>/dev/null |
+        awk -F '\t' 'NF { printf "flatpak\t%s\t%s\n", $1, $2 }'
+}
+
+list_pipx() {
+    command -v pipx >/dev/null 2>&1 || return 0
+    pipx list --short 2>/dev/null |
+        awk 'NF { printf "pipx\t%s\t%s\n", $1, $2 }'
+}
+
+list_uv() {
+    command -v uv >/dev/null 2>&1 || return 0
+    uv tool list 2>/dev/null |
+        awk '/^[^ -][^ ]* v[^ ]+$/ { version=$2; sub(/^v/, "", version); printf "uv\t%s\t%s\n", $1, version }'
+}
+
+list_gem() {
+    command -v gem >/dev/null 2>&1 || return 0
+    gem list --local 2>/dev/null |
+        awk 'match($0, / \([^, )]+/) { printf "gem\t%s\t%s\n", $1, substr($0, RSTART + 2, RLENGTH - 2) }'
+}
+
+list_all() {
+    {
+        list_pacman
+        list_npm
+        list_pnpm
+        list_bun
+        list_cargo
+        list_rustup
+        list_go
+        list_nix
+        list_mise
+        list_flatpak
+        list_pipx
+        list_uv
+        list_gem
+    } | sort -t $'\t' -k1,1 -k2,2 -u
+}
+
+fuzzy_search() {
+    local query=$1
+    if command -v fzf >/dev/null 2>&1; then
+        # Restrict matching to package names while retaining complete rows.
+        fzf --filter="$query" --delimiter=$'\t' --nth=2
+    else
+        # Portable subsequence matching when fzf is unavailable.
+        awk -F '\t' -v query="$query" '
+            BEGIN { query=tolower(query) }
+            {
+                name=tolower($2); at=1
+                for (i=1; i<=length(query); i++) {
+                    char=substr(query, i, 1)
+                    rest=substr(name, at)
+                    found=index(rest, char)
+                    if (!found) next
+                    at += found
+                }
+                print
+            }
+        '
+    fi
+}
+
+case ${1:-} in
+    -Q)
+        [[ $# -eq 1 ]] || { usage >&2; exit 2; }
+        list_all
+        ;;
+    -Qs)
+        [[ $# -ge 2 ]] || { usage >&2; exit 2; }
+        shift
+        list_all | fuzzy_search "$*"
+        ;;
+    -h|--help)
+        usage
+        ;;
+    *)
+        usage >&2
+        exit 2
+        ;;
+esac
