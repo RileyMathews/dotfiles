@@ -7,7 +7,6 @@ exec sxhkd &
 exec $HOME/.config/dunst/launch.sh &
 exec xiccd &
 exec playerctld daemon &
-exec picom -b &
 exec nitrogen --restore &
 xrandr-setup
 
