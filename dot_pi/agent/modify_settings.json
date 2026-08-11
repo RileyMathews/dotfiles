@@ -1,0 +1,22 @@
+#!/usr/bin/env python3
+
+import json
+import sys
+
+PACKAGE = "https://github.com/dmmulroy/pi-web-tools"
+
+contents = sys.stdin.read()
+settings = json.loads(contents) if contents.strip() else {}
+packages = settings.setdefault("packages", [])
+
+if not isinstance(packages, list):
+    raise TypeError("Pi's packages setting must be an array")
+
+if not any(
+    entry == PACKAGE or (isinstance(entry, dict) and entry.get("source") == PACKAGE)
+    for entry in packages
+):
+    packages.append(PACKAGE)
+
+json.dump(settings, sys.stdout, indent=2)
+sys.stdout.write("\n")
