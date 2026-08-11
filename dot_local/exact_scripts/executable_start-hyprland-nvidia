@@ -1,4 +1,10 @@
 #!/bin/sh
 
-export AQ_DRM_DEVICES="${NVIDIA_GPU:?NVIDIA_GPU must be set}:${INTEL_GPU:?INTEL_GPU must be set}"
+if [ "${1:-}" = "--disable-intel" ]; then
+    export AQ_DRM_DEVICES="${NVIDIA_GPU:?NVIDIA_GPU must be set}"
+    shift
+else
+    export AQ_DRM_DEVICES="${NVIDIA_GPU:?NVIDIA_GPU must be set}:${INTEL_GPU:?INTEL_GPU must be set}"
+fi
+
 exec start-hyprland "$@"
