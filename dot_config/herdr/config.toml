@@ -3,6 +3,8 @@ name = "catppuccin"
 
 [keys]
 prefix = "ctrl+space"
+navigate_workspace_down = "j"
+navigate_workspace_up = "k"
 
 [ui]
 pane_gaps = false
@@ -26,3 +28,4 @@ command = "vim-herdr-navigation.up"
 key = "ctrl+l"
 type = "plugin_action"
 command = "vim-herdr-navigation.right"
+
