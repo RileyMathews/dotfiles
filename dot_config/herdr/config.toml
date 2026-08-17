@@ -8,9 +8,18 @@ navigate_workspace_up = "k"
 last_pane = "prefix+l"
 new_workspace = "prefix+n"
 new_tab = "prefix+t"
+toggle_sidebar = "prefix+p"
 
 [ui]
 pane_gaps = false
+
+[[keys.command]]
+key = "prefix+f"
+type = "popup"
+command = '''workspace="$("$HERDR_BIN_PATH" workspace list | jq -r '.result.workspaces[] | [.workspace_id, .label] | @tsv' | fzf --with-nth=2.. --prompt='workspace> ')" && [ -n "$workspace" ] && "$HERDR_BIN_PATH" workspace focus "$(printf '%s' "$workspace" | cut -f1)"'''
+description = "fuzzy workspace picker"
+width = "60%"
+height = "60%"
 
 [[keys.command]]
 key = "ctrl+h"
