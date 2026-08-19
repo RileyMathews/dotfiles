@@ -38,7 +38,7 @@ bindkey '^n' history-search-forward
 stty -ixon 2>/dev/null || true
 
 # Ctrl+S to pick a directory and switch tmux sessions
-bindkey -s '^s' 'find-code\n'
+bindkey -s '^s' 'herdr\n'
 
 # Change cursor shape for different vi modes (non-blinking).
 function zle-keymap-select () {
