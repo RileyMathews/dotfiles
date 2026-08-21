@@ -1,3 +1,4 @@
+{{- $hostname := output "hostname" | trim -}}
 {
   "$schema": "https://opencode.ai/config.json",
   "snapshot": false, 
@@ -8,7 +9,7 @@
     "github-copilot-enterprise",
     "amazon-bedrock",
     "github-copilot",
-    {{- if eq .machine "picard" }}
+    {{- if eq $hostname "picard" }}
     "opencode"
     {{- end }}
   ],
@@ -30,7 +31,7 @@
     }
   },
   "mcp": {
-    {{- if eq .machine "picard" }}
+    {{- if eq $hostname "picard" }}
     "linear": {
       "type": "remote",
       "url": "https://mcp.linear.app/mcp"
@@ -52,7 +53,7 @@
     {{- end }}
   },
   "provider": {
-    {{- if eq .machine "ds9" }}
+    {{- if eq $hostname "ds9" }}
     "opencode": {
       "blacklist": [
         "gpt-5.5",
@@ -75,7 +76,7 @@
       ]
     }
     {{- end }}
-    {{- if eq .machine "picard" }}
+    {{- if eq $hostname "picard" }}
     "litellm": {
       "npm": "@ai-sdk/openai-compatible",
       "name": "kosmic",
