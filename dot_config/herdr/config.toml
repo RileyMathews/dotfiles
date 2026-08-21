@@ -46,7 +46,7 @@ type = "plugin_action"
 command = "vim-herdr-navigation.right"
 
 [[keys.command]]
-key = "prefix+shift+n"
+key = "prefix+n"
 type = "shell"
 command = '"$HERDR_BIN_PATH" workspace create --cwd "$HOME" --focus'
 description = "new workspace"
