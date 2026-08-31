@@ -5,13 +5,8 @@ models_dir="$HOME/code/glTF-Sample-Assets/Models"
 filament_dir="$HOME/code/filament"
 viewer="./out/release/filament/bin/gltf_viewer"
 
-if ! command -v fzf >/dev/null 2>&1; then
-  printf 'gltf-sample-viewer: fzf is required\n' >&2
-  exit 1
-fi
-
-if [[ ! -d "$models_dir" ]]; then
-  printf 'gltf-sample-viewer: models directory not found: %s\n' "$models_dir" >&2
+if [[ $# -gt 1 ]]; then
+  printf 'usage: gltf-sample-viewer [path/to/model.glb]\n' >&2
   exit 1
 fi
 
@@ -21,21 +16,44 @@ if [[ ! -x "$filament_dir/${viewer#./}" ]]; then
   exit 1
 fi
 
-selection=$(
-  for model_dir in "$models_dir"/*; do
-    [[ -d "$model_dir" ]] || continue
-    model_name=${model_dir##*/}
-    [[ -f "$model_dir/glTF-Binary/$model_name.glb" ]] || continue
-    printf '%s\n' "$model_name"
-  done | fzf --prompt='glTF model> ' --height=80% --border
-) || exit_code=$?
+if [[ $# -eq 1 ]]; then
+  if [[ ! -f "$1" ]]; then
+    printf 'gltf-sample-viewer: model file not found: %s\n' "$1" >&2
+    exit 1
+  fi
 
-exit_code=${exit_code:-0}
-if [[ $exit_code -ne 0 || -z "$selection" ]]; then
-  exit 0
+  if [[ "$1" = /* ]]; then
+    model="$1"
+  else
+    model="$PWD/$1"
+  fi
+else
+  if ! command -v fzf >/dev/null 2>&1; then
+    printf 'gltf-sample-viewer: fzf is required\n' >&2
+    exit 1
+  fi
+
+  if [[ ! -d "$models_dir" ]]; then
+    printf 'gltf-sample-viewer: models directory not found: %s\n' "$models_dir" >&2
+    exit 1
+  fi
+
+  selection=$(
+    for model_dir in "$models_dir"/*; do
+      [[ -d "$model_dir" ]] || continue
+      model_name=${model_dir##*/}
+      [[ -f "$model_dir/glTF-Binary/$model_name.glb" ]] || continue
+      printf '%s\n' "$model_name"
+    done | fzf --prompt='glTF model> ' --height=80% --border
+  ) || exit_code=$?
+
+  exit_code=${exit_code:-0}
+  if [[ $exit_code -ne 0 || -z "$selection" ]]; then
+    exit 0
+  fi
+
+  model="$models_dir/$selection/glTF-Binary/$selection.glb"
 fi
-
-model="$models_dir/$selection/glTF-Binary/$selection.glb"
 
 cd "$filament_dir"
 exec "$viewer" "$model"
