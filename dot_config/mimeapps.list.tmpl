@@ -1,0 +1,10 @@
+{{- $browser := "helium.desktop" -}}
+{{- if eq .chezmoi.hostname "picard" -}}
+{{- $browser = "google-chrome.desktop" -}}
+{{- end }}
+[Default Applications]
+x-scheme-handler/claude-cli=claude-code-url-handler.desktop;
+x-scheme-handler/http={{ $browser }};
+x-scheme-handler/https={{ $browser }};
+x-scheme-handler/t3code=t3code.desktop
+text/html={{ $browser }};

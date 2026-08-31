@@ -1,6 +1,0 @@
-[Default Applications]
-x-scheme-handler/claude-cli=claude-code-url-handler.desktop;
-x-scheme-handler/http=helium.desktop;
-x-scheme-handler/https=helium.desktop;
-x-scheme-handler/t3code=t3code.desktop
-text/html=helium.desktop;
