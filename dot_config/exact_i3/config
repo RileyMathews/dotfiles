@@ -28,7 +28,7 @@ exec --no-startup-id tmux start-server
 
 bindsym $mod+t exec ghostty
 bindsym $mod+Shift+t exec $terminal
-bindsym $mod+b exec ~/.local/scripts/launch-browser
+bindsym $mod+b exec sh -c '[ "$(hostname)" = picard ] && exec google-chrome || exec helium'
 bindsym $mod+q kill
 bindsym $mod+Shift+q exec i3-nagbar -t warning -m 'Exit i3?' -B 'Yes, exit i3' 'i3-msg exit'
 bindsym $mod+Shift+f floating toggle

@@ -134,6 +134,7 @@ end
 
 local terminal = "alacritty"
 local menu = "rofi -show drun"
+local browser = hostname() == "picard" and "google-chrome" or "helium"
 
 -------------------
 ---- AUTOSTART ----
@@ -251,7 +252,7 @@ local mainMod = "SUPER"
 
 hl.bind(mainMod .. " + T", hl.dsp.exec_cmd("ghostty"))
 hl.bind(mainMod .. " + SHIFT + T", hl.dsp.exec_cmd(terminal))
-hl.bind(mainMod .. " + B", hl.dsp.exec_cmd("~/.local/scripts/launch-browser"))
+hl.bind(mainMod .. " + B", hl.dsp.exec_cmd(browser))
 hl.bind(mainMod .. " + Q", hl.dsp.window.close())
 hl.bind(mainMod .. " + SHIFT + Q", hl.dsp.exit())
 hl.bind(mainMod .. " + SHIFT + F", hl.dsp.window.float({ action = "toggle" }))
