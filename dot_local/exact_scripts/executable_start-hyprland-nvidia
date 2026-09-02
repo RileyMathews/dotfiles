@@ -1,10 +1,93 @@
 #!/bin/sh
+# Launch Hyprland with the NVIDIA dGPU as the primary renderer.
+#
+# Usage: start-hyprland-nvidia [--disable-intel|--intel-primary] [--debug-mgpu] [start-hyprland args...]
+#
+#   (default)         NVIDIA primary, Intel secondary (drives the eDP via blit).
+#   --disable-intel   Only hand the NVIDIA card to Hyprland. The eDP panel
+#                     (wired to the Intel iGPU) stays dark, but there is no
+#                     cross-GPU copy at all.
+#   --intel-primary   Intel primary, NVIDIA secondary (external monitors via
+#                     blit). Experiment; see comments below for why this may
+#                     avoid the CPU-copy fallback that NVIDIA-primary can hit.
+#   --debug-mgpu      Enable aquamarine trace logging so the multi-GPU blit
+#                     path can be inspected in hyprland.log:
+#                       grep -E "EGL \(blit\)|multigpu|intermediate buffer" \
+#                         "$XDG_RUNTIME_DIR/hypr/"*/hyprland.log
+#                     "allocating intermediate buffer" == slow CPU readback path.
+#
+# Device ordering is controlled with AQ_DRM_DEVICES (aquamarine). The first
+# device is the primary renderer; any other listed device only gets its
+# connectors driven via a per-frame blit of the already-rendered frame.
+# See: https://wiki.hypr.land/Configuring/Advanced-and-Cool/Multi-GPU/
+#      https://wiki.hypr.land/Nvidia/
+#
+# NOTE: the bonw15 has a physical eDP MUX, but System76's EC firmware holds
+# MUX_CTRL_BIOS low permanently (no BIOS/EC toggle, no ACPI method), so the
+# panel is always on the iGPU. See https://github.com/system76/firmware-open/issues/610
 
-if [ "${1:-}" = "--disable-intel" ]; then
-    export AQ_DRM_DEVICES="${NVIDIA_GPU:?NVIDIA_GPU must be set}"
-    shift
+: "${NVIDIA_GPU:?NVIDIA_GPU must be set}"
+
+mode=hybrid
+while :; do
+    case "${1:-}" in
+        --disable-intel) mode=nvidia-only; shift ;;
+        --intel-primary) mode=intel-primary; shift ;;
+        --debug-mgpu)    export AQ_TRACE=1 HYPRLAND_TRACE=1; shift ;;
+        *) break ;;
+    esac
+done
+
+if [ "$mode" = nvidia-only ]; then
+    export AQ_DRM_DEVICES="$NVIDIA_GPU"
 else
-    export AQ_DRM_DEVICES="${NVIDIA_GPU:?NVIDIA_GPU must be set}:${INTEL_GPU:?INTEL_GPU must be set}"
+    : "${INTEL_GPU:?INTEL_GPU must be set}"
+    if [ "$mode" = intel-primary ]; then
+        # --intel-primary: A/B experiment. aquamarine's GBM allocator notes that
+        # NVIDIA can *import* linear buffers but can't reliably *render to* them.
+        # With NVIDIA primary the eDP blit source is an NVIDIA-rendered buffer the
+        # Intel renderer may fail to import -> per-frame glReadPixels CPU copy
+        # (symptom: one core pinned at ~80-90% while watching video). With Intel
+        # primary the copy direction matches what the code is written for.
+        export AQ_DRM_DEVICES="$INTEL_GPU:$NVIDIA_GPU"
+    else
+        export AQ_DRM_DEVICES="$NVIDIA_GPU:$INTEL_GPU"
+    fi
+
+    # --- Multi-GPU (hybrid) tuning -------------------------------------------
+    # Only relevant when the Intel card is in AQ_DRM_DEVICES. aquamarine parses
+    # these strictly: "1" enables an AQ_*_NO_* / AQ_TRACE style flag, "0" is the
+    # only value that disables AQ_FORCE_LINEAR_BLIT.
+
+    # OPT-IN ONLY: AQ_MGPU_NO_EXPLICIT=1 discards the explicit fence produced by
+    # the cross-GPU blit before the KMS commit on the secondary GPU. TESTED with
+    # --intel-primary (NVIDIA secondary): NVIDIA has no implicit sync, so DP-3
+    # scanned out half-blitted frames -> heavy flicker. Do not use when NVIDIA
+    # is the secondary. Harmless-but-pointless when Intel is the secondary
+    # (i915 implicitly syncs anyway). To test anyway:
+    #   AQ_MGPU_NO_EXPLICIT=1 start-hyprland-nvidia
+
+    # OPT-IN ONLY: AQ_FORCE_LINEAR_BLIT=0 is the wiki's "try if multi-GPU is
+    # broken" knob. It is deliberately NOT set here: aquamarine's GBM allocator
+    # forces linear modifiers precisely so the Intel renderer can import the
+    # NVIDIA-rendered buffer; without it eglCreateImageKHR fails and aquamarine
+    # falls back to a full-frame glReadPixels CPU copy every frame (far slower).
+    # To test anyway:  AQ_FORCE_LINEAR_BLIT=0 start-hyprland-nvidia
+fi
+
+# --- Client-side NVIDIA env (wiki "Environment variables" + VA-API sections) --
+# Only when NVIDIA is the compositor's GPU. Native Wayland EGL clients already
+# follow the compositor's dmabuf main device; these cover the rest.
+if [ "$mode" != intel-primary ]; then
+    # VA-API through libva-nvidia-driver.
+    export LIBVA_DRIVER_NAME="${LIBVA_DRIVER_NAME:-nvidia}"
+    export NVD_BACKEND="${NVD_BACKEND:-direct}"
+    # GLX (XWayland) clients: use NVIDIA's GLX vendor library instead of Mesa.
+    export __GLX_VENDOR_LIBRARY_NAME="${__GLX_VENDOR_LIBRARY_NAME:-nvidia}"
+    # Vulkan: hide the Intel ICD so apps don't render on the iGPU and force a
+    # cross-GPU import into the NVIDIA-composited session. (Same var prime-run uses;
+    # its __NV_PRIME_RENDER_OFFLOAD is X11 render-offload only and not needed here.)
+    export __VK_LAYER_NV_optimus="${__VK_LAYER_NV_optimus:-NVIDIA_only}"
 fi
 
 exec start-hyprland "$@"

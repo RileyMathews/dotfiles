@@ -134,7 +134,7 @@ end
 
 local terminal = "alacritty"
 local menu = "rofi -show drun"
-local browser = hostname() == "picard" and "google-chrome" or "helium-browser"
+local browser = hostname() == "picard" and "google-chrome-stable" or "helium-browser"
 
 -------------------
 ---- AUTOSTART ----
