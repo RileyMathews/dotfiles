@@ -17,6 +17,19 @@ local function hostname()
     return value:gsub("%s+$", "")
 end
 
+-- True when Hyprland was handed more than one GPU (see start-hyprland-nvidia).
+-- In that case one monitor set is driven by a per-frame cross-GPU blit of a 4K
+-- frame, and the blitted output's refresh rate is the dominant cost: measured on
+-- picard (Intel primary, YouTube on DP-3) 144Hz -> 60Hz cut Intel GPU work ~40%
+-- and let the GT clock drop off its 1650MHz ceiling. VRR made no difference.
+local function multi_gpu_session()
+    local devices = os.getenv("AQ_DRM_DEVICES") or ""
+    return devices:find(":", 1, true) ~= nil
+end
+
+local picard_dp3_mode = multi_gpu_session() and "3840x2160@60" or "3840x2160@144"
+local picard_dp3_vrr = multi_gpu_session() and 0 or 1
+
 local monitors_by_host = {
     ds9 = {
         {
@@ -61,9 +74,9 @@ local monitors_by_host = {
         },
         {
             output = "DP-3",
-            mode = "3840x2160@144",
+            mode = picard_dp3_mode,
             position = "0x0",
-            vrr = 1,
+            vrr = picard_dp3_vrr,
             scale = 1,
             -- bitdepth = 10,
             -- cm = "hdr",
@@ -134,7 +147,7 @@ end
 
 local terminal = "alacritty"
 local menu = "rofi -show drun"
-local browser = hostname() == "picard" and "google-chrome" or "helium-browser"
+local browser = hostname() == "picard" and "google-chrome-stable" or "helium-browser"
 
 -------------------
 ---- AUTOSTART ----
