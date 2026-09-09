@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=PrusaSlicer URL Handler
+Exec=/usr/bin/prusa-slicer %u
+Icon=PrusaSlicer
+Terminal=false
+Type=Application
+NoDisplay=true
+MimeType=x-scheme-handler/prusaslicer;
+StartupNotify=false
+StartupWMClass=prusa-slicer

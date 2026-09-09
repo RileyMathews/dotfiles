@@ -3,6 +3,9 @@
 {{- $browser = "google-chrome.desktop" -}}
 {{- end }}
 [Default Applications]
+x-scheme-handler/prusaslicer=prusaslicer-url-handler.desktop;
+model/3mf=PrusaSlicer.desktop;
+application/vnd.ms-3mfdocument=PrusaSlicer.desktop;
 x-scheme-handler/claude-cli=claude-code-url-handler.desktop;
 x-scheme-handler/http={{ $browser }};
 x-scheme-handler/https={{ $browser }};
