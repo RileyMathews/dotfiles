@@ -1,5 +1,4 @@
 .config/opencode/plugins
 .config/opencode/profiles
-.config/systemd/user/t3code.service
 .local/lib/t3code
 .config/zsh/secrets.env

@@ -21,9 +21,9 @@ AGENTS.md
 .pi/agent/git
 .pi/agent/pi-debug.log
 
-# Headless coding services run only on designated hosts.
-# opencode (and the shared cli-secrets.env it requires) run on scotty and ds9.
+# Headless coding services and their shared secrets run on scotty and ds9.
 {{ if and (not (eq .chezmoi.hostname "scotty")) (not (eq .chezmoi.hostname "ds9")) }}
 .config/systemd/user/cli-secrets.env
 .config/systemd/user/opencode.service
+.config/systemd/user/t3code.service
 {{ end }}
