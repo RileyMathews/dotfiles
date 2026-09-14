@@ -1,0 +1,7 @@
+approval_policy = "never"
+sandbox_mode = "danger-full-access"
+web_search = "live"
+
+[tui]
+whimsy = false
+animations = false

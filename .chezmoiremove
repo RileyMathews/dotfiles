@@ -2,5 +2,4 @@
 .config/opencode/profiles
 .config/systemd/user/t3code.service
 .local/lib/t3code
-.codex
 .config/zsh/secrets.env
