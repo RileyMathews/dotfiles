@@ -8,6 +8,7 @@ AGENTS.md
 
 # Generated or machine-local opencode state.
 .config/opencode/local-config.json
+.config/opencode/service.json
 .config/opencode/node_modules
 .config/opencode/package.json
 .config/opencode/package-lock.json

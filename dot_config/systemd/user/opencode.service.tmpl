@@ -9,6 +9,7 @@ Type=simple
 WorkingDirectory={{ .chezmoi.homeDir }}
 Environment=HOME={{ .chezmoi.homeDir }}
 EnvironmentFile=%h/.config/systemd/user/cli-secrets.env
+Environment=OPENCODE_SERVER_PASSWORD=insecure
 Environment=PATH={{ .chezmoi.homeDir }}/.local/bin:{{ .chezmoi.homeDir }}/.local/share/pnpm:{{ .chezmoi.homeDir }}/.local/share/mise/shims:/usr/local/bin:/usr/bin
 ExecStart=/bin/sh -c 'exec /usr/bin/opencode serve --hostname "$(/usr/bin/tailscale ip -4)" --port 4096 --cors "https://scottyopencode.rileymathews.com" --cors "https://agent.rileymathews.com"'
 Restart=on-failure
