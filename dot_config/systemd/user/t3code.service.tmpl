@@ -10,7 +10,7 @@ WorkingDirectory={{ .chezmoi.homeDir }}
 Environment=HOME={{ .chezmoi.homeDir }}
 EnvironmentFile=-%h/.config/systemd/user/cli-secrets.env
 Environment=PATH={{ .chezmoi.homeDir }}/.local/bin:{{ .chezmoi.homeDir }}/.local/share/pnpm:{{ .chezmoi.homeDir }}/.local/share/mise/shims:/usr/local/bin:/usr/bin
-ExecStart=/bin/sh -c 'exec /usr/bin/mise exec node@24 -- npx --yes t3@latest serve --host "$(/usr/bin/tailscale ip -4)" --port 3773 --base-dir {{ .chezmoi.homeDir }}/.t3 {{ .chezmoi.homeDir }}'
+ExecStart=/bin/sh -c 'exec /usr/bin/mise exec node@24 -- npx --yes --prefer-online t3@latest serve --host "$(/usr/bin/tailscale ip -4)" --port 3773 --base-dir {{ .chezmoi.homeDir }}/.t3 {{ .chezmoi.homeDir }}'
 Restart=on-failure
 RestartSec=5s
 TimeoutStopSec=30s
