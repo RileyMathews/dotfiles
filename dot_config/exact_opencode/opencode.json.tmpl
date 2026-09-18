@@ -1,36 +1,19 @@
 {{- $hostname := output "hostname" | trim -}}
 {
   "$schema": "https://opencode.ai/config.json",
-  "snapshot": false, 
+  "snapshots": false,
   "default_agent": "build",
-  "instructions": ["CLAUDE.local.md"],
   "disabled_providers": [
     "github-models",
     "github-copilot-enterprise",
     "amazon-bedrock",
-    "github-copilot",
+    "github-copilot"{{ if eq $hostname "picard" }},{{ end }}
     {{- if eq $hostname "picard" }}
     "opencode"
     {{- end }}
   ],
-  "lsp": {
-    "haskell-language-server": {
-      "command": [],
-      "extensions": [
-        ".hs"
-      ]
-    },
-    "tsgo": {
-      "command": [],
-      "extensions": [
-        ".ts",
-        ".tsx",
-        ".js",
-        ".jsx"
-      ]
-    }
-  },
   "mcp": {
+    "servers": {
     {{- if eq $hostname "picard" }}
     "linear": {
       "type": "remote",
@@ -51,36 +34,37 @@
       "oauth": {}
     }
     {{- end }}
+    }
   },
-  "provider": {
+  "providers": {
     {{- if eq $hostname "ds9" }}
     "opencode": {
-      "blacklist": [
-        "gpt-5.5",
-        "gpt-5.5-pro",
-        "gpt-5.4",
-        "gpt-5.4-pro",
-        "gpt-5.4-mini",
-        "gpt-5.4-nano",
-        "gpt-5.3-codex-spark",
-        "gpt-5.3-codex",
-        "gpt-5.2",
-        "gpt-5.2-codex",
-        "gpt-5.1",
-        "gpt-5.1-codex-max",
-        "gpt-5.1-codex",
-        "gpt-5.1-codex-mini",
-        "gpt-5",
-        "gpt-5-codex",
-        "gpt-5-nano"
-      ]
+      "models": {
+        "gpt-5.5": { "disabled": true },
+        "gpt-5.5-pro": { "disabled": true },
+        "gpt-5.4": { "disabled": true },
+        "gpt-5.4-pro": { "disabled": true },
+        "gpt-5.4-mini": { "disabled": true },
+        "gpt-5.4-nano": { "disabled": true },
+        "gpt-5.3-codex-spark": { "disabled": true },
+        "gpt-5.3-codex": { "disabled": true },
+        "gpt-5.2": { "disabled": true },
+        "gpt-5.2-codex": { "disabled": true },
+        "gpt-5.1": { "disabled": true },
+        "gpt-5.1-codex-max": { "disabled": true },
+        "gpt-5.1-codex": { "disabled": true },
+        "gpt-5.1-codex-mini": { "disabled": true },
+        "gpt-5": { "disabled": true },
+        "gpt-5-codex": { "disabled": true },
+        "gpt-5-nano": { "disabled": true }
+      }
     }
     {{- end }}
     {{- if eq $hostname "picard" }}
     "litellm": {
-      "npm": "@ai-sdk/openai-compatible",
+      "package": "aisdk:@ai-sdk/openai-compatible",
       "name": "kosmic",
-      "options": {
+      "settings": {
         "baseURL": "https://ai.kosmic.internal/v1"
       },
       "models": {
@@ -97,13 +81,11 @@
     }
     {{- end }}
   },
-  "permission": {
-    "read": "allow",
-    "edit": "allow",
-    "bash": {
-      "make *": "ask",
-      "*": "allow"
-    },
-    "external_directory": "allow"
-  }
+  "permissions": [
+    { "action": "read", "resource": "*", "effect": "allow" },
+    { "action": "edit", "resource": "*", "effect": "allow" },
+    { "action": "shell", "resource": "*", "effect": "allow" },
+    { "action": "shell", "resource": "make *", "effect": "ask" },
+    { "action": "external_directory", "resource": "*", "effect": "allow" }
+  ]
 }
