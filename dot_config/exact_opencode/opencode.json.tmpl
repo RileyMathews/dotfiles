@@ -86,6 +86,14 @@
     { "action": "edit", "resource": "*", "effect": "allow" },
     { "action": "shell", "resource": "*", "effect": "allow" },
     { "action": "shell", "resource": "make *", "effect": "ask" },
-    { "action": "external_directory", "resource": "*", "effect": "allow" }
-  ]
+    { "action": "external_directory", "resource": "*", "effect": "allow" },
+    { "action": "subagent", "resource": "implementor", "effect": "deny" }
+  ],
+  "agents": {
+    "orchestrator": {
+      "permissions": [
+        { "action": "subagent", "resource": "implementor", "effect": "allow" }
+      ]
+    }
+  }
 }
