@@ -64,7 +64,7 @@ selection=$(
       printf 'dir%s\033[36m\033[39m %s%s%s%s\n' "$tab" "$directory" "$tab" "$directory" "$tab"
     done < <(list_directories)
   } | "${fzf_command[@]}" \
-    --no-sort --ansi \
+    --ansi \
     --delimiter "$tab" --with-nth 2 \
     --border-label ' find-code ' --prompt '⚡  ' \
     --header '   tmux   directory  enter switch  tab/btab move' \
