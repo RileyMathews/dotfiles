@@ -1,5 +1,6 @@
+{{- $hostname := output "hostname" | trim -}}
 {{- $browser := "helium.desktop" -}}
-{{- if eq .chezmoi.hostname "picard" -}}
+{{- if eq $hostname "picard" -}}
 {{- $browser = "google-chrome.desktop" -}}
 {{- end }}
 [Default Applications]

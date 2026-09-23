@@ -23,7 +23,8 @@ AGENTS.md
 .pi/agent/pi-debug.log
 
 # Headless coding services and their shared secrets run on scotty and ds9.
-{{ if and (not (eq .chezmoi.hostname "scotty")) (not (eq .chezmoi.hostname "ds9")) }}
+{{- $hostname := output "hostname" | trim }}
+{{ if and (not (eq $hostname "scotty")) (not (eq $hostname "ds9")) }}
 .config/systemd/user/cli-secrets.env
 .config/systemd/user/opencode.service
 .config/systemd/user/t3code.service

@@ -1,7 +1,8 @@
+{{- $hostname := output "hostname" | trim -}}
 encryption = "age"
 
 [age]
-{{- if eq .chezmoi.hostname "picard" }}
+{{- if eq $hostname "picard" }}
 identity = "~/.config/chezmoi/age-work.key"
 {{- else }}
 identity = "~/.ssh/id_ed25519"
